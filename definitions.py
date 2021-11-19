@@ -1,7 +1,8 @@
 """
-Здесь содержатся всякие определения, которые не хочется переопределять из файла в файл.
+Здесь содержатся всякие определения, которые не хочется переносить из файла в файл.
 """
 import os
+import tensorflow as tf
 
 
 YES = 'да'
@@ -316,40 +317,69 @@ CATEGORICAL_COLUMN_NAMES = {
 
 
 INPUT_NAMES = {
-    'input_2': 'numerical',
-    'input_3': 'categorical',
-    'input_4': 'numerical',
-    'input_5': 'categorical',
-    'input_6': 'categorical',
-    'input_7': 'categorical',
-    'input_9': 'categorical',
-    'input_10': 'categorical',
-    'input_11': 'categorical',
-    'input_12': 'categorical',
-    'input_13': 'categorical',
-    'input_14': 'categorical',
-    'input_15': 'categorical',
-    'input_16': 'categorical',
-    'input_17': 'categorical',
-    'input_18': 'categorical',
-    'input_19': 'categorical',
-    'input_20': 'categorical',
-    'input_22': 'numerical',
-    'input_23': 'categorical',
-    'input_24': 'numerical',
-    'input_25': 'categorical',
-    'input_26': 'categorical',
-    'input_27': 'categorical',
-    'input_28': 'categorical',
-    'input_29': 'categorical',
-    'input_30': 'categorical',
-    'input_31': 'categorical',
-    'input_32': 'categorical',
-    'input_33': 'categorical',
-    'input_34': 'categorical',
-    'input_35': 'categorical',
+    'input_2': 'numerical',     # Возраст
+    'input_3': 'categorical',   # Семейное положение
+    'input_4': 'numerical',     # Если имеете супруга или партнера, как долго вы живете вместе (в годах)?
+    'input_5': 'categorical',   # В какой семье Вы выросли?
+    'input_6': 'categorical',   # Жив ли хотя бы один из Ваших родителей (да/нет)?
+    'input_7': 'categorical',   # Если да, как часто вы общаетесь?
+                                # Есть ли у Вас дети (да/нет)?
+    'input_9': 'categorical',   # Если да, сколько?
+    'input_10': 'categorical',  # Есть ли у Вас совершеннолетние дети (да/нет)?
+    'input_11': 'categorical',  # Если да, как часто вы общаетесь?
+    'input_12': 'categorical',  # Сколько человек живут вместе с Вами?
+    'input_13': 'categorical',  # Каковы Ваши взаимоотношения с соседями?
+    'input_14': 'categorical',  # Как часто Вы встречаетесь с друзьями?
+    'input_15': 'categorical',  # Есть ли у Вас домашние питомцы (да/нет)?
+    'input_16': 'categorical',  # В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
+    'input_17': 'categorical',  # В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+    'input_18': 'categorical',  # В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+    'input_19': 'categorical',  # Уровень Вашего образования?
+    'input_20': 'categorical',  # Каков уровень образования Вашего партнера (если применимо)?
+    'input_22': 'numerical',    # Как долго Вы проживаете в этом месте (в годах)?
+    'input_23': 'categorical',  # Каков тип Вашего дома?
+    'input_24': 'numerical',    # Если Вы живете в многоквартирном доме, то на каком этаже?
+    'input_25': 'categorical',  # Каким транспортом Вы обычно пользуетесь?
+    'input_26': 'categorical',  # Сколько времени занимает Ваш путь до работы в одну сторону?
+    'input_27': 'categorical',  # Каков тип Вашей занятости?
+    'input_28': 'categorical',  # Каковы Ваши предпочтения в пище?
+    'input_29': 'categorical',  # Каков тип Вашего питания?
+    'input_30': 'categorical',  # Вы курите (да/нет)?
+    'input_31': 'categorical',  # Количество родов
+    'input_32': 'categorical',  # Количество прерванных беременностей
+    'input_33': 'categorical',  # Гинекологические заболевания (да/нет)
+    'input_34': 'categorical',  # Заболевания щитовидной железы (да/нет)
+    'input_35': 'categorical',  # Наследственность (да/нет)
     'label': None
 }
 
 PREPARED_DATA_PATH = os.path.join('data', 'prepared data.xlsx')
 GENERALIZING_MODEL = os.path.join(os.getcwd(), 'models', 'generalizing model')
+OVERFIT_MODEL = os.path.join(os.getcwd(), 'models', 'overfit model')
+
+ENTIRE_DATA_PATH = os.path.join('data', 'entire data.csv')
+TRAIN_DATA_PATH = os.path.join('data', 'train data.csv')
+VALIDATION_DATA_PATH = os.path.join('data', 'validation data.csv')
+TEST_DATA_PATH = os.path.join('data', 'test data.csv')
+
+
+def get_dataset_from_csv(file_path):
+    """Читает Dataset из CSV файла. One-hot-encode'ит метки.
+
+    :param file_path: путь до CSV файла.
+    :return: dataset
+    """
+    # создаём Dataset, читая CSV файл
+    dataset = tf.data.experimental.make_csv_dataset(
+        file_pattern=file_path,
+        batch_size=1,
+        column_names=INPUT_NAMES.keys(),
+        label_name='label',
+        header=False,
+        num_epochs=1
+    )
+    # one-hot-encoding метки
+    dataset = dataset.map(lambda point, label: (point, tf.one_hot(label, depth=3)))
+    dataset.batch(1)
+
+    return dataset

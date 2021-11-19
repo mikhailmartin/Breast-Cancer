@@ -1,3 +1,8 @@
-/env
+# виртуальная среда
+/venv
 
 /.ipynb_checkpoints
+/__pycache__
+
+# конфигурация PyCharm
+/.idea
