@@ -1,6 +1,4 @@
-"""
-Здесь содержатся всякие определения, которые не хочется переносить из файла в файл.
-"""
+"""Здесь содержатся всякие определения, которые не хочется переносить из файла в файл."""
 import os
 import tensorflow as tf
 
@@ -355,7 +353,7 @@ INPUT_NAMES = {
 
 PREPARED_DATA_PATH = os.path.join('data', 'prepared data.xlsx')
 GENERALIZING_MODEL = os.path.join(os.getcwd(), 'models', 'generalizing model')
-OVERFIT_MODEL = os.path.join(os.getcwd(), 'models', 'overfit model')
+OVERFITTED_MODEL = os.path.join(os.getcwd(), 'models', 'overfitted model')
 
 ENTIRE_DATA_PATH = os.path.join('data', 'entire data.csv')
 TRAIN_DATA_PATH = os.path.join('data', 'train data.csv')
@@ -366,8 +364,11 @@ TEST_DATA_PATH = os.path.join('data', 'test data.csv')
 def get_dataset_from_csv(file_path):
     """Читает Dataset из CSV файла. One-hot-encode'ит метки.
 
-    :param file_path: путь до CSV файла.
-    :return: dataset
+    Args:
+        file_path: путь до CSV файла.
+
+    Returns:
+        dataset:
     """
     # создаём Dataset, читая CSV файл
     dataset = tf.data.experimental.make_csv_dataset(

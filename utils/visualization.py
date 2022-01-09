@@ -1,15 +1,137 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from . import definitions as defs
+
+
+def plot_pies(df, question, ignore=None):
+    """Визуализирует распределение ответов на вопрос в виде круговой диаграммы.
+
+    Args:
+        df: DataFrame, из которого будет вытаскиваться распределение.
+        question: вопрос, для которого визуализируется распределение ответов.
+        ignore: множество ответов, которые стоит проигнорировать при визуализации.
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(18, 10))
+
+    for label, ax in zip(defs.LABELS, axes):
+        sizes = []
+        answer_set = set(df[question].tolist())
+        # удаление ненужного куска(ов)
+        if ignore is None:
+            pass
+        elif isinstance(ignore, set):
+            for ignore_answer in ignore:
+                answer_set.remove(ignore_answer)
+        else:
+            answer_set.remove(ignore)
+
+        for answer in answer_set:
+            amount = df[(df['Метка'] == label) & (df[question] == answer)].shape[0]
+            sizes.append(amount)
+        wedges, texts, _ = ax.pie(sizes, autopct='%1.1f%%')
+        ax.set_title(label)
+        if ax is axes[-1]:
+            ax.legend(wedges, answer_set, bbox_to_anchor=(1, 0, 0.5, 1))
+
+    plt.show()
+
+
+def get_accuracy_matrix(df, question):
+    """Подсчитывает матрицу точностей совпадений ответа на вопрос и диагноза.
+
+    Args:
+        df: DataFrame, из которого будет вытаскиваться информация.
+        question: вопрос, для которого будет построена матрица точностей.
+
+    Returns:
+        matrix: собственно матрица точностей.
+        answers: ответы на вопрос.
+    """
+    # временный DataFrame только с ответами на вопрос и метками
+    tmp = df[[question, 'Метка']]
+    # сбрасывание всех NaN
+    tmp.dropna()
+
+    accuracy_matrix = []
+    answer_set = tmp.value_counts(subset=question).index
+    for answer in answer_set:
+        row = []
+        for label in defs.LABELS:
+            tp = tmp[(tmp[question] == answer) & (tmp['Метка'] == label)].shape[0]
+            tn = tmp[(tmp[question] != answer) & (tmp['Метка'] != label)].shape[0]
+            fp = tmp[(tmp[question] == answer) & (tmp['Метка'] != label)].shape[0]
+            fn = tmp[(tmp[question] != answer) & (tmp['Метка'] == label)].shape[0]
+
+            accuracy = (tp + tn) / (tp + tn + fp + fn)
+
+            row.append(accuracy)
+
+        accuracy_matrix.append(row)
+
+    answers = list(answer_set)
+
+    return accuracy_matrix, answers
+
+
+def plot_accuracy_matrix(df, question):
+    """Визуализирует матрицу точностей.
+
+    Args:
+        matrix: матрица точностей.
+        question: вопрос, для которого строится матрица.
+    """
+    matrix, col_labels = get_accuracy_matrix(df, question)
+
+    ax = plt.subplot()
+
+    # визуализируем матрицу в виде тепловой карты
+    ax.imshow(matrix)
+
+    ax.set_xticks(range(len(defs.LABELS)))
+    ax.set_xticklabels(defs.LABELS)
+    ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)
+    plt.setp(ax.get_xticklabels(), rotation=-30, ha='right', rotation_mode='anchor')
+
+    ax.set_yticks(range(len(matrix)))
+    ax.set_yticklabels(col_labels)
+
+    ax.spines[:].set_visible(False)
+
+    ax.set_xticks(np.arange(len(defs.LABELS) + 1) - .5, minor=True)
+    ax.set_yticks(np.arange(len(matrix) + 1) - .5, minor=True)
+    ax.grid(which='minor', color='w', linestyle='-', linewidth=3)
+    ax.tick_params(which='minor', bottom=False, left=False)
+
+    ax.set_title(question)
+
+    matrix = np.array(matrix)
+
+    def redact(number):
+        string = f'{number:.1%}'
+        return string
+
+    for i in range(len(matrix)):
+        for j in range(len(defs.LABELS)):
+            if matrix[i][j] < ((matrix.max() + matrix.min()) / 2):
+                ax.text(j, i, redact(matrix[i][j]), ha='center', va='center', color='white')
+            else:
+                ax.text(j, i, redact(matrix[i][j]), ha='center', va='center', color='black')
+
+    plt.show()
+
 
 def get_confusion_matrix(ys_true, ys_pred, true_labels, pred_labels):
     """Подсчитывает матрицу ошибок.
 
-    :param ys_true: метки абсолютной истины.
-    :param ys_pred: предсказанные метки.
-    :param true_labels: множество меток абсолютной истины.
-    :param pred_labels: множество предсказываемых меток.
-    :return: матрица ошибок.
+    Args:
+        ys_true: метки абсолютной истины.
+        ys_pred: предсказанные метки.
+        true_labels: множество меток абсолютной истины.
+        pred_labels: множество предсказываемых меток.
+
+    Returns:
+        confusion_matrix: матрица ошибок.
     """
     confusion_matrix = np.zeros((len(true_labels), len(pred_labels)), dtype='int64')
     for y_true, y_pred in zip(ys_true, ys_pred):
@@ -17,14 +139,14 @@ def get_confusion_matrix(ys_true, ys_pred, true_labels, pred_labels):
     return confusion_matrix
 
 
-def plot_confusion_matrix(confusion_matrix, true_labels, pred_labels,
-                          threshold=None):
+def plot_confusion_matrix(confusion_matrix, true_labels, pred_labels, threshold=None):
     """Визуализирует матрицу ошибок.
 
-    :param confusion_matrix: матрица ошибок.
-    :param true_labels: множество меток абсолютной истины.
-    :param pred_labels: множество предсказываемых меток.
-    :param threshold: порог принятия решения.
+    Args:
+        confusion_matrix: матрица ошибок.
+        true_labels: множество меток абсолютной истины.
+        pred_labels: множество предсказываемых меток.
+        threshold: порог принятия решения.
     """
     ax = plt.subplot()
     ax.imshow(confusion_matrix)
