@@ -4,6 +4,25 @@ import matplotlib.pyplot as plt
 from . import definitions as defs
 
 
+def autolabel(ax, labels=None, height_factor=1.01):
+    """Подписывает значение столбцов в гистограмме."""
+    for i, patch in enumerate(ax.patches):
+        height = patch.get_height()
+        if labels is not None:
+            try:
+                label = labels[i]
+            except (TypeError, KeyError):
+                label = ' '
+        else:
+            label = f'{int(height)}'
+        ax.text(
+            patch.get_x() + patch.get_width() / 2,
+            height_factor * height,
+            f'{label}',
+            ha='center',
+            va='bottom')
+
+
 def plot_pies(df, question, ignore=None):
     """Визуализирует распределение ответов на вопрос в виде круговой диаграммы.
 
