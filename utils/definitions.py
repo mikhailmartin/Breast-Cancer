@@ -239,7 +239,7 @@ LABELS = [
 
 COLUMN_NAMES = {
     'Вопрос 2': QUESTION_2,
-    'Вопрос 3':  QUESTION_3,
+    'Вопрос 3': QUESTION_3,
     'Вопрос 4': QUESTION_4,
     'Вопрос 5': QUESTION_5,
     'Вопрос 6': QUESTION_6,
@@ -315,6 +315,7 @@ CATEGORICAL_COLUMN_NAMES = {
 
 
 INPUT_NAMES = {
+                                # Имя
     'input_2': 'numerical',     # Возраст
     'input_3': 'categorical',   # Семейное положение
     'input_4': 'numerical',     # Если имеете супруга или партнера, как долго вы живете вместе (в годах)?
@@ -334,6 +335,7 @@ INPUT_NAMES = {
     'input_18': 'categorical',  # В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
     'input_19': 'categorical',  # Уровень Вашего образования?
     'input_20': 'categorical',  # Каков уровень образования Вашего партнера (если применимо)?
+                                # Пропущенный вопрос
     'input_22': 'numerical',    # Как долго Вы проживаете в этом месте (в годах)?
     'input_23': 'categorical',  # Каков тип Вашего дома?
     'input_24': 'numerical',    # Если Вы живете в многоквартирном доме, то на каком этаже?
@@ -362,15 +364,15 @@ TEST_DATA_PATH = os.path.join('data', 'test data.csv')
 
 
 def get_dataset_from_csv(file_path):
-    """Читает Dataset из CSV файла. One-hot-encode'ит метки.
+    """Читает Dataset из CSV-файла. One-hot-encode'ит метки.
 
     Args:
-        file_path: путь до CSV файла.
+        file_path: путь до CSV-файла.
 
     Returns:
-        dataset:
+        dataset: датасет.
     """
-    # создаём Dataset, читая CSV файл
+    # создаём Dataset, читая CSV-файл
     dataset = tf.data.experimental.make_csv_dataset(
         file_pattern=file_path,
         batch_size=1,
