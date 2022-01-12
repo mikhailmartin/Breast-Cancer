@@ -1,8 +1,6 @@
 """Здесь содержатся всякие определения, которые не хочется переносить из файла в файл."""
 import os
 
-import tensorflow as tf
-
 
 YES = 'да'
 NO = 'нет'
@@ -363,28 +361,3 @@ ENTIRE_DATA_PATH = os.path.join('data', 'entire data.csv')
 TRAIN_DATA_PATH = os.path.join('data', 'train data.csv')
 VALIDATION_DATA_PATH = os.path.join('data', 'validation data.csv')
 TEST_DATA_PATH = os.path.join('data', 'test data.csv')
-
-
-def get_dataset_from_csv(file_path):
-    """Читает Dataset из CSV-файла. One-hot-encode'ит метки.
-
-    Args:
-        file_path: путь до CSV-файла.
-
-    Returns:
-        dataset: датасет.
-    """
-    # создаём Dataset, читая CSV-файл
-    dataset = tf.data.experimental.make_csv_dataset(
-        file_pattern=file_path,
-        batch_size=1,
-        column_names=INPUT_NAMES.keys(),
-        label_name='label',
-        header=False,
-        num_epochs=1
-    )
-    # one-hot-encoding метки
-    dataset = dataset.map(lambda point, label: (point, tf.one_hot(label, depth=3)))
-    dataset.batch(1)
-
-    return dataset
