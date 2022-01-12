@@ -354,7 +354,8 @@ INPUT_NAMES = {
     'label': None
 }
 
-PREPARED_DATA_PATH = os.path.join('data', 'prepared data.xlsx')
+ETLED_DATA_PATH = os.path.join('data', 'ETLed data.xlsx')
+
 GENERALIZING_MODEL = os.path.join(os.getcwd(), 'models', 'generalizing model')
 OVERFITTED_MODEL = os.path.join(os.getcwd(), 'models', 'overfitted model')
 
