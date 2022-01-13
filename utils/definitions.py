@@ -354,10 +354,10 @@ INPUT_NAMES = {
 
 ETLED_DATA_PATH = os.path.join('data', 'ETLed data.xlsx')
 
+ENTIRE_DATA_PATH = os.path.join('data', 'train val test', 'entire data.csv')
+TRAIN_DATA_PATH = os.path.join('data', 'train val test', 'train data.csv')
+VAL_DATA_PATH = os.path.join('data', 'train val test', 'val data.csv')
+TEST_DATA_PATH = os.path.join('data', 'train val test', 'test data.csv')
+
 GENERALIZING_MODEL = os.path.join(os.getcwd(), 'models', 'generalizing model')
 OVERFITTED_MODEL = os.path.join(os.getcwd(), 'models', 'overfitted model')
-
-ENTIRE_DATA_PATH = os.path.join('data', 'entire data.csv')
-TRAIN_DATA_PATH = os.path.join('data', 'train data.csv')
-VALIDATION_DATA_PATH = os.path.join('data', 'validation data.csv')
-TEST_DATA_PATH = os.path.join('data', 'test data.csv')
