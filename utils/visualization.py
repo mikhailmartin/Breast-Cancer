@@ -1,3 +1,4 @@
+"""Здесь содержатся разнообразные утилиты для визуализации."""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -198,25 +199,11 @@ def plot_history(history, mode):
         history: собственно история.
         mode: {'accuracy', 'loss'} что отображать точность или потери.
     """
-    # график только для обучающей части
-    ax1 = plt.subplot()
-    ax1.plot(history.history[f'{mode}'])
-    ax1.set_xlabel('epochs')
-    ax1.set_ylabel(f'{mode}')
-    ax1.legend(['train'])
-    plt.show()
-    # график только для валидационной части
-    ax2 = plt.subplot()
-    ax2.plot(history.history[f'val_{mode}'], color='orange')
-    ax2.set_xlabel('epochs')
-    ax2.set_ylabel(f'{mode}')
-    ax2.legend(['val'])
-    plt.show()
-    # график для обучающей и валидационной частей
-    ax3 = plt.subplot()
-    ax3.plot(history.history[f'{mode}'])
-    ax3.plot(history.history[f'val_{mode}'])
-    ax3.set_xlabel('epochs')
-    ax3.set_ylabel(f'{mode}')
-    ax3.legend(['train', 'val'])
+    ax = plt.subplot()
+    ax.plot(history.history[f'{mode}'])
+    ax.plot(history.history[f'val_{mode}'])
+    ax.set_xlabel('epochs')
+    ax.set_ylabel(f'{mode}')
+    ax.legend(['train', 'val'])
+
     plt.show()
