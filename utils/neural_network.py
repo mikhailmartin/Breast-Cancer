@@ -20,8 +20,7 @@ def dataset_from_csv(file_path):
         column_names=defs.INPUT_NAMES.keys(),
         label_name='label',
         header=False,
-        num_epochs=1
-    )
+        num_epochs=1)
     # one-hot-encoding метки
     dataset = dataset.map(lambda point, label: (point, tf.one_hot(label, depth=3)))
     dataset.batch(1)

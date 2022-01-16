@@ -67,5 +67,4 @@ if __name__ == '__main__':
     dataframe.to_csv(
         path_or_buf=os.path.join('..', defs.ENTIRE_DATA_PATH),
         header=False,
-        index=False
-    )
+        index=False)

@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from . import definitions as defs
+from utils import definitions as defs
 
 
 def autolabel(ax, labels=None, height_factor=1.01):
