@@ -192,18 +192,23 @@ def plot_confusion_matrix(confusion_matrix, true_labels, pred_labels, threshold=
     plt.show()
 
 
-def plot_history(history, mode):
+def plot_history(history):
     """Визуализирует историю обучения.
 
     Args:
         history: собственно история.
-        mode: {'accuracy', 'loss'} что отображать точность или потери.
     """
-    ax = plt.subplot()
-    ax.plot(history.history[f'{mode}'])
-    ax.plot(history.history[f'val_{mode}'])
-    ax.set_xlabel('epochs')
-    ax.set_ylabel(f'{mode}')
-    ax.legend(['train', 'val'])
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    axes[0].plot(history.history['accuracy'])
+    axes[0].plot(history.history['val_accuracy'])
+    axes[0].set_xlabel('эпохи')
+    axes[0].set_ylabel('accuracy')
+    axes[0].legend(['train', 'val'])
+
+    axes[1].plot(history.history['loss'])
+    axes[1].plot(history.history['val_loss'])
+    axes[1].set_xlabel('эпохи')
+    axes[1].set_ylabel('loss')
+    axes[1].legend(['train', 'val'])
 
     plt.show()
