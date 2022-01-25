@@ -199,16 +199,16 @@ def plot_history(history):
         history: собственно история.
     """
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-    axes[0].plot(history.history['accuracy'])
-    axes[0].plot(history.history['val_accuracy'])
+    axes[0].plot(history.history['accuracy'], label='train_accuracy')
+    axes[0].plot(history.history['val_accuracy'], label='val_accuracy')
     axes[0].set_xlabel('эпохи')
     axes[0].set_ylabel('accuracy')
-    axes[0].legend(['train', 'val'])
+    axes[0].legend()
 
-    axes[1].plot(history.history['loss'])
-    axes[1].plot(history.history['val_loss'])
+    axes[1].plot(history.history['loss'], label='train_loss')
+    axes[1].plot(history.history['val_loss'], label='val_loss')
     axes[1].set_xlabel('эпохи')
     axes[1].set_ylabel('loss')
-    axes[1].legend(['train', 'val'])
+    axes[1].legend()
 
     plt.show()
