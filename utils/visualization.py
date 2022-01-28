@@ -32,7 +32,8 @@ def plot_pies(df, question, ignore=None):
         question: вопрос, для которого визуализируется распределение ответов.
         ignore: множество ответов, которые стоит проигнорировать при визуализации.
     """
-    fig, axes = plt.subplots(1, 3, figsize=(18, 10))
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    fig.suptitle(question, fontsize=16)
 
     for label, ax in zip(defs.LABELS, axes):
         sizes = []
@@ -49,7 +50,7 @@ def plot_pies(df, question, ignore=None):
         for answer in answer_set:
             amount = df[(df['Метка'] == label) & (df[question] == answer)].shape[0]
             sizes.append(amount)
-        wedges, texts, _ = ax.pie(sizes, autopct='%1.1f%%')
+        wedges, _, _ = ax.pie(sizes, autopct='%1.1f%%')
         ax.set_title(label)
         if ax is axes[-1]:
             ax.legend(wedges, answer_set, bbox_to_anchor=(1, 0, 0.5, 1))

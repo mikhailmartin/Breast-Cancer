@@ -353,6 +353,7 @@ INPUT_NAMES = {
 }
 
 ETLED_DATA_PATH = os.path.join('data', 'ETLed data.xlsx')
+ETLED_DATA_PATH_t = os.path.join('data', 'ETLed data t.xlsx')
 
 ENTIRE_DATA_PATH = os.path.join('data', 'train val test', 'entire data.csv')
 TRAIN_DATA_PATH = os.path.join('data', 'train val test', 'train data.csv')
