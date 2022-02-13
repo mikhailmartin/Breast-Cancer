@@ -3,18 +3,17 @@
 """
 import math
 
-import numpy as np
-from graphviz import Digraph  # TODO визуализация дерева графом
+from graphviz import Digraph  # TODO: визуализация дерева графом
 
 
 class DecisionTree:
     """Дерево решений."""
-    def __init__(self, *, min_samples_split=2, min_samples_leaf=1, min_impurity_decrease=0.01):
-        self.min_samples_split = min_samples_split
-        self.min_samples_leaf = min_samples_leaf
-        self.min_impurity_decrease = min_impurity_decrease
+    def __init__(self, *, min_samples_split=2, min_samples_leaf=1, min_impurity_decrease=0.05):
+        self._min_samples_split = min_samples_split
+        self._min_samples_leaf = min_samples_leaf
+        self._min_impurity_decrease = min_impurity_decrease
 
-    def fit(self, X, Y, categorical_feature_names, numerical_feature_names, special_cases):
+    def fit(self, X, Y, categorical_feature_names, numerical_feature_names, *, special_cases=None):
         """Обучает дерево решений.
 
         Args:
@@ -22,54 +21,67 @@ class DecisionTree:
             Y: Series с соответствующими метками.
             categorical_feature_names: список категориальных признаков.
             numerical_feature_names: список численных признаков.
-            special_cases: ... TODO построить графы зависимости вопросов.
+            special_cases: словарь {признак, который должен быть первым: признак или список
+              признаков, которые могут быть после}.
         """
         self.feature_names = list(X.columns)
         self.class_names = set(Y.tolist())
         self.categorical_feature_names = categorical_feature_names
         self.numerical_feature_names = numerical_feature_names
-        self.graph = Digraph(comment="моё дерево решений")
+        self.graph = Digraph(comment='моё дерево решений')
 
-        self.tree = self.generate_node(X, Y, self.feature_names)
+        available_feature_names = self.feature_names.copy()
+        # удаляем те признаки, которые пока не могут рассматриваться
+        if special_cases:
+            for value in special_cases.values():
+                if isinstance(value, str):
+                    available_feature_names.remove(value)
+                elif isinstance(value, list):
+                    for feature_name in value:
+                        available_feature_names.remove(feature_name)
+
+        self.tree = self._generate_node(X, Y, available_feature_names, special_cases)
 
         return self.tree
 
-    def generate_node(self, X, Y, available_feature_names):
+    def _generate_node(self, X, Y, available_feature_names, special_cases=None):
         """Рекурсивная функция создания узлов дерева.
 
         Args:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
             available_feature_names: список доступных признаков для разбиения входного множества.
+            special_cases: словарь {признак, который должен быть первым: признак или список
+              признаков, которые могут быть после}.
         Returns:
             node: узел дерева.
         """
         available_feature_names = available_feature_names.copy()
-
-        best_gain = self.min_impurity_decrease
+        # выбор лучшего признака для разбиения
+        best_gain = self._min_impurity_decrease
         best_feature = None
         for feature_name in available_feature_names:
-            gain = self._information_gain(X, Y, feature_name)
+            current_gain = self._information_gain(X, Y, feature_name)
             if best_gain is None:
-                best_gain = gain
+                best_gain = current_gain
                 best_feature = feature_name
-            elif isinstance(best_gain, float) and isinstance(gain, float):
-                if best_gain < gain:
-                    best_gain = gain
+            elif isinstance(best_gain, float) and isinstance(current_gain, float):
+                if best_gain < current_gain:
+                    best_gain = current_gain
                     best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(gain, float):
-                if best_gain[0] < gain:
-                    best_gain = gain
+            elif isinstance(best_gain, tuple) and isinstance(current_gain, float):
+                if best_gain[0] < current_gain:
+                    best_gain = current_gain
                     best_feature = feature_name
-            elif isinstance(best_gain, float) and isinstance(gain, tuple):
-                if best_gain < gain[0]:
-                    best_gain = gain
+            elif isinstance(best_gain, float) and isinstance(current_gain, tuple):
+                if best_gain < current_gain[0]:
+                    best_gain = current_gain
                     best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(gain, tuple):
-                if best_gain[0] < gain[0]:
-                    best_gain = gain
+            elif isinstance(best_gain, tuple) and isinstance(current_gain, tuple):
+                if best_gain[0] < current_gain[0]:
+                    best_gain = current_gain
                     best_feature = feature_name
-
+        # формирование информации для создания узла
         samples = X.shape[1]
         distribution = dict()
         label = None
@@ -81,23 +93,32 @@ class DecisionTree:
                 max_samples_per_class = samples_per_class
                 label = class_name
 
-        # TODO:
-        # проверка на available_feature_names
-        # удаление категориальных признаков
-        # и добавление тех, которые не могли быть
+        childs = []
 
-        children = []
-        if X.shape[0] >= self.min_samples_split:
-            xs, ys = self.split(X, Y, best_feature, best_gain[1])
+        if best_feature:
+            # удаление категориальных признаков
+            if best_feature in self.categorical_feature_names:
+                available_feature_names.remove(best_feature)
+            # добавление открывшихся признаков
+            if special_cases:
+                if best_feature in special_cases.keys():
+                    available_feature_names.append(special_cases[best_feature])
+                    special_cases.pop(best_feature)
+            # рекурсивное создание потомков
+            if X.shape[0] >= self._min_samples_split:
+                xs, ys = self._split(X, Y, best_feature, best_gain)
 
-            for x, y in zip(xs, ys):
-                children.append(self.generate_node(x, y, available_feature_names))
+                for x, y in zip(xs, ys):
+                    if special_cases:
+                        childs.append(self._generate_node(x, y, available_feature_names, special_cases))
+                    else:
+                        childs.append(self._generate_node(x, y, available_feature_names))
 
-        node = Node(best_feature, best_gain, samples, distribution, label, children)
+        node = Node(best_feature, best_gain, samples, distribution, label, childs)
 
         return node
 
-    def split(self, X, Y, feature_name, threshold):
+    def _split(self, X, Y, feature_name, threshold):
         """Расщепляет множество согласно признаку.
 
         Args:
@@ -116,11 +137,11 @@ class DecisionTree:
                 xs.append(X[X[feature_name] == feature_value])
                 ys.append(Y[X[feature_name] == feature_value])
         elif feature_name in self.numerical_feature_names:
-            x_less = X[X[feature_name] < threshold]
-            x_more = X[X[feature_name] >= threshold]
+            x_less = X[X[feature_name] < threshold[1]]
+            x_more = X[X[feature_name] >= threshold[1]]
             xs = [x_less, x_more]
-            y_less = Y[X[feature_name] < threshold]
-            y_more = Y[X[feature_name] >= threshold]
+            y_less = Y[X[feature_name] < threshold[1]]
+            y_more = Y[X[feature_name] >= threshold[1]]
             ys = [y_less, y_more]
 
         return xs, ys
@@ -137,6 +158,10 @@ class DecisionTree:
         S - признак;
         A_i - множество элементов A, на которых Q имеет значение i.
         """
+        if X[feature_name].isnull().any():
+            print('Входное множество содержит NaN')
+            print(f'Признак - {feature_name}')
+
         # информационный прирост для категориального признака
         if feature_name in self.categorical_feature_names:
             a = self._categorical_feature_entropy(X, feature_name)
@@ -154,14 +179,8 @@ class DecisionTree:
 
         # информационный прирост для численного признака
         elif feature_name in self.numerical_feature_names:
-
-            if X[feature_name].max() is np.NaN:
-                print(f'Для признака {feature_name} получилось пустое множество')
-                print('---')
-                print(X[feature_name])
-
             # лучший информационный прирост и порог
-            best_gain = None
+            best_gain = 0
             best_threshold = None
             for threshold in range(int(X[feature_name].max())):
                 a = self._numerical_feature_entropy(X, feature_name, threshold)

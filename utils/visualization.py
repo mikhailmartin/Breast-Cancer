@@ -24,36 +24,73 @@ def autolabel(ax, labels=None, height_factor=1.01):
             va='bottom')
 
 
-def plot_pies(df, question, ignore=None):
+def plot_pies(dataframe, question):
     """Визуализирует распределение ответов на вопрос в виде круговой диаграммы.
 
     Args:
-        df: DataFrame, из которого будет вытаскиваться распределение.
+        dataframe: DataFrame, из которого будет вытаскиваться распределение.
         question: вопрос, для которого визуализируется распределение ответов.
-        ignore: множество ответов, которые стоит проигнорировать при визуализации.
     """
-    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    df = dataframe.copy()
+    if df[question].isnull().sum():
+        df.replace({question: {np.NaN: '-'}}, inplace=True)
+
+    fig, axes = plt.subplots(1, 4, figsize=(24, 5))
     fig.suptitle(question, fontsize=16)
-
-    for label, ax in zip(defs.LABELS, axes):
-        sizes = []
-        answer_set = set(df[question].tolist())
-        # удаление ненужного куска(ов)
-        if ignore is None:
-            pass
-        elif isinstance(ignore, set):
-            for ignore_answer in ignore:
-                answer_set.remove(ignore_answer)
-        else:
-            answer_set.remove(ignore)
-
-        for answer in answer_set:
-            amount = df[(df['Метка'] == label) & (df[question] == answer)].shape[0]
-            sizes.append(amount)
-        wedges, _, _ = ax.pie(sizes, autopct='%1.1f%%')
+    # отдельные пироги по классам
+    for label, ax in zip(defs.LABELS, axes[:3]):
         ax.set_title(label)
-        if ax is axes[-1]:
-            ax.legend(wedges, answer_set, bbox_to_anchor=(1, 0, 0.5, 1))
+        values = set(df[question].tolist())
+        sizes = [
+            df[(df[defs.LABEL] == label) & (df[question] == value)].shape[0]
+            for value in values
+        ]
+        ax.pie(sizes, autopct='%1.1f%%')
+    # пирог для всего датасета
+    axes[3].set_title('целый датасет')
+    values = set(df[question].tolist())
+    sizes = [df[df[question] == value].shape[0] for value in values]
+    wedges, _, _ = axes[3].pie(sizes, autopct='%1.1f%%')
+    axes[3].legend(wedges, values, bbox_to_anchor=(1, 0, 0.5, 1))
+
+    plt.show()
+
+
+def plot_hists(df, question, suptitle, bins, xlim):
+    """Визуализирует гистограммы ответа на вопрос.
+
+    Args:
+        df: DataFrame, из которого будет вытаскиваться гистограммы.
+        question: вопрос, для которого визуализируются гистограммы.
+        suptitle: подзаголовок к рисунку.
+        bins: количество бинов гистограмм.
+        xlim: предел шкалы по x.
+    """
+    fig, axes = plt.subplots(1, 4, figsize=(24, 5), sharey=True)
+    fig.suptitle(suptitle, fontsize=16)
+    # отдельные гистограммы по классам
+    for label, ax in zip(defs.LABELS, axes[:3]):
+        ax.hist(df[df[defs.LABEL] == label][question].tolist(), bins=bins, range=(0, bins))
+        ax.set_title(label)
+        ax.set_xlim(0, xlim)
+    # гистограмма для всего датасета
+    axes[3].hist(df[question].tolist(), bins=bins, range=(0, bins))
+    axes[3].set_title('целый датасет')
+    axes[3].set_xlim(0, xlim)
+
+    plt.show()
+
+
+def plot_distribution(n1_old, n2_old, n3_old, n1_new, n2_new, n3_new):
+    fig, axes = plt.subplots(1, 2, figsize=(18, 5), sharey=True)
+    fig.suptitle('Распределение точек данных по классам', fontsize=16)
+    axes[0].set_title('до очистки')
+    axes[0].bar(defs.LABELS, [n1_old, n2_old, n3_old], tick_label=defs.LABELS)
+    autolabel(axes[0], height_factor=0.85)
+
+    axes[1].set_title('после очистки')
+    axes[1].bar(defs.LABELS, [n1_new, n2_new, n3_new], tick_label=defs.LABELS)
+    autolabel(axes[1], height_factor=0.85)
 
     plt.show()
 
@@ -70,7 +107,7 @@ def get_accuracy_matrix(df, question):
         answers: ответы на вопрос.
     """
     # временный DataFrame только с ответами на вопрос и метками
-    tmp = df[[question, 'Метка']]
+    tmp = df[[question, defs.LABEL]]
     # сбрасывание всех NaN
     tmp.dropna()
 
@@ -79,10 +116,10 @@ def get_accuracy_matrix(df, question):
     for answer in answer_set:
         row = []
         for label in defs.LABELS:
-            tp = tmp[(tmp[question] == answer) & (tmp['Метка'] == label)].shape[0]
-            tn = tmp[(tmp[question] != answer) & (tmp['Метка'] != label)].shape[0]
-            fp = tmp[(tmp[question] == answer) & (tmp['Метка'] != label)].shape[0]
-            fn = tmp[(tmp[question] != answer) & (tmp['Метка'] == label)].shape[0]
+            tp = tmp[(tmp[question] == answer) & (tmp[defs.LABEL] == label)].shape[0]
+            tn = tmp[(tmp[question] != answer) & (tmp[defs.LABEL] != label)].shape[0]
+            fp = tmp[(tmp[question] == answer) & (tmp[defs.LABEL] != label)].shape[0]
+            fn = tmp[(tmp[question] != answer) & (tmp[defs.LABEL] == label)].shape[0]
 
             accuracy = (tp + tn) / (tp + tn + fp + fn)
 

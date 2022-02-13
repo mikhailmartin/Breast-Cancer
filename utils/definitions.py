@@ -236,43 +236,6 @@ LABELS = [
 ]
 
 
-COLUMN_NAMES = {
-    'Вопрос 2': QUESTION_2,
-    'Вопрос 3': QUESTION_3,
-    'Вопрос 4': QUESTION_4,
-    'Вопрос 5': QUESTION_5,
-    'Вопрос 6': QUESTION_6,
-    'Вопрос 7': QUESTION_7,
-    'Вопрос 8': QUESTION_8,
-    'Вопрос 9': QUESTION_9,
-    'Вопрос 10': QUESTION_10,
-    'Вопрос 11': QUESTION_11,
-    'Вопрос 12': QUESTION_12,
-    'Вопрос 13': QUESTION_13,
-    'Вопрос 14': QUESTION_14,
-    'Вопрос 15': QUESTION_15,
-    'Вопрос 16': QUESTION_16,
-    'Вопрос 17': QUESTION_17,
-    'Вопрос 18': QUESTION_18,
-    'Вопрос 19': QUESTION_19,
-    'Вопрос 20': QUESTION_20,
-    'Вопрос 22': QUESTION_22,
-    'Вопрос 23': QUESTION_23,
-    'Вопрос 24': QUESTION_24,
-    'Вопрос 25': QUESTION_25,
-    'Вопрос 26': QUESTION_26,
-    'Вопрос 27': QUESTION_27,
-    'Вопрос 28': QUESTION_28,
-    'Вопрос 29': QUESTION_29,
-    'Вопрос 30': QUESTION_30,
-    'Вопрос 31': QUESTION_31,
-    'Вопрос 32': QUESTION_32,
-    'Вопрос 33': QUESTION_33,
-    'Вопрос 34': QUESTION_34,
-    'Вопрос 35': QUESTION_35,
-}
-
-
 CATEGORICAL_COLUMN_NAMES = {
     # QUESTION_1 - отсутствует
     # QUESTION_2 - численный
@@ -314,7 +277,6 @@ CATEGORICAL_COLUMN_NAMES = {
 
 
 INPUT_NAMES = {
-                                # Имя
     'input_2': 'numerical',     # Возраст
     'input_3': 'categorical',   # Семейное положение
     'input_4': 'numerical',     # Если имеете супруга или партнера, как долго вы живете вместе (в годах)?
@@ -352,8 +314,15 @@ INPUT_NAMES = {
     'label': None
 }
 
-ETLED_DATA_PATH = os.path.join('data', 'ETLed data.xlsx')
-ETLED_DATA_PATH_t = os.path.join('data', 'ETLed data t.xlsx')
+# пути
+# исходные данные
+NORM_PATH = os.path.join('data', 'origin', 'Таблица учёта НОРМА.xlsx')
+BENIGN_TUMOR_PATH = os.path.join('data', 'origin', 'Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx')
+MALIGNANT_TUMOR_PATH = os.path.join('data', 'origin', 'Таблица учёта ОНКОЛОГИЯ.xlsx')
+# данные после ETL
+ETLED_DATA_PATH_step1 = os.path.join('data', 'ETLed data step1.xlsx')
+ETLED_DATA_PATH_my_tree = os.path.join('data', 'ETLed data my tree.xlsx')
+ETLED_DATA_PATH_nn = os.path.join('data', 'ETLed data nn.xlsx')
 
 ENTIRE_DATA_PATH = os.path.join('data', 'train val test', 'entire data.csv')
 TRAIN_DATA_PATH = os.path.join('data', 'train val test', 'train data.csv')
