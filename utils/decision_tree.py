@@ -1,9 +1,20 @@
 """Кастомная реализация дерева решений, которая может работать с категориальными и численными
 признаками.
 """
+import functools
 import math
 
 from graphviz import Digraph  # TODO: визуализация дерева графом
+
+
+def _counter(function):
+    """Декоратор-счётчик."""
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        wrapper.count += 1
+        return function(*args, **kwargs)
+    wrapper.count = 0
+    return wrapper
 
 
 class DecisionTree:
@@ -28,7 +39,7 @@ class DecisionTree:
         self.class_names = set(Y.tolist())
         self.categorical_feature_names = categorical_feature_names
         self.numerical_feature_names = numerical_feature_names
-        self.graph = Digraph(comment='моё дерево решений')
+        self.graph = Digraph(node_attr={'shape': 'box', 'style': 'rounded'})
 
         available_feature_names = self.feature_names.copy()
         # удаляем те признаки, которые пока не могут рассматриваться
@@ -40,19 +51,21 @@ class DecisionTree:
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
 
-        self.tree = self._generate_node(X, Y, available_feature_names, special_cases)
+        self.tree = self._generate_node(X, Y, available_feature_names, None, special_cases)
 
-        return self.tree
+        return self.graph
 
-    def _generate_node(self, X, Y, available_feature_names, special_cases=None):
+    @_counter
+    def _generate_node(self, X, Y, available_feature_names, parent, special_cases=None):
         """Рекурсивная функция создания узлов дерева.
 
         Args:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
             available_feature_names: список доступных признаков для разбиения входного множества.
-            special_cases: словарь {признак, который должен быть первым: признак или список
-              признаков, которые могут быть после}.
+            parent: название узла-родителя.
+            special_cases: словарь {признак, который должен быть первым: признак, который может быть
+              после}.
         Returns:
             node: узел дерева.
         """
@@ -82,7 +95,7 @@ class DecisionTree:
                     best_gain = current_gain
                     best_feature = feature_name
         # формирование информации для создания узла
-        samples = X.shape[1]
+        samples = X.shape[0]
         distribution = dict()
         label = None
         max_samples_per_class = -1
@@ -92,6 +105,20 @@ class DecisionTree:
             if max_samples_per_class < samples_per_class:
                 max_samples_per_class = samples_per_class
                 label = class_name
+
+        # для визуализации графа
+        node_name = f'node{self._generate_node.count}'
+        node_label = ''
+        if best_feature:
+            node_label += f'{best_feature}\n'
+        node_label += f'samples = {samples}\n'
+        node_label += f'distribution = {list(distribution.values())}\n'
+        node_label += f'label = {label}'
+        self.graph.node(
+            name=node_name,
+            label=node_label)
+        if parent:
+            self.graph.edge(parent, node_name)
 
         childs = []
 
@@ -110,9 +137,9 @@ class DecisionTree:
 
                 for x, y in zip(xs, ys):
                     if special_cases:
-                        childs.append(self._generate_node(x, y, available_feature_names, special_cases))
+                        childs.append(self._generate_node(x, y, available_feature_names, node_name, special_cases))
                     else:
-                        childs.append(self._generate_node(x, y, available_feature_names))
+                        childs.append(self._generate_node(x, y, available_feature_names, node_name))
 
         node = Node(best_feature, best_gain, samples, distribution, label, childs)
 
