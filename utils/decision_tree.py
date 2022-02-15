@@ -39,7 +39,7 @@ class DecisionTree:
         self.class_names = set(Y.tolist())
         self.categorical_feature_names = categorical_feature_names
         self.numerical_feature_names = numerical_feature_names
-        self.graph = Digraph(node_attr={'shape': 'box', 'style': 'rounded'})
+        self.graph = Digraph(name='дерево решений', node_attr={'shape': 'box', 'style': 'rounded'})
 
         available_feature_names = self.feature_names.copy()
         # удаляем те признаки, которые пока не могут рассматриваться
@@ -52,8 +52,6 @@ class DecisionTree:
                         available_feature_names.remove(feature_name)
 
         self.tree = self._generate_node(X, Y, available_feature_names, None, special_cases)
-
-        return self.graph
 
     @_counter
     def _generate_node(self, X, Y, available_feature_names, parent, special_cases=None):
@@ -269,6 +267,16 @@ class DecisionTree:
             entropy = -(less/n) * math.log2(less/n) - (more/n) * math.log2(more/n)
 
         return entropy
+
+    def render(self, **kwargs):
+        """Визуализирует дерево решений.
+
+        Если указаны именованные параметры, сохраняет визуализацию в виде файла(ов).
+        """
+        if kwargs:
+            self.graph.render(**kwargs)
+
+        return self.graph
 
 
 class Node:
