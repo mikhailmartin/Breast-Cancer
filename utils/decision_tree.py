@@ -92,25 +92,20 @@ class DecisionTree:
                 if best_gain[0] < current_gain[0]:
                     best_gain = current_gain
                     best_feature = feature_name
-        # формирование информации для создания узла
-        samples = X.shape[0]
-        distribution = dict()
-        label = None
-        max_samples_per_class = -1
-        for class_name in self.class_names:
-            samples_per_class = (Y == class_name).sum()
-            distribution[class_name] = samples_per_class
-            if max_samples_per_class < samples_per_class:
-                max_samples_per_class = samples_per_class
-                label = class_name
 
-        # для визуализации графа
         node_name = f'node{self._generate_node.count}'
         node_label = ''
         if best_feature:
             node_label += f'{best_feature}\n'
-        node_label += f'samples = {samples}\n'
-        node_label += f'distribution = {list(distribution.values())}\n'
+        node_label += f'samples = {X.shape[0]}\n'
+        node_label += f'distribution:\n'
+        max_samples_per_class = -1
+        for class_name in self.class_names:
+            samples_per_class = (Y == class_name).sum()
+            node_label += f'{class_name}: {samples_per_class}\n'
+            if max_samples_per_class < samples_per_class:
+                max_samples_per_class = samples_per_class
+                label = class_name
         node_label += f'label = {label}'
         self.graph.node(
             name=node_name,
@@ -139,7 +134,7 @@ class DecisionTree:
                     else:
                         childs.append(self._generate_node(x, y, available_feature_names, node_name))
 
-        node = Node(best_feature, best_gain, samples, distribution, label, childs)
+        node = Node(childs)
 
         return node
 
@@ -281,11 +276,5 @@ class DecisionTree:
 
 class Node:
     """Узел дерева решений."""
-    def __init__(self, feature, gain, samples, distribution, label, children):
-        self.split = feature
-        self.entropy = gain
-        self.samples = samples
-        self.distribution = distribution
-        self.label = label
-
+    def __init__(self, children):
         self.children = children
