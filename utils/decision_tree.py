@@ -4,7 +4,7 @@
 import functools
 import math
 
-from graphviz import Digraph  # TODO: визуализация дерева графом
+from graphviz import Digraph
 
 
 def _counter(function):
@@ -39,7 +39,6 @@ class DecisionTree:
         self.class_names = set(Y.tolist())
         self.categorical_feature_names = categorical_feature_names
         self.numerical_feature_names = numerical_feature_names
-        self.graph = Digraph(name='дерево решений', node_attr={'shape': 'box', 'style': 'rounded'})
 
         available_feature_names = self.feature_names.copy()
         # удаляем те признаки, которые пока не могут рассматриваться
@@ -51,17 +50,16 @@ class DecisionTree:
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
 
-        self.tree = self._generate_node(X, Y, available_feature_names, None, special_cases)
+        self.tree = self._generate_node(X, Y, available_feature_names, special_cases)
 
     @_counter
-    def _generate_node(self, X, Y, available_feature_names, parent, special_cases=None):
+    def _generate_node(self, X, Y, available_feature_names, special_cases=None):
         """Рекурсивная функция создания узлов дерева.
 
         Args:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
             available_feature_names: список доступных признаков для разбиения входного множества.
-            parent: название узла-родителя.
             special_cases: словарь {признак, который должен быть первым: признак, который может быть
               после}.
         Returns:
@@ -93,28 +91,17 @@ class DecisionTree:
                     best_gain = current_gain
                     best_feature = feature_name
 
-        node_name = f'node{self._generate_node.count}'
-        node_label = ''
-        if best_feature:
-            node_label += f'{best_feature}\n'
-        node_label += f'samples = {X.shape[0]}\n'
-        node_label += f'distribution:\n'
+        samples = X.shape[0]
+        distribution = dict()
         max_samples_per_class = -1
         for class_name in self.class_names:
             samples_per_class = (Y == class_name).sum()
-            node_label += f'{class_name}: {samples_per_class}\n'
+            distribution[class_name] = samples_per_class
             if max_samples_per_class < samples_per_class:
                 max_samples_per_class = samples_per_class
                 label = class_name
-        node_label += f'label = {label}'
-        self.graph.node(
-            name=node_name,
-            label=node_label)
-        if parent:
-            self.graph.edge(parent, node_name)
 
         childs = []
-
         if best_feature:
             # удаление категориальных признаков
             if best_feature in self.categorical_feature_names:
@@ -130,11 +117,11 @@ class DecisionTree:
 
                 for x, y in zip(xs, ys):
                     if special_cases:
-                        childs.append(self._generate_node(x, y, available_feature_names, node_name, special_cases))
+                        childs.append(self._generate_node(x, y, available_feature_names, special_cases))
                     else:
-                        childs.append(self._generate_node(x, y, available_feature_names, node_name))
+                        childs.append(self._generate_node(x, y, available_feature_names))
 
-        node = Node(childs)
+        node = Node(best_feature, samples, distribution, label, childs)
 
         return node
 
@@ -268,13 +255,41 @@ class DecisionTree:
 
         Если указаны именованные параметры, сохраняет визуализацию в виде файла(ов).
         """
+        if not hasattr(self, 'graph'):
+            self.create_graph()
         if kwargs:
             self.graph.render(**kwargs)
-
         return self.graph
+
+    def create_graph(self):
+        self.graph = Digraph(name='дерево решений', node_attr={'shape': 'box', 'style': 'rounded'})
+        self.add_node(self.tree, None)
+
+    @_counter
+    def add_node(self, node, parent_name):
+        node_name = f'node{self.add_node.count}'
+        node_label = ''
+        if node.split_feature:
+            node_label += f'{node.split_feature}\n'
+        node_label += f'samples = {node.samples}\n'
+        node_label += 'distribution:\n'
+        for cls, samples_per_cls in node.distribution.items():
+            node_label += f'{cls}: {samples_per_cls}\n'
+        node_label += f'label = {node.label}'
+
+        self.graph.node(name=node_name, label=node_label)
+        if parent_name:
+            self.graph.edge(parent_name, node_name)
+
+        for child in node.childs:
+            self.add_node(child, node_name)
 
 
 class Node:
     """Узел дерева решений."""
-    def __init__(self, children):
-        self.children = children
+    def __init__(self, split_feature, samples, distribution, label, childs):
+        self.split_feature = split_feature
+        self.samples = samples
+        self.distribution = distribution
+        self.label = label
+        self.childs = childs
