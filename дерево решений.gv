@@ -2,2682 +2,1573 @@ digraph "дерево решений" {
 	node [shape=box style=rounded]
 	node1 [label="2. Возраст
 samples = 555
-distribution:
-норма: 179
-доброкачественная опухоль: 187
-злокачественная опухоль: 189
+distribution: [187, 189, 179]
 label = злокачественная опухоль"]
 	node2 [label="2. Возраст
 samples = 225
-distribution:
-норма: 52
-доброкачественная опухоль: 153
-злокачественная опухоль: 20
+distribution: [153, 20, 52]
 label = доброкачественная опухоль"]
-	node1 -> node2
+	node1 -> node2 [label="< 44"]
 	node3 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 136
-distribution:
-норма: 23
-доброкачественная опухоль: 108
-злокачественная опухоль: 5
+distribution: [108, 5, 23]
 label = доброкачественная опухоль"]
-	node2 -> node3
+	node2 -> node3 [label="< 37"]
 	node4 [label="29. Каков тип Вашего питания?
 samples = 56
-distribution:
-норма: 10
-доброкачественная опухоль: 43
-злокачественная опухоль: 3
+distribution: [43, 3, 10]
 label = доброкачественная опухоль"]
-	node3 -> node4
-	node5 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node4 -> node5
-	node6 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node3 -> node4 [label=0]
+	node5 [label="13. Каковы Ваши взаимоотношения с соседями?
 samples = 20
-distribution:
-норма: 5
-доброкачественная опухоль: 12
-злокачественная опухоль: 3
+distribution: [12, 3, 5]
 label = доброкачественная опухоль"]
-	node4 -> node6
-	node7 [label="31. Количество родов
+	node4 -> node5 [label="3-4-разовое домашнее питание"]
+	node6 [label="31. Количество родов
 samples = 3
-distribution:
-норма: 1
-доброкачественная опухоль: 1
-злокачественная опухоль: 1
+distribution: [1, 1, 1]
+label = доброкачественная опухоль"]
+	node5 -> node6 [label="очень хорошие, дружеские"]
+	node7 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node6 -> node7
+	node6 -> node7 [label=0]
 	node8 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node7 -> node8
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node6 -> node8 [label=1]
 	node9 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node7 -> node9
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node6 -> node9 [label=2]
 	node10 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node7 -> node10
-	node11 [label="3. Семейное положение
-samples = 9
-distribution:
-норма: 4
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node6 -> node11
-	node12 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node11 -> node12
-	node13 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node11 -> node13
-	node14 [label="28. Каковы Ваши предпочтения в пище?
-samples = 5
-distribution:
-норма: 4
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = норма"]
-	node11 -> node14
-	node15 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node14 -> node15
-	node16 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node14 -> node16
-	node17 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node14 -> node17
-	node18 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node11 -> node18
-	node19 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node6 -> node19
-	node20 [label="14. Как часто Вы встречаетесь с друзьями?
+	node5 -> node10 [label="я не знаю своих соседей"]
+	node11 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 7
-distribution:
-норма: 0
-доброкачественная опухоль: 5
-злокачественная опухоль: 2
+distribution: [5, 2, 0]
 label = доброкачественная опухоль"]
-	node6 -> node20
-	node21 [label="3. Семейное положение
+	node5 -> node11 [label="нейтральные"]
+	node12 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node11 -> node12 [label="несколько раз в неделю"]
+	node13 [label="3. Семейное положение
 samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 1
+distribution: [1, 1, 0]
 label = доброкачественная опухоль"]
-	node20 -> node21
-	node22 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node11 -> node13 [label="раз в месяц"]
+	node14 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node13 -> node14 [label="имею гражданского супруга"]
+	node15 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node21 -> node22
+	node13 -> node15 [label="замужем"]
+	node16 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node11 -> node16 [label="раз в неделю"]
+	node17 [label="samples = 3
+distribution: [3, 0, 0]
+label = доброкачественная опухоль"]
+	node11 -> node17 [label="реже, чем раз в месяц"]
+	node18 [label="3. Семейное положение
+samples = 9
+distribution: [5, 0, 4]
+label = доброкачественная опухоль"]
+	node5 -> node18 [label="хорошие"]
+	node19 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node18 -> node19 [label="разведена"]
+	node20 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node18 -> node20 [label="имею гражданского супруга"]
+	node21 [label="samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node18 -> node21 [label="одинока"]
+	node22 [label="28. Каковы Ваши предпочтения в пище?
+samples = 5
+distribution: [1, 0, 4]
+label = норма"]
+	node18 -> node22 [label="замужем"]
 	node23 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node21 -> node23
+distribution: [0, 0, 1]
+label = норма"]
+	node22 -> node23 [label="я ем мясо или рыбу 2-3 раза в неделю"]
 	node24 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node20 -> node24
-	node25 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node20 -> node25
-	node26 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+	node22 -> node24 [label="я практически не ем мясо/рыбу"]
+	node25 [label="samples = 3
+distribution: [0, 0, 3]
+label = норма"]
+	node22 -> node25 [label="я ем мясо или рыбу ежедневно"]
+	node26 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node20 -> node26
+	node4 -> node26 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
 	node27 [label="pre20. Есть ответ на вопрос 20?
 samples = 25
-distribution:
-норма: 2
-доброкачественная опухоль: 23
-злокачественная опухоль: 0
+distribution: [23, 0, 2]
 label = доброкачественная опухоль"]
-	node4 -> node27
+	node4 -> node27 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
 	node28 [label="8. Есть ли у Вас дети (да/нет)?
 samples = 4
-distribution:
-норма: 2
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
-label = норма"]
-	node27 -> node28
+distribution: [2, 0, 2]
+label = доброкачественная опухоль"]
+	node27 -> node28 [label="нет"]
 	node29 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node28 -> node29
+	node28 -> node29 [label="нет"]
 	node30 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node28 -> node30
+	node28 -> node30 [label="да"]
 	node31 [label="samples = 21
-distribution:
-норма: 0
-доброкачественная опухоль: 21
-злокачественная опухоль: 0
+distribution: [21, 0, 0]
 label = доброкачественная опухоль"]
-	node27 -> node31
+	node27 -> node31 [label="да"]
 	node32 [label="5. В какой семье Вы выросли?
 samples = 9
-distribution:
-норма: 3
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
+distribution: [6, 0, 3]
 label = доброкачественная опухоль"]
-	node4 -> node32
-	node33 [label="31. Количество родов
-samples = 7
-distribution:
-норма: 1
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node32 -> node33
-	node34 [label="samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node33 -> node34
-	node35 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node4 -> node32 [label="регулярного режима питания нет"]
+	node33 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node33 -> node35
+	node32 -> node33 [label="мать/отец одиночка"]
+	node34 [label="31. Количество родов
+samples = 7
+distribution: [6, 0, 1]
+label = доброкачественная опухоль"]
+	node32 -> node34 [label="полная семья, кровные родители"]
+	node35 [label="samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node34 -> node35 [label=0]
 	node36 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node32 -> node36
+	node34 -> node36 [label=1]
 	node37 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node32 -> node37
-	node38 [label="12. Сколько человек живут вместе с Вами?
+	node32 -> node37 [label="мачеха/отчим"]
+	node38 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
 samples = 15
-distribution:
-норма: 1
-доброкачественная опухоль: 13
-злокачественная опухоль: 1
+distribution: [13, 1, 1]
 label = доброкачественная опухоль"]
-	node3 -> node38
-	node39 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node3 -> node38 [label=1]
+	node39 [label="samples = 3
+distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node38 -> node39
-	node40 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node38 -> node40
-	node41 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 4
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node38 -> node41
-	node42 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node38 -> node39 [label=0]
+	node40 [label="27. Каков тип Вашей занятости?
 samples = 9
-distribution:
-норма: 1
-доброкачественная опухоль: 8
-злокачественная опухоль: 0
+distribution: [8, 0, 1]
 label = доброкачественная опухоль"]
-	node38 -> node42
-	node43 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
+	node38 -> node40 [label=1]
+	node41 [label="samples = 8
+distribution: [8, 0, 0]
 label = доброкачественная опухоль"]
-	node42 -> node43
-	node44 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node42 -> node44
-	node45 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node40 -> node41 [label="полный рабочий день"]
+	node42 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node42 -> node45
-	node46 [label="29. Каков тип Вашего питания?
-samples = 16
-distribution:
-норма: 1
-доброкачественная опухоль: 14
-злокачественная опухоль: 1
+	node40 -> node42 [label="частичная занятость"]
+	node43 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node3 -> node46
+	node38 -> node43 [label=2]
+	node44 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node38 -> node44 [label=7]
+	node45 [label="29. Каков тип Вашего питания?
+samples = 16
+distribution: [14, 1, 1]
+label = доброкачественная опухоль"]
+	node3 -> node45 [label=2]
+	node46 [label="3. Семейное положение
+samples = 2
+distribution: [0, 1, 1]
+label = злокачественная опухоль"]
+	node45 -> node46 [label="3-4-разовое домашнее питание"]
 	node47 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node46 -> node47
-	node48 [label="3. Семейное положение
-samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 0, 1]
 label = норма"]
-	node46 -> node48
+	node46 -> node47 [label="разведена"]
+	node48 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node46 -> node48 [label="одинока"]
 	node49 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node48 -> node49
-	node50 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node48 -> node50
-	node51 [label="samples = 11
-distribution:
-норма: 0
-доброкачественная опухоль: 11
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node46 -> node51
-	node52 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node45 -> node49 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
+	node50 [label="samples = 11
+distribution: [11, 0, 0]
 label = доброкачественная опухоль"]
-	node46 -> node52
-	node53 [label="14. Как часто Вы встречаетесь с друзьями?
+	node45 -> node50 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node51 [label="samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node45 -> node51 [label="регулярного режима питания нет"]
+	node52 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 16
-distribution:
-норма: 4
-доброкачественная опухоль: 12
-злокачественная опухоль: 0
+distribution: [12, 0, 4]
 label = доброкачественная опухоль"]
-	node3 -> node53
-	node54 [label="2. Возраст
+	node3 -> node52 [label=3]
+	node53 [label="29. Каков тип Вашего питания?
 samples = 4
-distribution:
-норма: 3
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [3, 0, 1]
+label = доброкачественная опухоль"]
+	node52 -> node53 [label="несколько раз в неделю"]
+	node54 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node53 -> node54
+	node53 -> node54 [label="3-4-разовое домашнее питание"]
 	node55 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node54 -> node55
-	node56 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node54 -> node56
-	node57 [label="29. Каков тип Вашего питания?
+	node53 -> node55 [label="регулярного режима питания нет"]
+	node56 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node53 -> node56 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node57 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node53 -> node57 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
+	node58 [label="samples = 3
+distribution: [3, 0, 0]
+label = доброкачественная опухоль"]
+	node52 -> node58 [label="реже, чем раз в месяц"]
+	node59 [label="samples = 5
+distribution: [5, 0, 0]
+label = доброкачественная опухоль"]
+	node52 -> node59 [label="раз в неделю"]
+	node60 [label="2. Возраст
 samples = 4
-distribution:
-норма: 1
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node53 -> node57
-	node58 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node57 -> node58
-	node59 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [1, 0, 3]
 label = норма"]
-	node57 -> node59
-	node60 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node57 -> node60
+	node52 -> node60 [label="раз в месяц"]
 	node61 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node57 -> node61
-	node62 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node53 -> node62
-	node63 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node53 -> node63
-	node64 [label="19. Уровень Вашего образования?
+	node60 -> node61 [label="< 34"]
+	node62 [label="samples = 3
+distribution: [0, 0, 3]
+label = норма"]
+	node60 -> node62 [label=">= 34"]
+	node63 [label="19. Уровень Вашего образования?
 samples = 11
-distribution:
-норма: 2
-доброкачественная опухоль: 9
-злокачественная опухоль: 0
+distribution: [9, 0, 2]
 label = доброкачественная опухоль"]
-	node3 -> node64
+	node3 -> node63 [label=4]
+	node64 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node63 -> node64 [label="среднее специальное образование"]
 	node65 [label="samples = 9
-distribution:
-норма: 0
-доброкачественная опухоль: 9
-злокачественная опухоль: 0
+distribution: [9, 0, 0]
 label = доброкачественная опухоль"]
-	node64 -> node65
+	node63 -> node65 [label="законченное высшее образование"]
 	node66 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node64 -> node66
-	node67 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node64 -> node67
-	node68 [label="29. Каков тип Вашего питания?
+	node63 -> node66 [label="средняя школа"]
+	node67 [label="29. Каков тип Вашего питания?
 samples = 6
-distribution:
-норма: 1
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
+distribution: [5, 0, 1]
 label = доброкачественная опухоль"]
-	node3 -> node68
+	node3 -> node67 [label=5]
+	node68 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node67 -> node68 [label="3-4-разовое домашнее питание"]
 	node69 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node68 -> node69
-	node70 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node68 -> node70
+	node67 -> node69 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
+	node70 [label="samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node67 -> node70 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
 	node71 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node68 -> node71
-	node72 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node67 -> node71 [label="регулярного режима питания нет"]
+	node72 [label="samples = 5
+distribution: [5, 0, 0]
 label = доброкачественная опухоль"]
-	node68 -> node72
-	node73 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node3 -> node73
-	node74 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
+	node3 -> node72 [label=6]
+	node73 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
 samples = 11
-distribution:
-норма: 4
-доброкачественная опухоль: 7
-злокачественная опухоль: 0
+distribution: [7, 0, 4]
 label = доброкачественная опухоль"]
-	node3 -> node74
-	node75 [label="2. Возраст
+	node3 -> node73 [label=7]
+	node74 [label="2. Возраст
 samples = 4
-distribution:
-норма: 1
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+distribution: [3, 0, 1]
 label = доброкачественная опухоль"]
-	node74 -> node75
-	node76 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+	node73 -> node74 [label=0]
+	node75 [label="samples = 3
+distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node75 -> node76
+	node74 -> node75 [label="< 31"]
+	node76 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node74 -> node76 [label=">= 31"]
 	node77 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node75 -> node77
+	node73 -> node77 [label=2]
 	node78 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node74 -> node78
+	node73 -> node78 [label=3]
 	node79 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node74 -> node79
-	node80 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node74 -> node80
-	node81 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 4
-злокачественная опухоль: 0
+	node73 -> node79 [label=4]
+	node80 [label="samples = 4
+distribution: [4, 0, 0]
 label = доброкачественная опухоль"]
-	node74 -> node81
-	node82 [label="32. Количество прерванных беременностей
+	node73 -> node80 [label=7]
+	node81 [label="32. Количество прерванных беременностей
 samples = 89
-distribution:
-норма: 29
-доброкачественная опухоль: 45
-злокачественная опухоль: 15
+distribution: [45, 15, 29]
 label = доброкачественная опухоль"]
-	node2 -> node82
-	node83 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
+	node2 -> node81 [label=">= 37"]
+	node82 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
 samples = 54
-distribution:
-норма: 22
-доброкачественная опухоль: 27
-злокачественная опухоль: 5
+distribution: [27, 5, 22]
 label = доброкачественная опухоль"]
-	node82 -> node83
-	node84 [label="3. Семейное положение
+	node81 -> node82 [label=0]
+	node83 [label="3. Семейное положение
 samples = 41
-distribution:
-норма: 15
-доброкачественная опухоль: 21
-злокачественная опухоль: 5
+distribution: [21, 5, 15]
 label = доброкачественная опухоль"]
-	node83 -> node84
-	node85 [label="2. Возраст
-samples = 7
-distribution:
-норма: 4
-доброкачественная опухоль: 2
-злокачественная опухоль: 1
-label = норма"]
-	node84 -> node85
-	node86 [label="5. В какой семье Вы выросли?
+	node82 -> node83 [label=0]
+	node84 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 5
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [4, 0, 1]
+label = доброкачественная опухоль"]
+	node83 -> node84 [label="разведена"]
+	node85 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node85 -> node86
-	node87 [label="samples = 4
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node84 -> node85 [label=3]
+	node86 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node84 -> node86 [label=5]
+	node87 [label="samples = 3
+distribution: [3, 0, 0]
+label = доброкачественная опухоль"]
+	node84 -> node87 [label=7]
+	node88 [label="samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node83 -> node88 [label="имею гражданского супруга"]
+	node89 [label="2. Возраст
+samples = 7
+distribution: [2, 1, 4]
 label = норма"]
-	node86 -> node87
-	node88 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node83 -> node89 [label="одинока"]
+	node90 [label="5. В какой семье Вы выросли?
+samples = 5
+distribution: [0, 1, 4]
+label = норма"]
+	node89 -> node90 [label="< 41"]
+	node91 [label="samples = 4
+distribution: [0, 0, 4]
+label = норма"]
+	node90 -> node91 [label="полная семья, кровные родители"]
+	node92 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node86 -> node88
-	node89 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node90 -> node92 [label="в детском доме"]
+	node93 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node85 -> node89
-	node90 [label="samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node84 -> node90
-	node91 [label="31. Количество родов
+	node89 -> node93 [label=">= 41"]
+	node94 [label="31. Количество родов
 samples = 23
-distribution:
-норма: 10
-доброкачественная опухоль: 9
-злокачественная опухоль: 4
+distribution: [9, 4, 10]
 label = норма"]
-	node84 -> node91
-	node92 [label="14. Как часто Вы встречаетесь с друзьями?
+	node83 -> node94 [label="замужем"]
+	node95 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 5
-distribution:
-норма: 1
-доброкачественная опухоль: 4
-злокачественная опухоль: 0
+distribution: [4, 0, 1]
 label = доброкачественная опухоль"]
-	node91 -> node92
-	node93 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+	node94 -> node95 [label=0]
+	node96 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node92 -> node93
-	node94 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node95 -> node96 [label="реже, чем раз в месяц"]
+	node97 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node92 -> node94
-	node95 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node95 -> node97 [label="раз в неделю"]
+	node98 [label="samples = 3
+distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node92 -> node95
-	node96 [label="29. Каков тип Вашего питания?
+	node95 -> node98 [label="раз в месяц"]
+	node99 [label="29. Каков тип Вашего питания?
 samples = 7
-distribution:
-норма: 3
-доброкачественная опухоль: 2
-злокачественная опухоль: 2
+distribution: [2, 2, 3]
 label = норма"]
-	node91 -> node96
-	node97 [label="2. Возраст
+	node94 -> node99 [label=1]
+	node100 [label="2. Возраст
 samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 2
+distribution: [2, 2, 0]
 label = доброкачественная опухоль"]
-	node96 -> node97
-	node98 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node99 -> node100 [label="3-4-разовое домашнее питание"]
+	node101 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node97 -> node98
-	node99 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node100 -> node101 [label="< 40"]
+	node102 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 2
+distribution: [1, 2, 0]
 label = злокачественная опухоль"]
-	node97 -> node99
-	node100 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node99 -> node100
-	node101 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node99 -> node101
-	node102 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node96 -> node102
+	node100 -> node102 [label=">= 40"]
 	node103 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node96 -> node103
-	node104 [label="2. Возраст
-samples = 8
-distribution:
-норма: 3
-доброкачественная опухоль: 3
-злокачественная опухоль: 2
-label = норма"]
-	node91 -> node104
-	node105 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node104 -> node105
-	node106 [label="12. Сколько человек живут вместе с Вами?
-samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 2
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node104 -> node106
-	node107 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node102 -> node103 [label=3]
+	node104 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node106 -> node107
-	node108 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node102 -> node104 [label=7]
+	node105 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node99 -> node105 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node106 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node99 -> node106 [label="регулярного режима питания нет"]
+	node107 [label="2. Возраст
+samples = 8
+distribution: [3, 2, 3]
 label = доброкачественная опухоль"]
-	node106 -> node108
-	node109 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node94 -> node107 [label=2]
+	node108 [label="samples = 3
+distribution: [0, 0, 3]
+label = норма"]
+	node107 -> node108 [label="< 39"]
+	node109 [label="12. Сколько человек живут вместе с Вами?
+samples = 5
+distribution: [3, 2, 0]
+label = доброкачественная опухоль"]
+	node107 -> node109 [label=">= 39"]
+	node110 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 1
+distribution: [1, 1, 0]
 label = доброкачественная опухоль"]
-	node106 -> node109
-	node110 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node109 -> node110
+	node109 -> node110 [label="2-3 человека"]
 	node111 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node109 -> node111
-	node112 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node91 -> node112
-	node113 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node91 -> node113
-	node114 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
-samples = 5
-distribution:
-норма: 1
-доброкачественная опухоль: 4
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node84 -> node114
-	node115 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node110 -> node111 [label=0]
+	node112 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node110 -> node112 [label=2]
+	node113 [label="samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node109 -> node113 [label="4 и более человек"]
+	node114 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node109 -> node114 [label="1 человек"]
+	node115 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node114 -> node115
+	node94 -> node115 [label=3]
 	node116 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node114 -> node116
-	node117 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node114 -> node117
-	node118 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node83 -> node118
-	node119 [label="samples = 5
-distribution:
-норма: 5
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node83 -> node119
-	node120 [label="19. Уровень Вашего образования?
+	node94 -> node116 [label=4]
+	node117 [label="samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node82 -> node117 [label=1]
+	node118 [label="samples = 5
+distribution: [0, 0, 5]
+label = норма"]
+	node82 -> node118 [label=2]
+	node119 [label="19. Уровень Вашего образования?
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 2]
 label = норма"]
-	node83 -> node120
+	node82 -> node119 [label=3]
+	node120 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node119 -> node120 [label="среднее специальное образование"]
 	node121 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node120 -> node121
+	node119 -> node121 [label="законченное высшее образование"]
 	node122 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node120 -> node122
-	node123 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node82 -> node122 [label=4]
+	node123 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node83 -> node123
-	node124 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node83 -> node124
-	node125 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node82 -> node123 [label=7]
+	node124 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 18
-distribution:
-норма: 1
-доброкачественная опухоль: 9
-злокачественная опухоль: 8
+distribution: [9, 8, 1]
 label = доброкачественная опухоль"]
-	node82 -> node125
-	node126 [label="12. Сколько человек живут вместе с Вами?
+	node81 -> node124 [label=1]
+	node125 [label="12. Сколько человек живут вместе с Вами?
 samples = 9
-distribution:
-норма: 1
-доброкачественная опухоль: 3
-злокачественная опухоль: 5
+distribution: [3, 5, 1]
 label = злокачественная опухоль"]
-	node125 -> node126
+	node124 -> node125 [label=0]
+	node126 [label="19. Уровень Вашего образования?
+samples = 5
+distribution: [1, 4, 0]
+label = злокачественная опухоль"]
+	node125 -> node126 [label="2-3 человека"]
 	node127 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node126 -> node127 [label="среднее специальное образование"]
+	node128 [label="samples = 4
+distribution: [0, 4, 0]
 label = злокачественная опухоль"]
-	node126 -> node127
-	node128 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node126 -> node128 [label="законченное высшее образование"]
+	node129 [label="13. Каковы Ваши взаимоотношения с соседями?
 samples = 3
-distribution:
-норма: 1
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+distribution: [2, 0, 1]
 label = доброкачественная опухоль"]
-	node126 -> node128
-	node129 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node125 -> node129 [label="4 и более человек"]
+	node130 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node128 -> node129
-	node130 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node129 -> node130 [label="очень хорошие, дружеские"]
+	node131 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node128 -> node130
-	node131 [label="19. Уровень Вашего образования?
-samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 4
+	node129 -> node131 [label="нейтральные"]
+	node132 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node126 -> node131
-	node132 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
-label = злокачественная опухоль"]
-	node131 -> node132
+	node125 -> node132 [label="я живу одна"]
 	node133 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node131 -> node133
-	node134 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node124 -> node133 [label=1]
+	node134 [label="samples = 5
+distribution: [5, 0, 0]
 label = доброкачественная опухоль"]
-	node125 -> node134
-	node135 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node125 -> node135
-	node136 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node124 -> node134 [label=2]
+	node135 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node125 -> node136
-	node137 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node124 -> node135 [label=3]
+	node136 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node125 -> node137
-	node138 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
+	node124 -> node136 [label=6]
+	node137 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
 samples = 11
-distribution:
-норма: 5
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
+distribution: [6, 0, 5]
 label = доброкачественная опухоль"]
-	node82 -> node138
-	node139 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node81 -> node137 [label=2]
+	node138 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 7
-distribution:
-норма: 1
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
+distribution: [6, 0, 1]
 label = доброкачественная опухоль"]
-	node138 -> node139
+	node137 -> node138 [label="нет"]
+	node139 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node138 -> node139 [label=4]
 	node140 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node139 -> node140
+	node138 -> node140 [label=5]
 	node141 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node139 -> node141
-	node142 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node139 -> node142
+	node138 -> node141 [label=6]
+	node142 [label="samples = 4
+distribution: [4, 0, 0]
+label = доброкачественная опухоль"]
+	node138 -> node142 [label=7]
 	node143 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 4
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node139 -> node143
-	node144 [label="samples = 4
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 4]
 label = норма"]
-	node138 -> node144
-	node145 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node137 -> node143 [label="да"]
+	node144 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node82 -> node145
-	node146 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node81 -> node144 [label=3]
+	node145 [label="13. Каковы Ваши взаимоотношения с соседями?
 samples = 5
-distribution:
-норма: 1
-доброкачественная опухоль: 2
-злокачественная опухоль: 2
+distribution: [2, 2, 1]
 label = доброкачественная опухоль"]
-	node82 -> node146
-	node147 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node146 -> node147
+	node81 -> node145 [label=4]
+	node146 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node145 -> node146 [label="очень хорошие, дружеские"]
+	node147 [label="2. Возраст
+samples = 3
+distribution: [1, 2, 0]
+label = злокачественная опухоль"]
+	node145 -> node147 [label="нейтральные"]
 	node148 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node146 -> node148
-	node149 [label="2. Возраст
-samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 2
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node147 -> node148 [label="< 42"]
+	node149 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node146 -> node149
+	node147 -> node149 [label=">= 42"]
 	node150 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node149 -> node150
-	node151 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node149 -> node151
-	node152 [label="2. Возраст
+	node145 -> node150 [label="хорошие"]
+	node151 [label="2. Возраст
 samples = 330
-distribution:
-норма: 127
-доброкачественная опухоль: 34
-злокачественная опухоль: 169
+distribution: [34, 169, 127]
 label = злокачественная опухоль"]
-	node1 -> node152
-	node153 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
+	node1 -> node151 [label=">= 44"]
+	node152 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
 samples = 195
-distribution:
-норма: 88
-доброкачественная опухоль: 31
-злокачественная опухоль: 76
+distribution: [31, 76, 88]
 label = норма"]
-	node152 -> node153
-	node154 [label="31. Количество родов
+	node151 -> node152 [label="< 62"]
+	node153 [label="31. Количество родов
 samples = 156
-distribution:
-норма: 62
-доброкачественная опухоль: 24
-злокачественная опухоль: 70
+distribution: [24, 70, 62]
 label = злокачественная опухоль"]
-	node153 -> node154
-	node155 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node152 -> node153 [label=0]
+	node154 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 14
-distribution:
-норма: 9
-доброкачественная опухоль: 5
-злокачественная опухоль: 0
+distribution: [5, 0, 9]
 label = норма"]
-	node154 -> node155
-	node156 [label="3. Семейное положение
+	node153 -> node154 [label=0]
+	node155 [label="3. Семейное положение
 samples = 6
-distribution:
-норма: 4
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+distribution: [2, 0, 4]
 label = норма"]
-	node155 -> node156
+	node154 -> node155 [label=0]
+	node156 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node155 -> node156 [label="одинока"]
 	node157 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node156 -> node157
+	node155 -> node157 [label="имею гражданского супруга"]
 	node158 [label="samples = 4
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 4]
 label = норма"]
-	node156 -> node158
+	node155 -> node158 [label="замужем"]
 	node159 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node156 -> node159
-	node160 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node155 -> node160
+	node154 -> node159 [label=1]
+	node160 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node154 -> node160 [label=2]
 	node161 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node155 -> node161
-	node162 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node155 -> node162
-	node163 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+	node154 -> node161 [label=3]
+	node162 [label="samples = 3
+distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node155 -> node163
-	node164 [label="22. Как долго Вы проживаете в этом месте (в годах)?
+	node154 -> node162 [label=5]
+	node163 [label="22. Как долго Вы проживаете в этом месте (в годах)?
 samples = 68
-distribution:
-норма: 18
-доброкачественная опухоль: 14
-злокачественная опухоль: 36
+distribution: [14, 36, 18]
 label = злокачественная опухоль"]
-	node154 -> node164
-	node165 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node153 -> node163 [label=1]
+	node164 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 36
-distribution:
-норма: 10
-доброкачественная опухоль: 13
-злокачественная опухоль: 13
+distribution: [13, 13, 10]
 label = доброкачественная опухоль"]
-	node164 -> node165
-	node166 [label="29. Каков тип Вашего питания?
+	node163 -> node164 [label="< 25"]
+	node165 [label="29. Каков тип Вашего питания?
 samples = 24
-distribution:
-норма: 3
-доброкачественная опухоль: 11
-злокачественная опухоль: 10
+distribution: [11, 10, 3]
 label = доброкачественная опухоль"]
-	node165 -> node166
-	node167 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node166 -> node167
-	node168 [label="3. Семейное положение
+	node164 -> node165 [label=0]
+	node166 [label="3. Семейное положение
 samples = 13
-distribution:
-норма: 2
-доброкачественная опухоль: 8
-злокачественная опухоль: 3
+distribution: [8, 3, 2]
 label = доброкачественная опухоль"]
-	node166 -> node168
-	node169 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
+	node165 -> node166 [label="3-4-разовое домашнее питание"]
+	node167 [label="samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node166 -> node167 [label="разведена"]
+	node168 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
 samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 1
+distribution: [2, 1, 0]
 label = доброкачественная опухоль"]
-	node168 -> node169
-	node170 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node166 -> node168 [label="имею гражданского супруга"]
+	node169 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node169 -> node170
-	node171 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node168 -> node169 [label="нет"]
+	node170 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node169 -> node171
-	node172 [label="5. В какой семье Вы выросли?
+	node168 -> node170 [label="да"]
+	node171 [label="5. В какой семье Вы выросли?
 samples = 3
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+distribution: [0, 2, 1]
 label = злокачественная опухоль"]
-	node168 -> node172
-	node173 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node166 -> node171 [label="замужем"]
+	node172 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node172 -> node173
+	node171 -> node172 [label="полная семья, кровные родители"]
+	node173 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node171 -> node173 [label="мачеха/отчим"]
 	node174 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node172 -> node174
+	node166 -> node174 [label="вдова"]
 	node175 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node168 -> node175
-	node176 [label="samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 6
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node168 -> node176
-	node177 [label="28. Каковы Ваши предпочтения в пище?
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node165 -> node175 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
+	node176 [label="28. Каковы Ваши предпочтения в пище?
 samples = 5
-distribution:
-норма: 1
-доброкачественная опухоль: 3
-злокачественная опухоль: 1
+distribution: [3, 1, 1]
 label = доброкачественная опухоль"]
-	node166 -> node177
-	node178 [label="2. Возраст
+	node165 -> node176 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node177 [label="2. Возраст
 samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 1]
+label = злокачественная опухоль"]
+	node176 -> node177 [label="я ем мясо или рыбу 2-3 раза в неделю"]
+	node178 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node177 -> node178
+	node177 -> node178 [label="< 53"]
 	node179 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node178 -> node179
-	node180 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node178 -> node180
-	node181 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 3
-злокачественная опухоль: 0
+	node177 -> node179 [label=">= 53"]
+	node180 [label="samples = 3
+distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node177 -> node181
-	node182 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+	node176 -> node180 [label="я ем мясо или рыбу ежедневно"]
+	node181 [label="samples = 5
+distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node166 -> node182
-	node183 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node165 -> node181 [label="регулярного режима питания нет"]
+	node182 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 5
-distribution:
-норма: 1
-доброкачественная опухоль: 1
-злокачественная опухоль: 3
+distribution: [1, 3, 1]
 label = злокачественная опухоль"]
-	node165 -> node183
+	node164 -> node182 [label=1]
+	node183 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node182 -> node183 [label=1]
 	node184 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node183 -> node184
+distribution: [0, 0, 1]
+label = норма"]
+	node182 -> node184 [label=2]
 	node185 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node183 -> node185
-	node186 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node183 -> node186
-	node187 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node182 -> node185 [label=3]
+	node186 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node183 -> node187
-	node188 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node182 -> node186 [label=7]
+	node187 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node165 -> node188
-	node189 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node164 -> node187 [label=2]
+	node188 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node165 -> node189
-	node190 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node164 -> node188 [label=3]
+	node189 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node165 -> node190
-	node191 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node164 -> node189 [label=5]
+	node190 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node165 -> node191
-	node192 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node164 -> node190 [label=7]
+	node191 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 32
-distribution:
-норма: 8
-доброкачественная опухоль: 1
-злокачественная опухоль: 23
+distribution: [1, 23, 8]
 label = злокачественная опухоль"]
-	node164 -> node192
+	node163 -> node191 [label=">= 25"]
+	node192 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node191 -> node192 [label=0]
 	node193 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node192 -> node193
-	node194 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node192 -> node194
-	node195 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node191 -> node193 [label=2]
+	node194 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node192 -> node195
+	node191 -> node194 [label=3]
+	node195 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node191 -> node195 [label=5]
 	node196 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node192 -> node196
-	node197 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node192 -> node197
-	node198 [label="32. Количество прерванных беременностей
+	node191 -> node196 [label=6]
+	node197 [label="32. Количество прерванных беременностей
 samples = 25
-distribution:
-норма: 5
-доброкачественная опухоль: 0
-злокачественная опухоль: 20
+distribution: [0, 20, 5]
 label = злокачественная опухоль"]
-	node192 -> node198
-	node199 [label="samples = 8
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 8
+	node191 -> node197 [label=7]
+	node198 [label="samples = 8
+distribution: [0, 8, 0]
 label = злокачественная опухоль"]
-	node198 -> node199
-	node200 [label="2. Возраст
+	node197 -> node198 [label=0]
+	node199 [label="2. Возраст
 samples = 11
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+distribution: [0, 7, 4]
 label = злокачественная опухоль"]
-	node198 -> node200
-	node201 [label="2. Возраст
+	node197 -> node199 [label=1]
+	node200 [label="2. Возраст
 samples = 8
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+distribution: [0, 7, 1]
 label = злокачественная опухоль"]
-	node200 -> node201
-	node202 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node199 -> node200 [label="< 59"]
+	node201 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node201 -> node202
-	node203 [label="samples = 7
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+	node200 -> node201 [label="< 54"]
+	node202 [label="samples = 7
+distribution: [0, 7, 0]
 label = злокачественная опухоль"]
-	node201 -> node203
-	node204 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node200 -> node202 [label=">= 54"]
+	node203 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node200 -> node204
-	node205 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+	node199 -> node203 [label=">= 59"]
+	node204 [label="samples = 5
+distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node198 -> node205
-	node206 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node197 -> node204 [label=3]
+	node205 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node198 -> node206
-	node207 [label="14. Как часто Вы встречаетесь с друзьями?
+	node197 -> node205 [label=4]
+	node206 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 64
-distribution:
-норма: 28
-доброкачественная опухоль: 5
-злокачественная опухоль: 31
+distribution: [5, 31, 28]
 label = злокачественная опухоль"]
-	node154 -> node207
+	node153 -> node206 [label=2]
+	node207 [label="samples = 4
+distribution: [0, 4, 0]
+label = злокачественная опухоль"]
+	node206 -> node207 [label="несколько раз в неделю"]
 	node208 [label="32. Количество прерванных беременностей
 samples = 19
-distribution:
-норма: 12
-доброкачественная опухоль: 4
-злокачественная опухоль: 3
+distribution: [4, 3, 12]
 label = норма"]
-	node207 -> node208
+	node206 -> node208 [label="раз в месяц"]
 	node209 [label="2. Возраст
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 2]
 label = норма"]
-	node208 -> node209
+	node208 -> node209 [label=0]
 	node210 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node209 -> node210
+	node209 -> node210 [label="< 46"]
 	node211 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node209 -> node211
+	node209 -> node211 [label=">= 46"]
 	node212 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 3]
 label = норма"]
-	node208 -> node212
+	node208 -> node212 [label=1]
 	node213 [label="2. Возраст
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 2]
 label = норма"]
-	node208 -> node213
+	node208 -> node213 [label=2]
 	node214 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node213 -> node214
+	node213 -> node214 [label="< 54"]
 	node215 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node213 -> node215
+	node213 -> node215 [label=">= 54"]
 	node216 [label="2. Возраст
 samples = 4
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+distribution: [0, 3, 1]
 label = злокачественная опухоль"]
-	node208 -> node216
+	node208 -> node216 [label=3]
 	node217 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node216 -> node217
+	node216 -> node217 [label="< 55"]
 	node218 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node216 -> node218
+	node216 -> node218 [label=">= 55"]
 	node219 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 2]
 label = норма"]
-	node208 -> node219
+	node208 -> node219 [label=4]
 	node220 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node219 -> node220
+	node219 -> node220 [label="нет"]
 	node221 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node219 -> node221
+	node219 -> node221 [label="да"]
 	node222 [label="5. В какой семье Вы выросли?
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 2]
 label = норма"]
-	node208 -> node222
-	node223 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node222 -> node223
-	node224 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node208 -> node222 [label=5]
+	node223 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node222 -> node224
-	node225 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
-label = злокачественная опухоль"]
-	node207 -> node225
-	node226 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node222 -> node223 [label="мать/отец одиночка"]
+	node224 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node222 -> node224 [label="полная семья, кровные родители"]
+	node225 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 17
-distribution:
-норма: 7
-доброкачественная опухоль: 1
-злокачественная опухоль: 9
+distribution: [1, 9, 7]
 label = злокачественная опухоль"]
-	node207 -> node226
-	node227 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node206 -> node225 [label="раз в неделю"]
+	node226 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node226 -> node227
-	node228 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
+	node225 -> node226 [label=2]
+	node227 [label="samples = 4
+distribution: [0, 4, 0]
 label = злокачественная опухоль"]
-	node226 -> node228
-	node229 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node225 -> node227 [label=3]
+	node228 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node226 -> node229
-	node230 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node225 -> node228 [label=4]
+	node229 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node226 -> node230
-	node231 [label="28. Каковы Ваши предпочтения в пище?
+	node225 -> node229 [label=5]
+	node230 [label="28. Каковы Ваши предпочтения в пище?
 samples = 8
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 5
+distribution: [1, 5, 2]
 label = злокачественная опухоль"]
-	node226 -> node231
-	node232 [label="32. Количество прерванных беременностей
+	node225 -> node230 [label=7]
+	node231 [label="32. Количество прерванных беременностей
 samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 5
+distribution: [1, 5, 0]
 label = злокачественная опухоль"]
-	node231 -> node232
+	node230 -> node231 [label="я ем мясо или рыбу 2-3 раза в неделю"]
+	node232 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node231 -> node232 [label=0]
 	node233 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node232 -> node233
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node231 -> node233 [label=1]
 	node234 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node232 -> node234
-	node235 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node232 -> node235
-	node236 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node231 -> node234 [label=2]
+	node235 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node232 -> node236
-	node237 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node231 -> node235 [label=3]
+	node236 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node231 -> node237
-	node238 [label="3. Семейное положение
+	node230 -> node236 [label="я практически не ем мясо/рыбу"]
+	node237 [label="3. Семейное положение
 samples = 24
-distribution:
-норма: 9
-доброкачественная опухоль: 0
-злокачественная опухоль: 15
+distribution: [0, 15, 9]
 label = злокачественная опухоль"]
-	node207 -> node238
-	node239 [label="2. Возраст
+	node206 -> node237 [label="реже, чем раз в месяц"]
+	node238 [label="samples = 3
+distribution: [0, 0, 3]
+label = норма"]
+	node237 -> node238 [label="разведена"]
+	node239 [label="samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node237 -> node239 [label="одинока"]
+	node240 [label="2. Возраст
 samples = 15
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 11
+distribution: [0, 11, 4]
 label = злокачественная опухоль"]
-	node238 -> node239
-	node240 [label="samples = 9
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 9
+	node237 -> node240 [label="замужем"]
+	node241 [label="samples = 9
+distribution: [0, 9, 0]
 label = злокачественная опухоль"]
-	node239 -> node240
-	node241 [label="12. Сколько человек живут вместе с Вами?
+	node240 -> node241 [label="< 56"]
+	node242 [label="22. Как долго Вы проживаете в этом месте (в годах)?
 samples = 6
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+distribution: [0, 2, 4]
 label = норма"]
-	node239 -> node241
-	node242 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node240 -> node242 [label=">= 56"]
+	node243 [label="samples = 4
+distribution: [0, 0, 4]
 label = норма"]
-	node241 -> node242
-	node243 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node242 -> node243 [label="< 12"]
+	node244 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node241 -> node243
-	node244 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node241 -> node244
+	node242 -> node244 [label=">= 12"]
 	node245 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node238 -> node245
+distribution: [0, 0, 2]
+label = норма"]
+	node237 -> node245 [label="вдова"]
 	node246 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node238 -> node246
-	node247 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node238 -> node247
-	node248 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node238 -> node248
-	node249 [label="32. Количество прерванных беременностей
+	node237 -> node246 [label="имею гражданского супруга"]
+	node247 [label="32. Количество прерванных беременностей
 samples = 8
-distribution:
-норма: 5
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+distribution: [0, 3, 5]
 label = норма"]
-	node154 -> node249
+	node153 -> node247 [label=3]
+	node248 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node247 -> node248 [label=0]
+	node249 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node247 -> node249 [label=2]
 	node250 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node249 -> node250
-	node251 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node249 -> node251
-	node252 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node249 -> node252
-	node253 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node247 -> node250 [label=3]
+	node251 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node249 -> node253
-	node254 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node247 -> node251 [label=5]
+	node252 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node154 -> node254
+	node153 -> node252 [label=4]
+	node253 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node153 -> node253 [label=6]
+	node254 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+samples = 9
+distribution: [3, 2, 4]
+label = норма"]
+	node152 -> node254 [label=1]
 	node255 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node154 -> node255
-	node256 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
-samples = 9
-distribution:
-норма: 4
-доброкачественная опухоль: 3
-злокачественная опухоль: 2
-label = норма"]
-	node153 -> node256
+	node254 -> node255 [label=2]
+	node256 [label="samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node254 -> node256 [label=3]
 	node257 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node256 -> node257
-	node258 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node256 -> node258
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node254 -> node257 [label=4]
+	node258 [label="13. Каковы Ваши взаимоотношения с соседями?
+samples = 2
+distribution: [1, 0, 1]
+label = доброкачественная опухоль"]
+	node254 -> node258 [label=5]
 	node259 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
+label = норма"]
+	node258 -> node259 [label="очень хорошие, дружеские"]
+	node260 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node256 -> node259
-	node260 [label="13. Каковы Ваши взаимоотношения с соседями?
-samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node258 -> node260 [label="я не знаю своих соседей"]
+	node261 [label="2. Возраст
+samples = 3
+distribution: [1, 0, 2]
 label = норма"]
-	node256 -> node260
-	node261 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node260 -> node261
+	node254 -> node261 [label=7]
 	node262 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node260 -> node262
-	node263 [label="2. Возраст
-samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node261 -> node262 [label="< 45"]
+	node263 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node256 -> node263
-	node264 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node263 -> node264
-	node265 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node263 -> node265
-	node266 [label="14. Как часто Вы встречаетесь с друзьями?
+	node261 -> node263 [label=">= 45"]
+	node264 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 7
-distribution:
-норма: 3
-доброкачественная опухоль: 3
-злокачественная опухоль: 1
+distribution: [3, 1, 3]
+label = доброкачественная опухоль"]
+	node152 -> node264 [label=2]
+	node265 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node264 -> node265 [label="раз в месяц"]
+	node266 [label="32. Количество прерванных беременностей
+samples = 4
+distribution: [0, 1, 3]
 label = норма"]
-	node153 -> node266
+	node264 -> node266 [label="раз в неделю"]
 	node267 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node266 -> node267
-	node268 [label="32. Количество прерванных беременностей
-samples = 4
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 0, 1]
 label = норма"]
-	node266 -> node268
+	node266 -> node267 [label=0]
+	node268 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node266 -> node268 [label=1]
 	node269 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node268 -> node269
+	node266 -> node269 [label=2]
 	node270 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node268 -> node270
-	node271 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node268 -> node271
-	node272 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node268 -> node272
-	node273 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 2
-злокачественная опухоль: 0
+	node266 -> node270 [label=3]
+	node271 [label="samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node266 -> node273
-	node274 [label="samples = 6
-distribution:
-норма: 6
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node264 -> node271 [label="реже, чем раз в месяц"]
+	node272 [label="samples = 6
+distribution: [0, 0, 6]
 label = норма"]
-	node153 -> node274
-	node275 [label="2. Возраст
+	node152 -> node272 [label=3]
+	node273 [label="2. Возраст
 samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = норма"]
-	node153 -> node275
-	node276 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node275 -> node276
-	node277 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 1]
 label = злокачественная опухоль"]
-	node275 -> node277
-	node278 [label="14. Как часто Вы встречаетесь с друзьями?
+	node152 -> node273 [label=4]
+	node274 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node273 -> node274 [label="< 46"]
+	node275 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node273 -> node275 [label=">= 46"]
+	node276 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 9
-distribution:
-норма: 7
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+distribution: [0, 2, 7]
 label = норма"]
-	node153 -> node278
-	node279 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node152 -> node276 [label=5]
+	node277 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node278 -> node279
-	node280 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node276 -> node277 [label="несколько раз в неделю"]
+	node278 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node278 -> node280
-	node281 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node276 -> node278 [label="раз в месяц"]
+	node279 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node278 -> node281
-	node282 [label="samples = 5
-distribution:
-норма: 5
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node276 -> node279 [label="раз в неделю"]
+	node280 [label="samples = 5
+distribution: [0, 0, 5]
 label = норма"]
-	node278 -> node282
-	node283 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node276 -> node280 [label="реже, чем раз в месяц"]
+	node281 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node153 -> node283
-	node284 [label="3. Семейное положение
+	node152 -> node281 [label=6]
+	node282 [label="3. Семейное положение
 samples = 5
-distribution:
-норма: 4
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 4]
 label = норма"]
-	node153 -> node284
+	node152 -> node282 [label=7]
+	node283 [label="samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node282 -> node283 [label="разведена"]
+	node284 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node282 -> node284 [label="замужем"]
 	node285 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node284 -> node285
-	node286 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node284 -> node286
-	node287 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
-label = доброкачественная опухоль"]
-	node284 -> node287
-	node288 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node282 -> node285 [label="вдова"]
+	node286 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 samples = 135
-distribution:
-норма: 39
-доброкачественная опухоль: 3
-злокачественная опухоль: 93
+distribution: [3, 93, 39]
 label = злокачественная опухоль"]
-	node152 -> node288
-	node289 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+	node151 -> node286 [label=">= 62"]
+	node287 [label="samples = 5
+distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node288 -> node289
-	node290 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node286 -> node287 [label=0]
+	node288 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node288 -> node290
-	node291 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node286 -> node288 [label=1]
+	node289 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node288 -> node291
-	node292 [label="32. Количество прерванных беременностей
+	node286 -> node289 [label=2]
+	node290 [label="32. Количество прерванных беременностей
 samples = 6
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+distribution: [0, 5, 1]
 label = злокачественная опухоль"]
-	node288 -> node292
+	node286 -> node290 [label=3]
+	node291 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node290 -> node291 [label=0]
+	node292 [label="samples = 3
+distribution: [0, 3, 0]
+label = злокачественная опухоль"]
+	node290 -> node292 [label=1]
 	node293 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node292 -> node293
-	node294 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
-label = злокачественная опухоль"]
-	node292 -> node294
-	node295 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node292 -> node295
-	node296 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node290 -> node293 [label=2]
+	node294 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node292 -> node296
-	node297 [label="samples = 7
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+	node290 -> node294 [label=3]
+	node295 [label="samples = 7
+distribution: [0, 7, 0]
 label = злокачественная опухоль"]
-	node288 -> node297
-	node298 [label="32. Количество прерванных беременностей
+	node286 -> node295 [label=4]
+	node296 [label="32. Количество прерванных беременностей
 samples = 21
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 17
+distribution: [0, 17, 4]
 label = злокачественная опухоль"]
-	node288 -> node298
-	node299 [label="samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 6
+	node286 -> node296 [label=5]
+	node297 [label="samples = 6
+distribution: [0, 6, 0]
 label = злокачественная опухоль"]
-	node298 -> node299
-	node300 [label="19. Уровень Вашего образования?
+	node296 -> node297 [label=0]
+	node298 [label="19. Уровень Вашего образования?
 samples = 8
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+distribution: [0, 5, 3]
 label = злокачественная опухоль"]
-	node298 -> node300
-	node301 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
-label = злокачественная опухоль"]
-	node300 -> node301
-	node302 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node300 -> node302
-	node303 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node296 -> node298 [label=1]
+	node299 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node300 -> node303
-	node304 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+	node298 -> node299 [label="среднее специальное образование"]
+	node300 [label="samples = 4
+distribution: [0, 4, 0]
 label = злокачественная опухоль"]
-	node298 -> node304
-	node305 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node298 -> node300 [label="законченное высшее образование"]
+	node301 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node298 -> node305
+	node298 -> node301 [label="средняя школа"]
+	node302 [label="samples = 5
+distribution: [0, 5, 0]
+label = злокачественная опухоль"]
+	node296 -> node302 [label=2]
+	node303 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node296 -> node303 [label=4]
+	node304 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node296 -> node304 [label=5]
+	node305 [label="2. Возраст
+samples = 4
+distribution: [1, 3, 0]
+label = злокачественная опухоль"]
+	node286 -> node305 [label=6]
 	node306 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node298 -> node306
-	node307 [label="2. Возраст
-samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 3
-label = злокачественная опухоль"]
-	node288 -> node307
-	node308 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node307 -> node308
-	node309 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node305 -> node306 [label="< 65"]
+	node307 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node307 -> node309
-	node310 [label="32. Количество прерванных беременностей
+	node305 -> node307 [label=">= 65"]
+	node308 [label="32. Количество прерванных беременностей
 samples = 86
-distribution:
-норма: 34
-доброкачественная опухоль: 2
-злокачественная опухоль: 50
+distribution: [2, 50, 34]
 label = злокачественная опухоль"]
-	node288 -> node310
-	node311 [label="22. Как долго Вы проживаете в этом месте (в годах)?
+	node286 -> node308 [label=7]
+	node309 [label="22. Как долго Вы проживаете в этом месте (в годах)?
 samples = 19
-distribution:
-норма: 6
-доброкачественная опухоль: 1
-злокачественная опухоль: 12
+distribution: [1, 12, 6]
 label = злокачественная опухоль"]
-	node310 -> node311
-	node312 [label="2. Возраст
+	node308 -> node309 [label=0]
+	node310 [label="2. Возраст
 samples = 4
-distribution:
-норма: 3
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 3]
 label = норма"]
-	node311 -> node312
-	node313 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node309 -> node310 [label="< 16"]
+	node311 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node312 -> node313
-	node314 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+	node310 -> node311 [label="< 69"]
+	node312 [label="samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node312 -> node314
-	node315 [label="12. Сколько человек живут вместе с Вами?
+	node310 -> node312 [label=">= 69"]
+	node313 [label="12. Сколько человек живут вместе с Вами?
 samples = 15
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 12
+distribution: [0, 12, 3]
 label = злокачественная опухоль"]
-	node311 -> node315
-	node316 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node315 -> node316
-	node317 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
+	node309 -> node313 [label=">= 16"]
+	node314 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
 samples = 4
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+distribution: [0, 3, 1]
 label = злокачественная опухоль"]
-	node315 -> node317
-	node318 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
+	node313 -> node314 [label="2-3 человека"]
+	node315 [label="samples = 3
+distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node317 -> node318
-	node319 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node314 -> node315 [label="нет"]
+	node316 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node317 -> node319
+	node314 -> node316 [label="да"]
+	node317 [label="samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node313 -> node317 [label="1 человек"]
+	node318 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node313 -> node318 [label="4 и более человек"]
+	node319 [label="31. Количество родов
+samples = 8
+distribution: [0, 7, 1]
+label = злокачественная опухоль"]
+	node313 -> node319 [label="я живу одна"]
 	node320 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node319 -> node320 [label=0]
+	node321 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node315 -> node320
-	node321 [label="31. Количество родов
-samples = 8
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+	node319 -> node321 [label=1]
+	node322 [label="samples = 6
+distribution: [0, 6, 0]
 label = злокачественная опухоль"]
-	node315 -> node321
-	node322 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node321 -> node322
-	node323 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node321 -> node323
-	node324 [label="samples = 6
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 6
-label = злокачественная опухоль"]
-	node321 -> node324
-	node325 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node319 -> node322 [label=2]
+	node323 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 samples = 17
-distribution:
-норма: 10
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+distribution: [0, 7, 10]
 label = норма"]
-	node310 -> node325
-	node326 [label="12. Сколько человек живут вместе с Вами?
+	node308 -> node323 [label=1]
+	node324 [label="12. Сколько человек живут вместе с Вами?
 samples = 8
-distribution:
-норма: 7
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 7]
 label = норма"]
-	node325 -> node326
-	node327 [label="samples = 4
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node323 -> node324 [label=0]
+	node325 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node326 -> node327
-	node328 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node324 -> node325 [label="2-3 человека"]
+	node326 [label="samples = 4
+distribution: [0, 0, 4]
 label = норма"]
-	node326 -> node328
+	node324 -> node326 [label="1 человек"]
+	node327 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node324 -> node327 [label="4 и более человек"]
+	node328 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node324 -> node328 [label="я живу одна"]
 	node329 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node326 -> node329
+	node323 -> node329 [label=4]
 	node330 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node326 -> node330
-	node331 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node325 -> node331
-	node332 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node325 -> node332
-	node333 [label="14. Как часто Вы встречаетесь с друзьями?
+	node323 -> node330 [label=5]
+	node331 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 6
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+distribution: [0, 5, 1]
 label = злокачественная опухоль"]
-	node325 -> node333
+	node323 -> node331 [label=7]
+	node332 [label="samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node331 -> node332 [label="несколько раз в неделю"]
+	node333 [label="samples = 3
+distribution: [0, 3, 0]
+label = злокачественная опухоль"]
+	node331 -> node333 [label="реже, чем раз в месяц"]
 	node334 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 1]
 label = норма"]
-	node333 -> node334
-	node335 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
-label = злокачественная опухоль"]
-	node333 -> node335
-	node336 [label="samples = 3
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 3
-label = злокачественная опухоль"]
-	node333 -> node336
-	node337 [label="22. Как долго Вы проживаете в этом месте (в годах)?
+	node331 -> node334 [label="раз в месяц"]
+	node335 [label="22. Как долго Вы проживаете в этом месте (в годах)?
 samples = 17
-distribution:
-норма: 5
-доброкачественная опухоль: 1
-злокачественная опухоль: 11
+distribution: [1, 11, 5]
 label = злокачественная опухоль"]
-	node310 -> node337
-	node338 [label="samples = 4
-distribution:
-норма: 4
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node308 -> node335 [label=2]
+	node336 [label="samples = 4
+distribution: [0, 0, 4]
 label = норма"]
-	node337 -> node338
-	node339 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
+	node335 -> node336 [label="< 31"]
+	node337 [label="16. В течение последних 7 дней, как часто Вы практиковали тяжелые физические нагрузки?
 samples = 13
-distribution:
-норма: 1
-доброкачественная опухоль: 1
-злокачественная опухоль: 11
+distribution: [1, 11, 1]
 label = злокачественная опухоль"]
-	node337 -> node339
-	node340 [label="2. Возраст
+	node335 -> node337 [label=">= 31"]
+	node338 [label="2. Возраст
 samples = 11
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 10
+distribution: [0, 10, 1]
 label = злокачественная опухоль"]
-	node339 -> node340
-	node341 [label="3. Семейное положение
+	node337 -> node338 [label=0]
+	node339 [label="3. Семейное положение
 samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 1]
+label = злокачественная опухоль"]
+	node338 -> node339 [label="< 66"]
+	node340 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node339 -> node340 [label="разведена"]
+	node341 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node340 -> node341
-	node342 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node341 -> node342
+	node339 -> node341 [label="замужем"]
+	node342 [label="samples = 9
+distribution: [0, 9, 0]
+label = злокачественная опухоль"]
+	node338 -> node342 [label=">= 66"]
 	node343 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node341 -> node343
-	node344 [label="samples = 9
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 9
-label = злокачественная опухоль"]
-	node340 -> node344
-	node345 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 1
-злокачественная опухоль: 0
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node339 -> node345
-	node346 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node337 -> node343 [label=1]
+	node344 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node339 -> node346
-	node347 [label="28. Каковы Ваши предпочтения в пище?
+	node337 -> node344 [label=7]
+	node345 [label="28. Каковы Ваши предпочтения в пище?
 samples = 12
-distribution:
-норма: 6
-доброкачественная опухоль: 0
-злокачественная опухоль: 6
-label = норма"]
-	node310 -> node347
-	node348 [label="2. Возраст
+distribution: [0, 6, 6]
+label = злокачественная опухоль"]
+	node308 -> node345 [label=3]
+	node346 [label="2. Возраст
 samples = 8
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 6
+distribution: [0, 6, 2]
 label = злокачественная опухоль"]
-	node347 -> node348
-	node349 [label="samples = 5
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 5
+	node345 -> node346 [label="я ем мясо или рыбу 2-3 раза в неделю"]
+	node347 [label="samples = 5
+distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node348 -> node349
-	node350 [label="12. Сколько человек живут вместе с Вами?
+	node346 -> node347 [label="< 67"]
+	node348 [label="12. Сколько человек живут вместе с Вами?
 samples = 3
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 2]
 label = норма"]
-	node348 -> node350
+	node346 -> node348 [label=">= 67"]
+	node349 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node348 -> node349 [label="1 человек"]
+	node350 [label="samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node348 -> node350 [label="я живу одна"]
 	node351 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+distribution: [0, 0, 2]
 label = норма"]
-	node350 -> node351
-	node352 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = злокачественная опухоль"]
-	node350 -> node352
-	node353 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node345 -> node351 [label="я практически не ем мясо/рыбу"]
+	node352 [label="samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node347 -> node353
-	node354 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node347 -> node354
-	node355 [label="14. Как часто Вы встречаетесь с друзьями?
+	node345 -> node352 [label="я ем мясо или рыбу ежедневно"]
+	node353 [label="14. Как часто Вы встречаетесь с друзьями?
 samples = 10
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 7
+distribution: [0, 7, 3]
 label = злокачественная опухоль"]
-	node310 -> node355
-	node356 [label="samples = 2
-distribution:
-норма: 2
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node355 -> node356
-	node357 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
+	node308 -> node353 [label=4]
+	node354 [label="samples = 4
+distribution: [0, 4, 0]
 label = злокачественная опухоль"]
-	node355 -> node357
-	node358 [label="2. Возраст
+	node353 -> node354 [label="несколько раз в неделю"]
+	node355 [label="samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node353 -> node355 [label="реже, чем раз в месяц"]
+	node356 [label="2. Возраст
 samples = 2
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
-label = норма"]
-	node355 -> node358
-	node359 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
-label = норма"]
-	node358 -> node359
-	node360 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 1]
 label = злокачественная опухоль"]
-	node358 -> node360
-	node361 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node353 -> node356 [label="раз в неделю"]
+	node357 [label="samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node356 -> node357 [label="< 64"]
+	node358 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node355 -> node361
-	node362 [label="2. Возраст
+	node356 -> node358 [label=">= 64"]
+	node359 [label="samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node353 -> node359 [label="раз в месяц"]
+	node360 [label="2. Возраст
 samples = 4
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+distribution: [0, 1, 3]
 label = норма"]
-	node310 -> node362
-	node363 [label="samples = 1
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 1
+	node308 -> node360 [label=5]
+	node361 [label="samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node362 -> node363
-	node364 [label="samples = 3
-distribution:
-норма: 3
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node360 -> node361 [label="< 63"]
+	node362 [label="samples = 3
+distribution: [0, 0, 3]
 label = норма"]
-	node362 -> node364
-	node365 [label="samples = 2
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 2
+	node360 -> node362 [label=">= 63"]
+	node363 [label="samples = 2
+distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node310 -> node365
-	node366 [label="samples = 1
-distribution:
-норма: 1
-доброкачественная опухоль: 0
-злокачественная опухоль: 0
+	node308 -> node363 [label=6]
+	node364 [label="samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node310 -> node366
-	node367 [label="samples = 4
-distribution:
-норма: 0
-доброкачественная опухоль: 0
-злокачественная опухоль: 4
+	node308 -> node364 [label=7]
+	node365 [label="samples = 4
+distribution: [0, 4, 0]
 label = злокачественная опухоль"]
-	node310 -> node367
+	node308 -> node365 [label=12]
 }

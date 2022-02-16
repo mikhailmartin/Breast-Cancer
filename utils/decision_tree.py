@@ -36,7 +36,7 @@ class DecisionTree:
               признаков, которые могут быть после}.
         """
         self.feature_names = list(X.columns)
-        self.class_names = set(Y.tolist())
+        self.class_names = sorted(list(set(Y.tolist())))
         self.categorical_feature_names = categorical_feature_names
         self.numerical_feature_names = numerical_feature_names
 
@@ -50,15 +50,16 @@ class DecisionTree:
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
 
-        self.tree = self._generate_node(X, Y, available_feature_names, special_cases)
+        self.tree = self._generate_node(X, Y, None, available_feature_names, special_cases)
 
     @_counter
-    def _generate_node(self, X, Y, available_feature_names, special_cases=None):
+    def _generate_node(self, X, Y, feature_value, available_feature_names, special_cases=None):
         """Рекурсивная функция создания узлов дерева.
 
         Args:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
+            feature_value: значение признака, по которому этот узел был сформирован.
             available_feature_names: список доступных признаков для разбиения входного множества.
             special_cases: словарь {признак, который должен быть первым: признак, который может быть
               после}.
@@ -71,10 +72,7 @@ class DecisionTree:
         best_feature = None
         for feature_name in available_feature_names:
             current_gain = self._information_gain(X, Y, feature_name)
-            if best_gain is None:
-                best_gain = current_gain
-                best_feature = feature_name
-            elif isinstance(best_gain, float) and isinstance(current_gain, float):
+            if isinstance(best_gain, float) and isinstance(current_gain, float):
                 if best_gain < current_gain:
                     best_gain = current_gain
                     best_feature = feature_name
@@ -92,11 +90,12 @@ class DecisionTree:
                     best_feature = feature_name
 
         samples = X.shape[0]
-        distribution = dict()
+        distribution = []
+        label = None
         max_samples_per_class = -1
         for class_name in self.class_names:
             samples_per_class = (Y == class_name).sum()
-            distribution[class_name] = samples_per_class
+            distribution.append(samples_per_class)
             if max_samples_per_class < samples_per_class:
                 max_samples_per_class = samples_per_class
                 label = class_name
@@ -112,16 +111,17 @@ class DecisionTree:
                     available_feature_names.append(special_cases[best_feature])
                     special_cases.pop(best_feature)
             # рекурсивное создание потомков
-            if X.shape[0] >= self._min_samples_split:
-                xs, ys = self._split(X, Y, best_feature, best_gain)
+            num_samples = X.shape[0]
+            if num_samples >= self._min_samples_split:
+                xs, ys, feature_values = self._split(X, Y, best_feature, best_gain)
 
-                for x, y in zip(xs, ys):
+                for x, y, fv in zip(xs, ys, feature_values):
                     if special_cases:
-                        childs.append(self._generate_node(x, y, available_feature_names, special_cases))
+                        childs.append(self._generate_node(x, y, fv, available_feature_names, special_cases))
                     else:
-                        childs.append(self._generate_node(x, y, available_feature_names))
+                        childs.append(self._generate_node(x, y, fv, available_feature_names))
 
-        node = Node(best_feature, samples, distribution, label, childs)
+        node = Node(best_feature, feature_value, samples, distribution, label, childs)
 
         return node
 
@@ -136,22 +136,40 @@ class DecisionTree:
         Returns:
             xs: список с подмножествами точек данных.
             ys: список с подмножествами соответствующих меток.
+            feature_values: список со значениями признака, по которому расщепляется множество.
         """
+        if feature_name in self.categorical_feature_names:
+            xs, ys, feature_values = self._categorical_split(X, Y, feature_name)
+        elif feature_name in self.numerical_feature_names:
+            xs, ys, feature_values = self._numerical_split(X, Y, feature_name, threshold[1])
+
+        return xs, ys, feature_values
+
+    @staticmethod
+    def _categorical_split(X, Y, feature_name):
+        """Расщепляет множество согласно категориальному признаку."""
         xs = []
         ys = []
-        if feature_name in self.categorical_feature_names:
-            for feature_value in set(X[feature_name].tolist()):
-                xs.append(X[X[feature_name] == feature_value])
-                ys.append(Y[X[feature_name] == feature_value])
-        elif feature_name in self.numerical_feature_names:
-            x_less = X[X[feature_name] < threshold[1]]
-            x_more = X[X[feature_name] >= threshold[1]]
-            xs = [x_less, x_more]
-            y_less = Y[X[feature_name] < threshold[1]]
-            y_more = Y[X[feature_name] >= threshold[1]]
-            ys = [y_less, y_more]
+        feature_values = []
+        for feature_value in set(X[feature_name].tolist()):
+            xs.append(X[X[feature_name] == feature_value])
+            ys.append(Y[X[feature_name] == feature_value])
+            feature_values.append(feature_value)
 
-        return xs, ys
+        return xs, ys, feature_values
+
+    @staticmethod
+    def _numerical_split(X, Y, feature_name, threshold):
+        """Расщепляет множество согласно численному признаку."""
+        x_less = X[X[feature_name] < threshold]
+        x_more = X[X[feature_name] >= threshold]
+        xs = [x_less, x_more]
+        y_less = Y[X[feature_name] < threshold]
+        y_more = Y[X[feature_name] >= threshold]
+        ys = [y_less, y_more]
+        feature_values = [f'< {threshold}', f'>= {threshold}']
+
+        return xs, ys, feature_values
 
     def _information_gain(self, X, Y, feature_name):
         """Считает прирост информации для разделения по признаку.
@@ -169,43 +187,50 @@ class DecisionTree:
             print('Входное множество содержит NaN')
             print(f'Признак - {feature_name}')
 
-        # информационный прирост для категориального признака
+        gain = None
         if feature_name in self.categorical_feature_names:
-            a = self._categorical_feature_entropy(X, feature_name)
+            gain = self._categorical_information_gain(X, Y, feature_name)
+        elif feature_name in self.numerical_feature_names:
+            gain = self._numerical_information_gain(X, Y, feature_name)
+
+        return gain
+
+    def _categorical_information_gain(self, X, Y, feature_name):
+        """Считает прирост информации для разделения по категориальному признаку."""
+        a = self._categorical_feature_entropy(X, feature_name)
+
+        b = 0
+        for class_name in self.class_names:
+            A_i = (Y == class_name).sum()
+            A = X.shape[0]
+            x = X[Y == class_name]
+            b += (A_i/A) * self._categorical_feature_entropy(x, feature_name)
+
+        gain = a - b
+
+        return gain
+
+    def _numerical_information_gain(self, X, Y, feature_name):
+        """Считает прирост информации для разделения по численному признаку."""
+        best_gain = 0
+        best_threshold = None
+        for threshold in range(int(X[feature_name].max())):
+            a = self._numerical_feature_entropy(X, feature_name, threshold)
 
             b = 0
             for class_name in self.class_names:
                 A_i = (Y == class_name).sum()
                 A = X.shape[0]
                 x = X[Y == class_name]
-                b += (A_i/A) * self._categorical_feature_entropy(x, feature_name)
+                b += (A_i / A) * self._numerical_feature_entropy(x, feature_name, threshold)
 
             gain = a - b
 
-            return gain
+            if best_gain is None or best_gain < gain:
+                best_gain = gain
+                best_threshold = threshold
 
-        # информационный прирост для численного признака
-        elif feature_name in self.numerical_feature_names:
-            # лучший информационный прирост и порог
-            best_gain = 0
-            best_threshold = None
-            for threshold in range(int(X[feature_name].max())):
-                a = self._numerical_feature_entropy(X, feature_name, threshold)
-
-                b = 0
-                for class_name in self.class_names:
-                    A_i = (Y == class_name).sum()
-                    A = X.shape[0]
-                    x = X[Y == class_name]
-                    b += (A_i/A) * self._numerical_feature_entropy(x, feature_name, threshold)
-
-                gain = a - b
-
-                if best_gain is None or best_gain < gain:
-                    best_gain = gain
-                    best_threshold = threshold
-
-            return best_gain, best_threshold
+        return best_gain, best_threshold
 
     @staticmethod
     def _categorical_feature_entropy(X, categorical_feature_name):
@@ -233,7 +258,16 @@ class DecisionTree:
 
     @staticmethod
     def _numerical_feature_entropy(X, numerical_feature_name, threshold):
-        """Считает энтропию для численного признака."""
+        """Считает энтропию для численного признака.
+
+        Формула в LaTeX:
+        H(A, S) = -\frac{m}{n} \log_2 \frac{m}{n} - \frac{n - m}{n} \log_2 \frac{n - m}{n}
+        где
+        A - множество точек данных;
+        n - количество точек данных в A;
+        S - признак;
+        m - количество точек данных, которые больше некоторого порога.
+        """
         n = X.shape[0]  # количество точек данных в обучающем наборе
 
         less = (X[numerical_feature_name] < threshold).sum()
@@ -250,45 +284,68 @@ class DecisionTree:
 
         return entropy
 
-    def render(self, **kwargs):
+    def render(
+            self,
+            *,
+            rounded=False,
+            show_num_samples=False,
+            show_distribution=False,
+            show_label=False,
+            **kwargs):
         """Визуализирует дерево решений.
 
         Если указаны именованные параметры, сохраняет визуализацию в виде файла(ов).
+        Args:
+            rounded: скруглять ли углы у узлов (они форме прямоугольника).
+            show_num_samples: показывать ли количество точек в узле.
+            show_distribution: показывать ли распределение точек по классам.
+            show_label: показывать ли класс, к которому относится узел.
+        Returns:
+            graph: объект класса Digraph, содержащий описание графовой структуры дерева для
+              визуализации.
         """
         if not hasattr(self, 'graph'):
-            self.create_graph()
+            self._create_graph(rounded, show_num_samples, show_distribution, show_label)
         if kwargs:
             self.graph.render(**kwargs)
         return self.graph
 
-    def create_graph(self):
-        self.graph = Digraph(name='дерево решений', node_attr={'shape': 'box', 'style': 'rounded'})
-        self.add_node(self.tree, None)
+    def _create_graph(self, rounded, show_num_samples, show_distribution, show_label):
+        """Создаёт объект класса Digraph, содержащий описание графовой структуры дерева для
+        визуализации."""
+        node_attr = {'shape': 'box'}
+        if rounded:
+            node_attr['style'] = 'rounded'
+        self.graph = Digraph(name='дерево решений', node_attr=node_attr)
+        self._add_node(self.tree, None, show_num_samples, show_distribution, show_label)
 
     @_counter
-    def add_node(self, node, parent_name):
-        node_name = f'node{self.add_node.count}'
-        node_label = ''
+    def _add_node(self, node, parent_name, show_num_samples, show_distribution, show_label):
+        """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
+        node_name = f'node{self._add_node.count}'
+        node_content = ''
         if node.split_feature:
-            node_label += f'{node.split_feature}\n'
-        node_label += f'samples = {node.samples}\n'
-        node_label += 'distribution:\n'
-        for cls, samples_per_cls in node.distribution.items():
-            node_label += f'{cls}: {samples_per_cls}\n'
-        node_label += f'label = {node.label}'
+            node_content += f'{node.split_feature}\n'
+        if show_num_samples:
+            node_content += f'samples = {node.samples}\n'
+        if show_distribution:
+            node_content += f'distribution: {node.distribution}\n'
+        if show_label:
+            node_content += f'label = {node.label}'
 
-        self.graph.node(name=node_name, label=node_label)
+        self.graph.node(name=node_name, label=node_content)
         if parent_name:
-            self.graph.edge(parent_name, node_name)
+            self.graph.edge(parent_name, node_name, label=f'{node.feature_value}')
 
         for child in node.childs:
-            self.add_node(child, node_name)
+            self._add_node(child, node_name, show_num_samples, show_distribution, show_label)
 
 
 class Node:
     """Узел дерева решений."""
-    def __init__(self, split_feature, samples, distribution, label, childs):
+    def __init__(self, split_feature, feature_value, samples, distribution, label, childs):
         self.split_feature = split_feature
+        self.feature_value = feature_value
         self.samples = samples
         self.distribution = distribution
         self.label = label
