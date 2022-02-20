@@ -109,7 +109,10 @@ class DecisionTree:
             # добавление открывшихся признаков
             if special_cases:
                 if best_feature in special_cases.keys():
-                    available_feature_names.append(special_cases[best_feature])
+                    if isinstance(special_cases[best_feature], str):
+                        available_feature_names.append(special_cases[best_feature])
+                    elif isinstance(special_cases[best_feature], list):
+                        available_feature_names.extend(special_cases[best_feature])
                     special_cases.pop(best_feature)
             # рекурсивное создание потомков
             num_samples = X.shape[0]
