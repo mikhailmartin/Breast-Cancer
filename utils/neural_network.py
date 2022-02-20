@@ -1,7 +1,43 @@
 """Здесь содержаться утилиты для работы с нейросетями."""
 import tensorflow as tf
 
-from . import definitions as defs
+
+# здесь названия входов такие тупые, потому что они на русском неправильно читаются
+INPUT_NAMES = {
+    'input_2': 'numerical',
+    'input_3': 'categorical',
+    'input_4': 'numerical',
+    'input_5': 'categorical',
+    'input_6': 'categorical',
+    'input_7': 'categorical',
+    'input_8': 'categorical',
+    'input_9': 'categorical',
+    'input_11': 'categorical',
+    'input_12': 'categorical',
+    'input_13': 'categorical',
+    'input_14': 'categorical',
+    'input_15': 'categorical',
+    'input_16': 'categorical',
+    'input_17': 'categorical',
+    'input_18': 'categorical',
+    'input_19': 'categorical',
+    'input_20': 'categorical',
+    'input_22': 'numerical',
+    'input_23': 'categorical',
+    'input_24': 'numerical',
+    'input_25': 'categorical',
+    'input_26': 'categorical',
+    'input_27': 'categorical',
+    'input_28': 'categorical',
+    'input_29': 'categorical',
+    'input_30': 'categorical',
+    'input_31': 'categorical',
+    'input_32': 'categorical',
+    'input_33': 'categorical',
+    'input_34': 'categorical',
+    'input_35': 'categorical',
+    'label': None,
+}
 
 
 def dataset_from_csv(file_path):
@@ -17,7 +53,7 @@ def dataset_from_csv(file_path):
     dataset = tf.data.experimental.make_csv_dataset(
         file_pattern=file_path,
         batch_size=1,
-        column_names=defs.INPUT_NAMES.keys(),
+        column_names=INPUT_NAMES.keys(),
         label_name='label',
         header=False,
         num_epochs=1)
@@ -29,6 +65,32 @@ def dataset_from_csv(file_path):
 
 
 # архитектура нейросети
+def create_model(layer_width, entire_ds):
+    """Создаёт модель.
+
+    Args:
+        layer_width (int): ширина слоёв.
+        entire_ds: целый датасет, из которого изучается статистика данных.
+
+    Returns:
+        model: собственно модель.
+    """
+    input_names = INPUT_NAMES.copy()
+    input_names.pop('label')
+
+    categorical_inputs, numerical_inputs = create_inputs(input_names)
+    encoded_categorical_inputs = encode_categorical_inputs(categorical_inputs, entire_ds)
+    x = tf.keras.layers.concatenate(encoded_categorical_inputs + numerical_inputs)
+    x = tf.keras.layers.Dense(layer_width, activation='relu')(x)
+    x = tf.keras.layers.Dropout(0.5)(x)
+    x = tf.keras.layers.Dense(layer_width, activation='relu')(x)
+    x = tf.keras.layers.Dropout(0.5)(x)
+    outputs = tf.keras.layers.Dense(3, activation='softmax')(x)
+    model = tf.keras.Model(categorical_inputs + numerical_inputs, outputs)
+
+    return model
+
+
 def create_inputs(input_names):
     """Создаёт список из входов.
 
@@ -36,55 +98,52 @@ def create_inputs(input_names):
         input_names: словарь {название_входа: его тип (численный, категориальный)}.
 
     Returns:
-        inputs: список входов
+        categorical_inputs: список категориальных входов.
+        numerical_inputs: список численных входов.
     """
-    inputs = [
-        tf.keras.Input(shape=(1,), name=input_name, dtype='float64')
-        if input_names[input_name] == 'numerical'
-        else tf.keras.Input(shape=(1,), name=input_name, dtype='int64')
-        for input_name in input_names
-    ]
+    categorical_inputs = []
+    numerical_inputs = []
+    for input_name, input_type in input_names.items():
+        if input_type == 'categorical':
+            categorical_inputs.append(tf.keras.Input(shape=(1,), name=input_name, dtype='int64'))
+        elif input_type == 'numerical':
+            numerical_inputs.append(tf.keras.Input(shape=(1,), name=input_name, dtype='float64'))
 
-    return inputs
+    return categorical_inputs, numerical_inputs
 
 
-def encode_numerical_input(inpt, entire_ds):
-    """Реализует предобработку численного признака.
+def encode_categorical_inputs(inputs, entire_ds):
+    """Предобрабатывает входные признаки.
 
-    Предобработка заключается в создании слоя нормализации, который вычитает среднее арифметическое
-    и масштабирует признак до диапазона [-1, 1].
+    Для категориальных признаков создаёт слой one-hot-encoding.
 
     Args:
-        inpt (tf.keras.Input): вход нейросети численного признака.
+        inputs: список из входов нейросети.
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
-        encoded_feature: предобработанный численный признак.
+        encoded_categorical_features: список предобработанных признаков.
     """
-    # Создание слоя нормализации для признака
-    normalizer = tf.keras.layers.experimental.preprocessing.Normalization()
-    # Подготавливаем Dataset, который содержит только необходимый признак
-    feature_ds = entire_ds.map(lambda x, y: x[inpt.name])
-    feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
-    # Изучается статистика данных
-    normalizer.adapt(feature_ds)
-    # Нормализация входного признака
-    encoded_feature = normalizer(inpt)
+    encoded_categorical_features = [
+        encode_categorical_input(inpt, entire_ds)
+        for inpt in inputs
+        if INPUT_NAMES[inpt.name] == 'categorical'
+    ]
 
-    return encoded_feature
+    return encoded_categorical_features
 
 
 def encode_categorical_input(inpt, entire_ds):
     """One-hot-encode'ит категориальный признак.
 
     Args:
-        inpt (tf.keras.Input): вход нейросети численного признака.
+        inpt (tf.keras.Input): вход нейросети категориального признака.
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
         encoded_feature: предобработанный категориальный признак.
     """
-    lookup = tf.keras.layers.experimental.preprocessing.IntegerLookup(
+    lookup = tf.keras.layers.IntegerLookup(
         output_mode='binary',
         num_oov_indices=0,
         mask_token=-1)
@@ -97,53 +156,3 @@ def encode_categorical_input(inpt, entire_ds):
     encoded_feature = lookup(inpt)
 
     return encoded_feature
-
-
-def encode_inputs(inputs, input_names, entire_ds):
-    """Предобрабатывает входные признаки.
-
-    Для численного признака создаёт слой нормализации (вычитание среднего арифметического и
-    масштабирование до [-1, 1]), а для категориального - слой one-hot-encoding.
-
-    Args:
-        inputs: список из входов нейросети.
-        input_names: словарь {название_входа: его тип (численный, категориальный)}.
-        entire_ds: целый датасет, из которого изучается статистика данных.
-
-    Returns:
-        encoded_features: список предобработанных признаков.
-    """
-    encoded_features = [
-        encode_numerical_input(inpt, entire_ds)
-        if defs.INPUT_NAMES[inpt.name] == 'numerical'
-        else encode_categorical_input(inpt, entire_ds)
-        for inpt in inputs
-    ]
-
-    return encoded_features
-
-
-def create_model(layer_width, entire_ds):
-    """Создаёт модель.
-
-    Args:
-        layer_width (int): ширина слоёв.
-        entire_ds: целый датасет, из которого изучается статистика данных.
-
-    Returns:
-        model: собственно модель.
-    """
-    input_names = defs.INPUT_NAMES.copy()
-    input_names.pop('label')
-
-    inputs = create_inputs(input_names)
-    encoded_inputs = encode_inputs(inputs, input_names, entire_ds)
-    x = tf.keras.layers.concatenate(encoded_inputs)
-    x = tf.keras.layers.Dense(layer_width, activation='relu')(x)
-    x = tf.keras.layers.Dropout(0.5)(x)
-    x = tf.keras.layers.Dense(layer_width, activation='relu')(x)
-    x = tf.keras.layers.Dropout(0.5)(x)
-    output = tf.keras.layers.Dense(3, activation='softmax')(x)
-    model = tf.keras.Model(inputs, output)
-
-    return model
