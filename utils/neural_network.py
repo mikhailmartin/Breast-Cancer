@@ -92,7 +92,7 @@ def create_model(layer_width, entire_ds):
 
 
 def create_inputs(input_names):
-    """Создаёт список из входов.
+    """Возвращает 2 списка: из категориальных и численных входов.
 
     Args:
         input_names: словарь {название_входа: его тип (численный, категориальный)}.
@@ -113,9 +113,7 @@ def create_inputs(input_names):
 
 
 def encode_categorical_inputs(inputs, entire_ds):
-    """Предобрабатывает входные признаки.
-
-    Для категориальных признаков создаёт слой one-hot-encoding.
+    """Для категориальных признаков создаёт слой one-hot-encoding.
 
     Args:
         inputs: список из входов нейросети.
