@@ -24,34 +24,43 @@ def autolabel(ax, labels=None, height_factor=1.01):
             va='bottom')
 
 
-def plot_pies(dataframe, question):
-    """Визуализирует распределение ответов на вопрос в виде круговой диаграммы.
+def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
+    """Визуализирует распределение значений признака в виде круговой диаграммы.
 
     Args:
         dataframe: DataFrame, из которого будет вытаскиваться распределение.
-        question: вопрос, для которого визуализируется распределение ответов.
+        feature: признак, для которого визуализируется распределение ответов.
+        label_column: название столбца с метками.
+        nrows: количество строчек на рисунке.
+        ncols: количество столбцов на рисунке.
     """
     df = dataframe.copy()
-    if df[question].isnull().sum():
-        df.replace({question: {np.NaN: '-'}}, inplace=True)
+    if df[feature].isnull().sum():
+        df.replace({feature: {np.NaN: '-'}}, inplace=True)
 
-    fig, axes = plt.subplots(1, 4, figsize=(24, 5))
-    fig.suptitle(question, fontsize=16)
+    labels = sorted(list(set(df[label_column].tolist())))
+    if nrows is None or ncols is None:
+        nrows = 1
+        ncols = len(labels) + 1
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(24, 5))
+    axes = axes.flat
+    fig.suptitle(feature, fontsize=16)
     # отдельные пироги по классам
-    for label, ax in zip(defs.LABELS, axes[:3]):
+    for label, ax in zip(labels, axes[:len(labels)]):
         ax.set_title(label)
-        values = set(df[question].tolist())
+        values = set(df[feature].tolist())
         sizes = [
-            df[(df[defs.LABEL] == label) & (df[question] == value)].shape[0]
+            df[(df[label_column] == label) & (df[feature] == value)].shape[0]
             for value in values
         ]
         ax.pie(sizes, autopct='%1.1f%%')
     # пирог для всего датасета
-    axes[3].set_title('целый датасет')
-    values = set(df[question].tolist())
-    sizes = [df[df[question] == value].shape[0] for value in values]
-    wedges, _, _ = axes[3].pie(sizes, autopct='%1.1f%%')
-    axes[3].legend(wedges, values, bbox_to_anchor=(1, 0, 0.5, 1))
+    axes[-1].set_title('целый датасет')
+    values = set(df[feature].tolist())
+    sizes = [df[df[feature] == value].shape[0] for value in values]
+    wedges, _, _ = axes[-1].pie(sizes, autopct='%1.1f%%')
+    axes[-1].legend(wedges, values, bbox_to_anchor=(1, 0, 0.5, 1))
 
     plt.show()
 
