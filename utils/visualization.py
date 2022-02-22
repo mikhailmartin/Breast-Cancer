@@ -65,27 +65,35 @@ def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
     plt.show()
 
 
-def plot_hists(df, question, suptitle, bins, xlim):
-    """Визуализирует гистограммы ответа на вопрос.
+def plot_hists(df, feature, label_column, *, bins=None, xlim, nrows=None, ncols=None):
+    """Визуализирует гистограммы значений признака.
 
     Args:
         df: DataFrame, из которого будет вытаскиваться гистограммы.
-        question: вопрос, для которого визуализируются гистограммы.
-        suptitle: подзаголовок к рисунку.
+        feature: вопрос, для которого визуализируются гистограммы.
+        label_column: название столбца с метками.
         bins: количество бинов гистограмм.
-        xlim: предел шкалы по x.
+        xlim (tuple): пределы шкалы по x.
+        nrows: количество строчек на рисунке.
+        ncols: количество столбцов на рисунке.
     """
-    fig, axes = plt.subplots(1, 4, figsize=(24, 5), sharey=True)
-    fig.suptitle(suptitle, fontsize=16)
+    labels = sorted(list(set(df[label_column].tolist())))
+    if nrows is None or ncols is None:
+        nrows = 1
+        ncols = len(labels) + 1
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(24, 5), sharey=True)
+    axes = axes.flat
+    fig.suptitle(feature, fontsize=16)
     # отдельные гистограммы по классам
-    for label, ax in zip(defs.LABELS, axes[:3]):
-        ax.hist(df[df[defs.LABEL] == label][question].tolist(), bins=bins, range=(0, bins))
+    for label, ax in zip(labels, axes[:len(labels)]):
+        ax.hist(df.loc[df[label_column] == label, feature].tolist(), bins=bins)
         ax.set_title(label)
-        ax.set_xlim(0, xlim)
+        ax.set_xlim(*xlim)
     # гистограмма для всего датасета
-    axes[3].hist(df[question].tolist(), bins=bins, range=(0, bins))
-    axes[3].set_title('целый датасет')
-    axes[3].set_xlim(0, xlim)
+    axes[-1].hist(df[feature].tolist(), bins=bins)
+    axes[-1].set_title('целый датасет')
+    axes[-1].set_xlim(*xlim)
 
     plt.show()
 
