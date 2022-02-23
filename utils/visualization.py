@@ -38,6 +38,7 @@ def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
     if df[feature].isnull().sum():
         df.replace({feature: {np.NaN: '-'}}, inplace=True)
 
+    values = sorted(list(set(df[feature].tolist())))
     labels = sorted(list(set(df[label_column].tolist())))
     if nrows is None or ncols is None:
         nrows = 1
@@ -49,7 +50,6 @@ def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
     # отдельные пироги по классам
     for label, ax in zip(labels, axes[:len(labels)]):
         ax.set_title(label)
-        values = set(df[feature].tolist())
         sizes = [
             df[(df[label_column] == label) & (df[feature] == value)].shape[0]
             for value in values
@@ -57,7 +57,6 @@ def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
         ax.pie(sizes, autopct='%1.1f%%')
     # пирог для всего датасета
     axes[-1].set_title('целый датасет')
-    values = set(df[feature].tolist())
     sizes = [df[df[feature] == value].shape[0] for value in values]
     wedges, _, _ = axes[-1].pie(sizes, autopct='%1.1f%%')
     axes[-1].legend(wedges, values, bbox_to_anchor=(1, 0, 0.5, 1))
