@@ -141,11 +141,13 @@ class DecisionTree:
 
                 for x, y, fv in zip(xs, ys, feature_values):
                     if special_cases:
-                        childs.append(self._generate_node(x, y, fv, available_feature_names, special_cases))
+                        childs.append(
+                            self._generate_node(x, y, fv, available_feature_names, special_cases)
+                        )
                     else:
                         childs.append(self._generate_node(x, y, fv, available_feature_names))
 
-        node = Node(best_feature, feature_value, samples, distribution, label, childs)
+        node = Node(best_feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
 
@@ -180,7 +182,7 @@ class DecisionTree:
         for label in set(Y.tolist()):  # перебор по классам
             m_i = (Y == label).sum()
             if m_i != 0:
-                entropy -= (m_i / n) * math.log2(m_i / n)
+                entropy -= (m_i/n) * math.log2(m_i/n)
 
         return entropy
 
@@ -241,7 +243,8 @@ class DecisionTree:
             numerical_information_gain = (
                     impurity -
                     (A_less/A) * self._impurity(y_less) -
-                    (A_more/A) * self._impurity(y_more))
+                    (A_more/A) * self._impurity(y_more)
+            )
 
             if best_gain is None or best_gain < numerical_information_gain:
                 best_gain = numerical_information_gain
@@ -263,6 +266,7 @@ class DecisionTree:
             ys: список с подмножествами соответствующих меток.
             feature_values: список со значениями признака, по которому расщепляется множество.
         """
+        xs, ys, feature_values = None, None, None
         if feature_name in self.categorical_feature_names:
             xs, ys, feature_values = self._categorical_split(X, Y, feature_name)
         elif feature_name in self.numerical_feature_names:
@@ -273,9 +277,7 @@ class DecisionTree:
     @staticmethod
     def _categorical_split(X, Y, feature_name):
         """Расщепляет множество согласно категориальному признаку."""
-        xs = []
-        ys = []
-        feature_values = []
+        xs, ys, feature_values = [], [], []
         for feature_value in set(X[feature_name].tolist()):
             xs.append(X[X[feature_name] == feature_value])
             ys.append(Y[X[feature_name] == feature_value])
@@ -300,6 +302,7 @@ class DecisionTree:
             self,
             *,
             rounded=False,
+            show_impurity=False,
             show_num_samples=False,
             show_distribution=False,
             show_label=False,
@@ -310,6 +313,7 @@ class DecisionTree:
 
         Args:
             rounded: скруглять ли углы у узлов (они форме прямоугольника).
+            show_impurity: показывать ли загрязнённость узла.
             show_num_samples: показывать ли количество точек в узле.
             show_distribution: показывать ли распределение точек по классам.
             show_label: показывать ли класс, к которому относится узел.
@@ -319,28 +323,42 @@ class DecisionTree:
               визуализации.
         """
         if self.graph is None:
-            self._create_graph(rounded, show_num_samples, show_distribution, show_label)
+            self._create_graph(
+                rounded, show_impurity, show_num_samples, show_distribution, show_label)
         if kwargs:
             self.graph.render(**kwargs)
 
         return self.graph
 
-    def _create_graph(self, rounded, show_num_samples, show_distribution, show_label):
+    def _create_graph(
+            self, rounded, show_impurity, show_num_samples, show_distribution, show_label):
         """Создаёт объект класса Digraph, содержащий описание графовой структуры дерева для
         визуализации."""
         node_attr = {'shape': 'box'}
         if rounded:
             node_attr['style'] = 'rounded'
         self.graph = Digraph(name='дерево решений', node_attr=node_attr)
-        self._add_node(self.tree, None, show_num_samples, show_distribution, show_label)
+        self._add_node(
+            self.tree, None, show_impurity, show_num_samples, show_distribution, show_label
+        )
 
     @counter
-    def _add_node(self, node, parent_name, show_num_samples, show_distribution, show_label):
+    def _add_node(
+            self,
+            node,
+            parent_name,
+            show_impurity,
+            show_num_samples,
+            show_distribution,
+            show_label
+    ):
         """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
         node_name = f'node{self._add_node.count}'
         node_content = ''
         if node.split_feature:
             node_content += f'{node.split_feature}\n'
+        if show_impurity:
+            node_content += f'{self._criterion} = {node.impurity:2.2}\n'
         if show_num_samples:
             node_content += f'samples = {node.samples}\n'
         if show_distribution:
@@ -353,14 +371,26 @@ class DecisionTree:
             self.graph.edge(parent_name, node_name, label=f'{node.feature_value}')
 
         for child in node.childs:
-            self._add_node(child, node_name, show_num_samples, show_distribution, show_label)
+            self._add_node(
+                child, node_name, show_impurity, show_num_samples, show_distribution, show_label
+            )
 
 
 class Node:
     """Узел дерева решений."""
-    def __init__(self, split_feature, feature_value, samples, distribution, label, childs):
+    def __init__(
+            self,
+            split_feature,
+            feature_value,
+            impurity,
+            samples,
+            distribution,
+            label,
+            childs
+    ):
         self.split_feature = split_feature
         self.feature_value = feature_value
+        self.impurity = impurity
         self.samples = samples
         self.distribution = distribution
         self.label = label
