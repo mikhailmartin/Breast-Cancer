@@ -29,10 +29,10 @@ class DecisionTree:
     ):
         if criterion != 'entropy':
             print('Я пока не умею работать с таким критерием. Посчитаю через энтропию.')
-        self._criterion = 'entropy'
-        self._min_samples_split = min_samples_split
-        self._min_samples_leaf = min_samples_leaf
-        self._min_impurity_decrease = min_impurity_decrease
+        self.__criterion = 'entropy'
+        self.__min_samples_split = min_samples_split
+        self.__min_samples_leaf = min_samples_leaf
+        self.__min_impurity_decrease = min_impurity_decrease
 
         self.feature_names = None
         self.class_names = None
@@ -67,10 +67,10 @@ class DecisionTree:
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
 
-        self.tree = self._generate_node(X, Y, None, available_feature_names, special_cases)
+        self.tree = self.__generate_node(X, Y, None, available_feature_names, special_cases)
 
     @counter
-    def _generate_node(self, X, Y, feature_value, available_feature_names, special_cases=None):
+    def __generate_node(self, X, Y, feature_value, available_feature_names, special_cases=None):
         """Рекурсивная функция создания узлов дерева.
 
         Args:
@@ -87,12 +87,12 @@ class DecisionTree:
         available_feature_names = available_feature_names.copy()
 
         # выбор лучшего признака для разбиения
-        impurity = self._impurity(Y)
+        impurity = self.__impurity(Y)
 
         best_feature = None
-        best_gain = self._min_impurity_decrease
+        best_gain = self.__min_impurity_decrease
         for feature_name in available_feature_names:
-            current_gain = self._information_gain(X, Y, feature_name, impurity)
+            current_gain = self.__information_gain(X, Y, feature_name, impurity)
             if isinstance(best_gain, float) and isinstance(current_gain, float):
                 if best_gain < current_gain:
                     best_gain = current_gain
@@ -136,22 +136,22 @@ class DecisionTree:
                     special_cases.pop(best_feature)
             # рекурсивное создание потомков
             num_samples = X.shape[0]
-            if num_samples >= self._min_samples_split:
-                xs, ys, feature_values = self._split(X, Y, best_feature, best_gain)
+            if num_samples >= self.__min_samples_split:
+                xs, ys, feature_values = self.__split(X, Y, best_feature, best_gain)
 
                 for x, y, fv in zip(xs, ys, feature_values):
                     if special_cases:
                         childs.append(
-                            self._generate_node(x, y, fv, available_feature_names, special_cases)
+                            self.__generate_node(x, y, fv, available_feature_names, special_cases)
                         )
                     else:
-                        childs.append(self._generate_node(x, y, fv, available_feature_names))
+                        childs.append(self.__generate_node(x, y, fv, available_feature_names))
 
         node = Node(best_feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
 
-    def _impurity(self, Y):
+    def __impurity(self, Y):
         """Считает загрязнённость для множества.
 
         Args:
@@ -161,13 +161,13 @@ class DecisionTree:
             impurity: загрязнённость множества.
         """
         impurity = None
-        if self._criterion == 'entropy':
-            impurity = self._entropy(Y)
+        if self.__criterion == 'entropy':
+            impurity = self.__entropy(Y)
 
         return impurity
 
     @staticmethod
-    def _entropy(Y):
+    def __entropy(Y):
         """Считает энтропию в множестве.
 
         Args:
@@ -186,7 +186,7 @@ class DecisionTree:
 
         return entropy
 
-    def _information_gain(self, X, Y, feature_name, impurity):
+    def __information_gain(self, X, Y, feature_name, impurity):
         """Возвращает прирост информативности для разделения по признаку.
 
         Формула в LaTeX:
@@ -209,26 +209,26 @@ class DecisionTree:
         """
         information_gain = None
         if feature_name in self.categorical_feature_names:
-            information_gain = self._categorical_information_gain(X, Y, feature_name, impurity)
+            information_gain = self.__categorical_information_gain(X, Y, feature_name, impurity)
         elif feature_name in self.numerical_feature_names:
-            information_gain = self._numerical_information_gain(X, Y, feature_name, impurity)
+            information_gain = self.__numerical_information_gain(X, Y, feature_name, impurity)
 
         return information_gain
 
-    def _categorical_information_gain(self, X, Y, feature_name, impurity):
+    def __categorical_information_gain(self, X, Y, feature_name, impurity):
         """Считает прирост информации для разделения по категориальному признаку."""
         A = X.shape[0]
         second_term = 0
         for feature_value in set(X[feature_name].tolist()):
             A_i = (X[feature_name] == feature_value).sum()
             y_i = Y[X[feature_name] == feature_value]
-            second_term += (A_i/A) * self._impurity(y_i)
+            second_term += (A_i/A) * self.__impurity(y_i)
 
         categorical_information_gain = impurity - second_term
 
         return categorical_information_gain
 
-    def _numerical_information_gain(self, X, Y, feature_name, impurity):
+    def __numerical_information_gain(self, X, Y, feature_name, impurity):
         """Считает прирост информации для разделения по численному признаку."""
         A = X.shape[0]
 
@@ -242,8 +242,8 @@ class DecisionTree:
 
             numerical_information_gain = (
                     impurity -
-                    (A_less/A) * self._impurity(y_less) -
-                    (A_more/A) * self._impurity(y_more)
+                    (A_less/A) * self.__impurity(y_less) -
+                    (A_more/A) * self.__impurity(y_more)
             )
 
             if best_gain is None or best_gain < numerical_information_gain:
@@ -252,7 +252,7 @@ class DecisionTree:
 
         return best_gain, best_threshold
 
-    def _split(self, X, Y, feature_name, threshold):
+    def __split(self, X, Y, feature_name, threshold):
         """Разделяет множество по признаку.
 
         Args:
@@ -268,14 +268,14 @@ class DecisionTree:
         """
         xs, ys, feature_values = None, None, None
         if feature_name in self.categorical_feature_names:
-            xs, ys, feature_values = self._categorical_split(X, Y, feature_name)
+            xs, ys, feature_values = self.__categorical_split(X, Y, feature_name)
         elif feature_name in self.numerical_feature_names:
-            xs, ys, feature_values = self._numerical_split(X, Y, feature_name, threshold[1])
+            xs, ys, feature_values = self.__numerical_split(X, Y, feature_name, threshold[1])
 
         return xs, ys, feature_values
 
     @staticmethod
-    def _categorical_split(X, Y, feature_name):
+    def __categorical_split(X, Y, feature_name):
         """Расщепляет множество согласно категориальному признаку."""
         xs, ys, feature_values = [], [], []
         for feature_value in set(X[feature_name].tolist()):
@@ -286,7 +286,7 @@ class DecisionTree:
         return xs, ys, feature_values
 
     @staticmethod
-    def _numerical_split(X, Y, feature_name, threshold):
+    def __numerical_split(X, Y, feature_name, threshold):
         """Расщепляет множество согласно численному признаку."""
         x_less = X[X[feature_name] < threshold]
         x_more = X[X[feature_name] >= threshold]
@@ -323,14 +323,14 @@ class DecisionTree:
               визуализации.
         """
         if self.graph is None:
-            self._create_graph(
+            self.__create_graph(
                 rounded, show_impurity, show_num_samples, show_distribution, show_label)
         if kwargs:
             self.graph.render(**kwargs)
 
         return self.graph
 
-    def _create_graph(
+    def __create_graph(
             self, rounded, show_impurity, show_num_samples, show_distribution, show_label):
         """Создаёт объект класса Digraph, содержащий описание графовой структуры дерева для
         визуализации."""
@@ -338,12 +338,12 @@ class DecisionTree:
         if rounded:
             node_attr['style'] = 'rounded'
         self.graph = Digraph(name='дерево решений', node_attr=node_attr)
-        self._add_node(
+        self.__add_node(
             self.tree, None, show_impurity, show_num_samples, show_distribution, show_label
         )
 
     @counter
-    def _add_node(
+    def __add_node(
             self,
             node,
             parent_name,
@@ -353,12 +353,12 @@ class DecisionTree:
             show_label
     ):
         """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
-        node_name = f'node{self._add_node.count}'
+        node_name = f'node{self.__add_node.count}'
         node_content = ''
         if node.split_feature:
             node_content += f'{node.split_feature}\n'
         if show_impurity:
-            node_content += f'{self._criterion} = {node.impurity:2.2}\n'
+            node_content += f'{self.__criterion} = {node.impurity:2.2}\n'
         if show_num_samples:
             node_content += f'samples = {node.samples}\n'
         if show_distribution:
@@ -371,7 +371,7 @@ class DecisionTree:
             self.graph.edge(parent_name, node_name, label=f'{node.feature_value}')
 
         for child in node.childs:
-            self._add_node(
+            self.__add_node(
                 child, node_name, show_impurity, show_num_samples, show_distribution, show_label
             )
 

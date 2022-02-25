@@ -23,176 +23,176 @@ samples = 56
 distribution: [43, 3, 10]
 label = доброкачественная опухоль"]
 	node3 -> node4 [label=0]
-	node5 [label="5. В какой семье Вы выросли?
-entropy = 0.92
-samples = 9
-distribution: [6, 0, 3]
+	node5 [label="entropy = 0.0
+samples = 2
+distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node4 -> node5 [label="регулярного режима питания нет"]
-	node6 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node5 -> node6 [label="мачеха/отчим"]
-	node7 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node5 -> node7 [label="мать/отец одиночка"]
-	node8 [label="31. Количество родов
-entropy = 0.59
-samples = 7
-distribution: [6, 0, 1]
-label = доброкачественная опухоль"]
-	node5 -> node8 [label="полная семья, кровные родители"]
-	node9 [label="entropy = 0.0
-samples = 6
-distribution: [6, 0, 0]
-label = доброкачественная опухоль"]
-	node8 -> node9 [label=0]
-	node10 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node8 -> node10 [label=1]
-	node11 [label="pre20. Есть ответ на вопрос 20?
+	node4 -> node5 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
+	node6 [label="pre20. Есть ответ на вопрос 20?
 entropy = 0.4
 samples = 25
 distribution: [23, 0, 2]
 label = доброкачественная опухоль"]
-	node4 -> node11 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
-	node12 [label="entropy = 0.0
-samples = 21
-distribution: [21, 0, 0]
-label = доброкачественная опухоль"]
-	node11 -> node12 [label="да"]
-	node13 [label="8. Есть ли у Вас дети (да/нет)?
+	node4 -> node6 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node7 [label="8. Есть ли у Вас дети (да/нет)?
 entropy = 1.0
 samples = 4
 distribution: [2, 0, 2]
 label = доброкачественная опухоль"]
-	node11 -> node13 [label="нет"]
-	node14 [label="entropy = 0.0
-samples = 2
-distribution: [2, 0, 0]
-label = доброкачественная опухоль"]
-	node13 -> node14 [label="да"]
-	node15 [label="entropy = 0.0
+	node6 -> node7 [label="нет"]
+	node8 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node13 -> node15 [label="нет"]
-	node16 [label="entropy = 0.0
+	node7 -> node8 [label="нет"]
+	node9 [label="entropy = 0.0
 samples = 2
 distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node4 -> node16 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
-	node17 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node7 -> node9 [label="да"]
+	node10 [label="entropy = 0.0
+samples = 21
+distribution: [21, 0, 0]
+label = доброкачественная опухоль"]
+	node6 -> node10 [label="да"]
+	node11 [label="13. Каковы Ваши взаимоотношения с соседями?
 entropy = 1.4
 samples = 20
 distribution: [12, 3, 5]
 label = доброкачественная опухоль"]
-	node4 -> node17 [label="3-4-разовое домашнее питание"]
-	node18 [label="14. Как часто Вы встречаетесь с друзьями?
-entropy = 0.86
-samples = 7
-distribution: [5, 2, 0]
-label = доброкачественная опухоль"]
-	node17 -> node18 [label="нейтральные"]
-	node19 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node18 -> node19 [label="несколько раз в неделю"]
-	node20 [label="3. Семейное положение
-entropy = 1.0
-samples = 2
-distribution: [1, 1, 0]
-label = доброкачественная опухоль"]
-	node18 -> node20 [label="раз в месяц"]
-	node21 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node20 -> node21 [label="имею гражданского супруга"]
-	node22 [label="entropy = 0.0
-samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node20 -> node22 [label="замужем"]
-	node23 [label="entropy = 0.0
-samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node18 -> node23 [label="раз в неделю"]
-	node24 [label="entropy = 0.0
-samples = 3
-distribution: [3, 0, 0]
-label = доброкачественная опухоль"]
-	node18 -> node24 [label="реже, чем раз в месяц"]
-	node25 [label="3. Семейное положение
-entropy = 0.99
-samples = 9
-distribution: [5, 0, 4]
-label = доброкачественная опухоль"]
-	node17 -> node25 [label="хорошие"]
-	node26 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node25 -> node26 [label="имею гражданского супруга"]
-	node27 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node25 -> node27 [label="разведена"]
-	node28 [label="entropy = 0.0
-samples = 2
-distribution: [2, 0, 0]
-label = доброкачественная опухоль"]
-	node25 -> node28 [label="одинока"]
-	node29 [label="2. Возраст
-entropy = 0.72
-samples = 5
-distribution: [1, 0, 4]
-label = норма"]
-	node25 -> node29 [label="замужем"]
-	node30 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node29 -> node30 [label="< 25"]
-	node31 [label="entropy = 0.0
-samples = 4
-distribution: [0, 0, 4]
-label = норма"]
-	node29 -> node31 [label=">= 25"]
-	node32 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node17 -> node32 [label="я не знаю своих соседей"]
-	node33 [label="31. Количество родов
+	node4 -> node11 [label="3-4-разовое домашнее питание"]
+	node12 [label="31. Количество родов
 entropy = 1.6
 samples = 3
 distribution: [1, 1, 1]
 label = доброкачественная опухоль"]
-	node17 -> node33 [label="очень хорошие, дружеские"]
+	node11 -> node12 [label="очень хорошие, дружеские"]
+	node13 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node12 -> node13 [label=0]
+	node14 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node12 -> node14 [label=1]
+	node15 [label="entropy = 0.0
+samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node12 -> node15 [label=2]
+	node16 [label="14. Как часто Вы встречаетесь с друзьями?
+entropy = 0.86
+samples = 7
+distribution: [5, 2, 0]
+label = доброкачественная опухоль"]
+	node11 -> node16 [label="нейтральные"]
+	node17 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node16 -> node17 [label="несколько раз в неделю"]
+	node18 [label="3. Семейное положение
+entropy = 1.0
+samples = 2
+distribution: [1, 1, 0]
+label = доброкачественная опухоль"]
+	node16 -> node18 [label="раз в месяц"]
+	node19 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node18 -> node19 [label="имею гражданского супруга"]
+	node20 [label="entropy = 0.0
+samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node18 -> node20 [label="замужем"]
+	node21 [label="entropy = 0.0
+samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node16 -> node21 [label="раз в неделю"]
+	node22 [label="entropy = 0.0
+samples = 3
+distribution: [3, 0, 0]
+label = доброкачественная опухоль"]
+	node16 -> node22 [label="реже, чем раз в месяц"]
+	node23 [label="3. Семейное положение
+entropy = 0.99
+samples = 9
+distribution: [5, 0, 4]
+label = доброкачественная опухоль"]
+	node11 -> node23 [label="хорошие"]
+	node24 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node23 -> node24 [label="разведена"]
+	node25 [label="entropy = 0.0
+samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node23 -> node25 [label="одинока"]
+	node26 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node23 -> node26 [label="имею гражданского супруга"]
+	node27 [label="2. Возраст
+entropy = 0.72
+samples = 5
+distribution: [1, 0, 4]
+label = норма"]
+	node23 -> node27 [label="замужем"]
+	node28 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node27 -> node28 [label="< 25"]
+	node29 [label="entropy = 0.0
+samples = 4
+distribution: [0, 0, 4]
+label = норма"]
+	node27 -> node29 [label=">= 25"]
+	node30 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node11 -> node30 [label="я не знаю своих соседей"]
+	node31 [label="5. В какой семье Вы выросли?
+entropy = 0.92
+samples = 9
+distribution: [6, 0, 3]
+label = доброкачественная опухоль"]
+	node4 -> node31 [label="регулярного режима питания нет"]
+	node32 [label="31. Количество родов
+entropy = 0.59
+samples = 7
+distribution: [6, 0, 1]
+label = доброкачественная опухоль"]
+	node31 -> node32 [label="полная семья, кровные родители"]
+	node33 [label="entropy = 0.0
+samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node32 -> node33 [label=0]
 	node34 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node33 -> node34 [label=0]
+	node32 -> node34 [label=1]
 	node35 [label="entropy = 0.0
 samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node33 -> node35 [label=1]
+distribution: [0, 0, 1]
+label = норма"]
+	node31 -> node35 [label="мачеха/отчим"]
 	node36 [label="entropy = 0.0
 samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node33 -> node36 [label=2]
+distribution: [0, 0, 1]
+label = норма"]
+	node31 -> node36 [label="мать/отец одиночка"]
 	node37 [label="12. Сколько человек живут вместе с Вами?
 entropy = 0.7
 samples = 15
@@ -209,32 +209,32 @@ samples = 4
 distribution: [4, 0, 0]
 label = доброкачественная опухоль"]
 	node37 -> node39 [label="4 и более человек"]
-	node40 [label="13. Каковы Ваши взаимоотношения с соседями?
+	node40 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node37 -> node40 [label="1 человек"]
+	node41 [label="13. Каковы Ваши взаимоотношения с соседями?
 entropy = 0.5
 samples = 9
 distribution: [8, 0, 1]
 label = доброкачественная опухоль"]
-	node37 -> node40 [label="2-3 человека"]
-	node41 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node40 -> node41 [label="я не знаю своих соседей"]
+	node37 -> node41 [label="2-3 человека"]
 	node42 [label="entropy = 0.0
-samples = 5
-distribution: [5, 0, 0]
-label = доброкачественная опухоль"]
-	node40 -> node42 [label="хорошие"]
-	node43 [label="entropy = 0.0
 samples = 3
 distribution: [3, 0, 0]
 label = доброкачественная опухоль"]
-	node40 -> node43 [label="очень хорошие, дружеские"]
+	node41 -> node42 [label="очень хорошие, дружеские"]
+	node43 [label="entropy = 0.0
+samples = 5
+distribution: [5, 0, 0]
+label = доброкачественная опухоль"]
+	node41 -> node43 [label="хорошие"]
 	node44 [label="entropy = 0.0
 samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node37 -> node44 [label="1 человек"]
+distribution: [0, 0, 1]
+label = норма"]
+	node41 -> node44 [label="я не знаю своих соседей"]
 	node45 [label="29. Каков тип Вашего питания?
 entropy = 0.67
 samples = 16
@@ -242,36 +242,36 @@ distribution: [14, 1, 1]
 label = доброкачественная опухоль"]
 	node3 -> node45 [label=2]
 	node46 [label="entropy = 0.0
-samples = 2
-distribution: [2, 0, 0]
+samples = 1
+distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node45 -> node46 [label="регулярного режима питания нет"]
+	node45 -> node46 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
 	node47 [label="entropy = 0.0
 samples = 11
 distribution: [11, 0, 0]
 label = доброкачественная опухоль"]
 	node45 -> node47 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
-	node48 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node45 -> node48 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
-	node49 [label="3. Семейное положение
+	node48 [label="3. Семейное положение
 entropy = 1.0
 samples = 2
 distribution: [0, 1, 1]
 label = злокачественная опухоль"]
-	node45 -> node49 [label="3-4-разовое домашнее питание"]
-	node50 [label="entropy = 0.0
+	node45 -> node48 [label="3-4-разовое домашнее питание"]
+	node49 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node49 -> node50 [label="разведена"]
-	node51 [label="entropy = 0.0
+	node48 -> node49 [label="разведена"]
+	node50 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node49 -> node51 [label="одинока"]
+	node48 -> node50 [label="одинока"]
+	node51 [label="entropy = 0.0
+samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node45 -> node51 [label="регулярного режима питания нет"]
 	node52 [label="14. Как часто Вы встречаетесь с друзьями?
 entropy = 0.81
 samples = 16
@@ -327,20 +327,20 @@ distribution: [9, 0, 2]
 label = доброкачественная опухоль"]
 	node3 -> node61 [label=4]
 	node62 [label="entropy = 0.0
-samples = 9
-distribution: [9, 0, 0]
-label = доброкачественная опухоль"]
-	node61 -> node62 [label="законченное высшее образование"]
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node61 -> node62 [label="среднее специальное образование"]
 	node63 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node61 -> node63 [label="среднее специальное образование"]
+	node61 -> node63 [label="средняя школа"]
 	node64 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node61 -> node64 [label="средняя школа"]
+samples = 9
+distribution: [9, 0, 0]
+label = доброкачественная опухоль"]
+	node61 -> node64 [label="законченное высшее образование"]
 	node65 [label="2. Возраст
 entropy = 0.65
 samples = 6
@@ -422,54 +422,54 @@ samples = 41
 distribution: [21, 5, 15]
 label = доброкачественная опухоль"]
 	node78 -> node79 [label=0]
-	node80 [label="entropy = 0.0
-samples = 6
-distribution: [6, 0, 0]
-label = доброкачественная опухоль"]
-	node79 -> node80 [label="имею гражданского супруга"]
-	node81 [label="2. Возраст
+	node80 [label="2. Возраст
 entropy = 0.72
 samples = 5
 distribution: [4, 0, 1]
 label = доброкачественная опухоль"]
-	node79 -> node81 [label="разведена"]
-	node82 [label="entropy = 0.0
+	node79 -> node80 [label="разведена"]
+	node81 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node81 -> node82 [label="< 39"]
-	node83 [label="entropy = 0.0
+	node80 -> node81 [label="< 39"]
+	node82 [label="entropy = 0.0
 samples = 4
 distribution: [4, 0, 0]
 label = доброкачественная опухоль"]
-	node81 -> node83 [label=">= 39"]
-	node84 [label="2. Возраст
+	node80 -> node82 [label=">= 39"]
+	node83 [label="2. Возраст
 entropy = 1.4
 samples = 7
 distribution: [2, 1, 4]
 label = норма"]
-	node79 -> node84 [label="одинока"]
-	node85 [label="5. В какой семье Вы выросли?
+	node79 -> node83 [label="одинока"]
+	node84 [label="5. В какой семье Вы выросли?
 entropy = 0.72
 samples = 5
 distribution: [0, 1, 4]
 label = норма"]
-	node84 -> node85 [label="< 41"]
+	node83 -> node84 [label="< 41"]
+	node85 [label="entropy = 0.0
+samples = 4
+distribution: [0, 0, 4]
+label = норма"]
+	node84 -> node85 [label="полная семья, кровные родители"]
 	node86 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node85 -> node86 [label="в детском доме"]
+	node84 -> node86 [label="в детском доме"]
 	node87 [label="entropy = 0.0
-samples = 4
-distribution: [0, 0, 4]
-label = норма"]
-	node85 -> node87 [label="полная семья, кровные родители"]
-	node88 [label="entropy = 0.0
 samples = 2
 distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node84 -> node88 [label=">= 41"]
+	node83 -> node87 [label=">= 41"]
+	node88 [label="entropy = 0.0
+samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node79 -> node88 [label="имею гражданского супруга"]
 	node89 [label="31. Количество родов
 entropy = 1.5
 samples = 23
@@ -483,20 +483,20 @@ distribution: [4, 0, 1]
 label = доброкачественная опухоль"]
 	node89 -> node90 [label=0]
 	node91 [label="entropy = 0.0
-samples = 3
-distribution: [3, 0, 0]
-label = доброкачественная опухоль"]
-	node90 -> node91 [label="раз в месяц"]
-	node92 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node90 -> node92 [label="раз в неделю"]
-	node93 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node90 -> node93 [label="реже, чем раз в месяц"]
+	node90 -> node91 [label="реже, чем раз в месяц"]
+	node92 [label="entropy = 0.0
+samples = 3
+distribution: [3, 0, 0]
+label = доброкачественная опухоль"]
+	node90 -> node92 [label="раз в месяц"]
+	node93 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node90 -> node93 [label="раз в неделю"]
 	node94 [label="29. Каков тип Вашего питания?
 entropy = 1.6
 samples = 7
@@ -504,42 +504,42 @@ distribution: [2, 2, 3]
 label = норма"]
 	node89 -> node94 [label=1]
 	node95 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node94 -> node95 [label="регулярного режима питания нет"]
-	node96 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node94 -> node96 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
-	node97 [label="2. Возраст
+	node94 -> node95 [label="3-разовое питание, домашнее и в предприятиях общественного питания"]
+	node96 [label="2. Возраст
 entropy = 1.0
 samples = 4
 distribution: [2, 2, 0]
 label = доброкачественная опухоль"]
-	node94 -> node97 [label="3-4-разовое домашнее питание"]
-	node98 [label="entropy = 0.0
+	node94 -> node96 [label="3-4-разовое домашнее питание"]
+	node97 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node97 -> node98 [label="< 40"]
-	node99 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
+	node96 -> node97 [label="< 40"]
+	node98 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 entropy = 0.92
 samples = 3
 distribution: [1, 2, 0]
 label = злокачественная опухоль"]
-	node97 -> node99 [label=">= 40"]
-	node100 [label="entropy = 0.0
+	node96 -> node98 [label=">= 40"]
+	node99 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node99 -> node100 [label=3]
-	node101 [label="entropy = 0.0
+	node98 -> node99 [label=3]
+	node100 [label="entropy = 0.0
 samples = 2
 distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node99 -> node101 [label=7]
+	node98 -> node100 [label=7]
+	node101 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node94 -> node101 [label="регулярного режима питания нет"]
 	node102 [label="2. Возраст
 entropy = 1.6
 samples = 8
@@ -562,27 +562,27 @@ samples = 2
 distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
 	node104 -> node105 [label="4 и более человек"]
-	node106 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
+	node106 [label="entropy = 0.0
+samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node104 -> node106 [label="1 человек"]
+	node107 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 entropy = 1.0
 samples = 2
 distribution: [1, 1, 0]
 label = доброкачественная опухоль"]
-	node104 -> node106 [label="2-3 человека"]
-	node107 [label="entropy = 0.0
+	node104 -> node107 [label="2-3 человека"]
+	node108 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node106 -> node107 [label=0]
-	node108 [label="entropy = 0.0
-samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node106 -> node108 [label=2]
+	node107 -> node108 [label=0]
 	node109 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node104 -> node109 [label="1 человек"]
+	node107 -> node109 [label=2]
 	node110 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
@@ -658,15 +658,15 @@ distribution: [2, 0, 1]
 label = доброкачественная опухоль"]
 	node121 -> node123 [label="4 и более человек"]
 	node124 [label="entropy = 0.0
-samples = 2
-distribution: [2, 0, 0]
-label = доброкачественная опухоль"]
-	node123 -> node124 [label="нейтральные"]
-	node125 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node123 -> node125 [label="очень хорошие, дружеские"]
+	node123 -> node124 [label="очень хорошие, дружеские"]
+	node125 [label="entropy = 0.0
+samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node123 -> node125 [label="нейтральные"]
 	node126 [label="19. Уровень Вашего образования?
 entropy = 0.72
 samples = 5
@@ -674,15 +674,15 @@ distribution: [1, 4, 0]
 label = злокачественная опухоль"]
 	node121 -> node126 [label="2-3 человека"]
 	node127 [label="entropy = 0.0
-samples = 4
-distribution: [0, 4, 0]
-label = злокачественная опухоль"]
-	node126 -> node127 [label="законченное высшее образование"]
-	node128 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node126 -> node128 [label="среднее специальное образование"]
+	node126 -> node127 [label="среднее специальное образование"]
+	node128 [label="entropy = 0.0
+samples = 4
+distribution: [0, 4, 0]
+label = злокачественная опухоль"]
+	node126 -> node128 [label="законченное высшее образование"]
 	node129 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
@@ -806,12 +806,12 @@ label = норма"]
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node150 -> node151 [label="имею гражданского супруга"]
+	node150 -> node151 [label="одинока"]
 	node152 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node150 -> node152 [label="одинока"]
+	node150 -> node152 [label="имею гражданского супруга"]
 	node153 [label="entropy = 0.0
 samples = 4
 distribution: [0, 0, 4]
@@ -856,10 +856,10 @@ distribution: [11, 10, 3]
 label = доброкачественная опухоль"]
 	node159 -> node160 [label=0]
 	node161 [label="entropy = 0.0
-samples = 5
-distribution: [0, 5, 0]
+samples = 1
+distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node160 -> node161 [label="регулярного режима питания нет"]
+	node160 -> node161 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
 	node162 [label="14. Как часто Вы встречаетесь с друзьями?
 entropy = 1.4
 samples = 5
@@ -892,59 +892,59 @@ samples = 2
 distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
 	node162 -> node167 [label="раз в неделю"]
-	node168 [label="entropy = 0.0
-samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node160 -> node168 [label="дома готовлю редко, питаюсь в предприятиях общественного питания"]
-	node169 [label="3. Семейное положение
+	node168 [label="3. Семейное положение
 entropy = 1.3
 samples = 13
 distribution: [8, 3, 2]
 label = доброкачественная опухоль"]
-	node160 -> node169 [label="3-4-разовое домашнее питание"]
-	node170 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node169 -> node170 [label="вдова"]
-	node171 [label="entropy = 0.0
-samples = 6
-distribution: [6, 0, 0]
-label = доброкачественная опухоль"]
-	node169 -> node171 [label="разведена"]
-	node172 [label="6. Жив ли хотя бы один из Ваших родителей (да/нет)?
+	node160 -> node168 [label="3-4-разовое домашнее питание"]
+	node169 [label="6. Жив ли хотя бы один из Ваших родителей (да/нет)?
 entropy = 0.92
 samples = 3
 distribution: [2, 1, 0]
 label = доброкачественная опухоль"]
-	node169 -> node172 [label="имею гражданского супруга"]
-	node173 [label="entropy = 0.0
-samples = 1
-distribution: [0, 1, 0]
-label = злокачественная опухоль"]
-	node172 -> node173 [label="да"]
-	node174 [label="entropy = 0.0
+	node168 -> node169 [label="имею гражданского супруга"]
+	node170 [label="entropy = 0.0
 samples = 2
 distribution: [2, 0, 0]
 label = доброкачественная опухоль"]
-	node172 -> node174 [label="нет"]
-	node175 [label="5. В какой семье Вы выросли?
+	node169 -> node170 [label="нет"]
+	node171 [label="entropy = 0.0
+samples = 1
+distribution: [0, 1, 0]
+label = злокачественная опухоль"]
+	node169 -> node171 [label="да"]
+	node172 [label="entropy = 0.0
+samples = 6
+distribution: [6, 0, 0]
+label = доброкачественная опухоль"]
+	node168 -> node172 [label="разведена"]
+	node173 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node168 -> node173 [label="вдова"]
+	node174 [label="5. В какой семье Вы выросли?
 entropy = 0.92
 samples = 3
 distribution: [0, 2, 1]
 label = злокачественная опухоль"]
-	node169 -> node175 [label="замужем"]
+	node168 -> node174 [label="замужем"]
+	node175 [label="entropy = 0.0
+samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node174 -> node175 [label="полная семья, кровные родители"]
 	node176 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node175 -> node176 [label="мачеха/отчим"]
+	node174 -> node176 [label="мачеха/отчим"]
 	node177 [label="entropy = 0.0
-samples = 2
-distribution: [0, 2, 0]
+samples = 5
+distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node175 -> node177 [label="полная семья, кровные родители"]
+	node160 -> node177 [label="регулярного режима питания нет"]
 	node178 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 entropy = 1.4
 samples = 5
@@ -1150,17 +1150,17 @@ label = норма"]
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node215 -> node216 [label="нейтральные"]
+	node215 -> node216 [label="очень хорошие, дружеские"]
 	node217 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node215 -> node217 [label="хорошие"]
-	node218 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node215 -> node218 [label="очень хорошие, дружеские"]
+	node215 -> node217 [label="нейтральные"]
+	node218 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node215 -> node218 [label="хорошие"]
 	node219 [label="5. В какой семье Вы выросли?
 entropy = 0.92
 samples = 3
@@ -1168,15 +1168,15 @@ distribution: [1, 0, 2]
 label = норма"]
 	node204 -> node219 [label=5]
 	node220 [label="entropy = 0.0
-samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node219 -> node220 [label="мать/отец одиночка"]
-	node221 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node219 -> node221 [label="полная семья, кровные родители"]
+	node219 -> node220 [label="полная семья, кровные родители"]
+	node221 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node219 -> node221 [label="мать/отец одиночка"]
 	node222 [label="18. В течение последних 7 дней, как часто Вы ходили пешком минимум 10 минут без перерыва?
 entropy = 1.3
 samples = 17
@@ -1209,37 +1209,37 @@ samples = 8
 distribution: [1, 5, 2]
 label = злокачественная опухоль"]
 	node222 -> node227 [label=7]
-	node228 [label="entropy = 0.0
-samples = 2
-distribution: [0, 0, 2]
-label = норма"]
-	node227 -> node228 [label="я практически не ем мясо/рыбу"]
-	node229 [label="32. Количество прерванных беременностей
+	node228 [label="32. Количество прерванных беременностей
 entropy = 0.65
 samples = 6
 distribution: [1, 5, 0]
 label = злокачественная опухоль"]
-	node227 -> node229 [label="я ем мясо или рыбу 2-3 раза в неделю"]
-	node230 [label="entropy = 0.0
+	node227 -> node228 [label="я ем мясо или рыбу 2-3 раза в неделю"]
+	node229 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node229 -> node230 [label=0]
-	node231 [label="entropy = 0.0
+	node228 -> node229 [label=0]
+	node230 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node229 -> node231 [label=1]
-	node232 [label="entropy = 0.0
+	node228 -> node230 [label=1]
+	node231 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node229 -> node232 [label=2]
-	node233 [label="entropy = 0.0
+	node228 -> node231 [label=2]
+	node232 [label="entropy = 0.0
 samples = 3
 distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node229 -> node233 [label=3]
+	node228 -> node232 [label=3]
+	node233 [label="entropy = 0.0
+samples = 2
+distribution: [0, 0, 2]
+label = норма"]
+	node227 -> node233 [label="я практически не ем мясо/рыбу"]
 	node234 [label="3. Семейное положение
 entropy = 0.95
 samples = 24
@@ -1250,54 +1250,54 @@ label = злокачественная опухоль"]
 samples = 2
 distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node234 -> node235 [label="одинока"]
+	node234 -> node235 [label="имею гражданского супруга"]
 	node236 [label="entropy = 0.0
 samples = 2
 distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node234 -> node236 [label="имею гражданского супруга"]
+	node234 -> node236 [label="одинока"]
 	node237 [label="entropy = 0.0
+samples = 3
+distribution: [0, 0, 3]
+label = норма"]
+	node234 -> node237 [label="разведена"]
+	node238 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node234 -> node237 [label="вдова"]
-	node238 [label="2. Возраст
+	node234 -> node238 [label="вдова"]
+	node239 [label="2. Возраст
 entropy = 0.84
 samples = 15
 distribution: [0, 11, 4]
 label = злокачественная опухоль"]
-	node234 -> node238 [label="замужем"]
-	node239 [label="entropy = 0.0
+	node234 -> node239 [label="замужем"]
+	node240 [label="entropy = 0.0
 samples = 9
 distribution: [0, 9, 0]
 label = злокачественная опухоль"]
-	node238 -> node239 [label="< 56"]
-	node240 [label="12. Сколько человек живут вместе с Вами?
+	node239 -> node240 [label="< 56"]
+	node241 [label="12. Сколько человек живут вместе с Вами?
 entropy = 0.92
 samples = 6
 distribution: [0, 2, 4]
 label = норма"]
-	node238 -> node240 [label=">= 56"]
-	node241 [label="entropy = 0.0
+	node239 -> node241 [label=">= 56"]
+	node242 [label="entropy = 0.0
 samples = 2
 distribution: [0, 2, 0]
 label = злокачественная опухоль"]
-	node240 -> node241 [label="4 и более человек"]
-	node242 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node240 -> node242 [label="2-3 человека"]
+	node241 -> node242 [label="4 и более человек"]
 	node243 [label="entropy = 0.0
 samples = 3
 distribution: [0, 0, 3]
 label = норма"]
-	node240 -> node243 [label="1 человек"]
+	node241 -> node243 [label="1 человек"]
 	node244 [label="entropy = 0.0
-samples = 3
-distribution: [0, 0, 3]
+samples = 1
+distribution: [0, 0, 1]
 label = норма"]
-	node234 -> node244 [label="разведена"]
+	node241 -> node244 [label="2-3 человека"]
 	node245 [label="32. Количество прерванных беременностей
 entropy = 0.95
 samples = 8
@@ -1363,14 +1363,14 @@ label = доброкачественная опухоль"]
 	node252 -> node256 [label=5]
 	node257 [label="entropy = 0.0
 samples = 1
-distribution: [1, 0, 0]
-label = доброкачественная опухоль"]
-	node256 -> node257 [label="да"]
-	node258 [label="entropy = 0.0
-samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node256 -> node258 [label="нет"]
+	node256 -> node257 [label="нет"]
+	node258 [label="entropy = 0.0
+samples = 1
+distribution: [1, 0, 0]
+label = доброкачественная опухоль"]
+	node256 -> node258 [label="да"]
 	node259 [label="2. Возраст
 entropy = 0.92
 samples = 3
@@ -1394,31 +1394,31 @@ distribution: [3, 1, 3]
 label = доброкачественная опухоль"]
 	node147 -> node262 [label=2]
 	node263 [label="entropy = 0.0
+samples = 2
+distribution: [2, 0, 0]
+label = доброкачественная опухоль"]
+	node262 -> node263 [label="реже, чем раз в месяц"]
+	node264 [label="entropy = 0.0
 samples = 1
 distribution: [1, 0, 0]
 label = доброкачественная опухоль"]
-	node262 -> node263 [label="раз в месяц"]
-	node264 [label="2. Возраст
+	node262 -> node264 [label="раз в месяц"]
+	node265 [label="2. Возраст
 entropy = 0.81
 samples = 4
 distribution: [0, 1, 3]
 label = норма"]
-	node262 -> node264 [label="раз в неделю"]
-	node265 [label="entropy = 0.0
+	node262 -> node265 [label="раз в неделю"]
+	node266 [label="entropy = 0.0
 samples = 3
 distribution: [0, 0, 3]
 label = норма"]
-	node264 -> node265 [label="< 57"]
-	node266 [label="entropy = 0.0
+	node265 -> node266 [label="< 57"]
+	node267 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node264 -> node266 [label=">= 57"]
-	node267 [label="entropy = 0.0
-samples = 2
-distribution: [2, 0, 0]
-label = доброкачественная опухоль"]
-	node262 -> node267 [label="реже, чем раз в месяц"]
+	node265 -> node267 [label=">= 57"]
 	node268 [label="entropy = 0.0
 samples = 6
 distribution: [0, 0, 6]
@@ -1552,20 +1552,20 @@ distribution: [0, 5, 3]
 label = злокачественная опухоль"]
 	node290 -> node292 [label=1]
 	node293 [label="entropy = 0.0
-samples = 4
-distribution: [0, 4, 0]
-label = злокачественная опухоль"]
-	node292 -> node293 [label="законченное высшее образование"]
-	node294 [label="entropy = 0.0
 samples = 3
 distribution: [0, 0, 3]
 label = норма"]
-	node292 -> node294 [label="среднее специальное образование"]
-	node295 [label="entropy = 0.0
+	node292 -> node293 [label="среднее специальное образование"]
+	node294 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node292 -> node295 [label="средняя школа"]
+	node292 -> node294 [label="средняя школа"]
+	node295 [label="entropy = 0.0
+samples = 4
+distribution: [0, 4, 0]
+label = злокачественная опухоль"]
+	node292 -> node295 [label="законченное высшее образование"]
 	node296 [label="entropy = 0.0
 samples = 5
 distribution: [0, 5, 0]
@@ -1657,27 +1657,27 @@ samples = 6
 distribution: [0, 6, 0]
 label = злокачественная опухоль"]
 	node309 -> node312 [label=2]
-	node313 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
+	node313 [label="entropy = 0.0
+samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node307 -> node313 [label="1 человек"]
+	node314 [label="15. Есть ли у Вас домашние питомцы (да/нет)?
 entropy = 0.81
 samples = 4
 distribution: [0, 3, 1]
 label = злокачественная опухоль"]
-	node307 -> node313 [label="2-3 человека"]
-	node314 [label="entropy = 0.0
+	node307 -> node314 [label="2-3 человека"]
+	node315 [label="entropy = 0.0
 samples = 3
 distribution: [0, 3, 0]
 label = злокачественная опухоль"]
-	node313 -> node314 [label="нет"]
-	node315 [label="entropy = 0.0
+	node314 -> node315 [label="нет"]
+	node316 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node313 -> node315 [label="да"]
-	node316 [label="entropy = 0.0
-samples = 2
-distribution: [0, 2, 0]
-label = злокачественная опухоль"]
-	node307 -> node316 [label="1 человек"]
+	node314 -> node316 [label="да"]
 	node317 [label="17. В течение последних 7 дней, как часто Вы практиковали умеренные физические нагрузки?
 entropy = 0.98
 samples = 17
@@ -1701,15 +1701,15 @@ distribution: [0, 0, 2]
 label = норма"]
 	node318 -> node320 [label="я живу одна"]
 	node321 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
-label = норма"]
-	node318 -> node321 [label="2-3 человека"]
-	node322 [label="entropy = 0.0
 samples = 4
 distribution: [0, 0, 4]
 label = норма"]
-	node318 -> node322 [label="1 человек"]
+	node318 -> node321 [label="1 человек"]
+	node322 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node318 -> node322 [label="2-3 человека"]
 	node323 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
@@ -1801,48 +1801,48 @@ samples = 12
 distribution: [0, 6, 6]
 label = злокачественная опухоль"]
 	node302 -> node339 [label=3]
-	node340 [label="entropy = 0.0
-samples = 2
-distribution: [0, 0, 2]
-label = норма"]
-	node339 -> node340 [label="я практически не ем мясо/рыбу"]
-	node341 [label="2. Возраст
+	node340 [label="2. Возраст
 entropy = 0.81
 samples = 8
 distribution: [0, 6, 2]
 label = злокачественная опухоль"]
-	node339 -> node341 [label="я ем мясо или рыбу 2-3 раза в неделю"]
-	node342 [label="entropy = 0.0
+	node339 -> node340 [label="я ем мясо или рыбу 2-3 раза в неделю"]
+	node341 [label="entropy = 0.0
 samples = 5
 distribution: [0, 5, 0]
 label = злокачественная опухоль"]
-	node341 -> node342 [label="< 67"]
-	node343 [label="3. Семейное положение
+	node340 -> node341 [label="< 67"]
+	node342 [label="3. Семейное положение
 entropy = 0.92
 samples = 3
 distribution: [0, 1, 2]
 label = норма"]
-	node341 -> node343 [label=">= 67"]
+	node340 -> node342 [label=">= 67"]
+	node343 [label="entropy = 0.0
+samples = 1
+distribution: [0, 0, 1]
+label = норма"]
+	node342 -> node343 [label="разведена"]
 	node344 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node343 -> node344 [label="вдова"]
+	node342 -> node344 [label="вдова"]
 	node345 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node343 -> node345 [label="разведена"]
+	node342 -> node345 [label="замужем"]
 	node346 [label="entropy = 0.0
-samples = 1
-distribution: [0, 0, 1]
+samples = 2
+distribution: [0, 0, 2]
 label = норма"]
-	node343 -> node346 [label="замужем"]
+	node339 -> node346 [label="я ем мясо или рыбу ежедневно"]
 	node347 [label="entropy = 0.0
 samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node339 -> node347 [label="я ем мясо или рыбу ежедневно"]
+	node339 -> node347 [label="я практически не ем мясо/рыбу"]
 	node348 [label="14. Как часто Вы встречаетесь с друзьями?
 entropy = 0.88
 samples = 10
@@ -1856,30 +1856,30 @@ label = злокачественная опухоль"]
 	node348 -> node349 [label="несколько раз в неделю"]
 	node350 [label="entropy = 0.0
 samples = 2
+distribution: [0, 2, 0]
+label = злокачественная опухоль"]
+	node348 -> node350 [label="реже, чем раз в месяц"]
+	node351 [label="entropy = 0.0
+samples = 2
 distribution: [0, 0, 2]
 label = норма"]
-	node348 -> node350 [label="раз в месяц"]
-	node351 [label="2. Возраст
+	node348 -> node351 [label="раз в месяц"]
+	node352 [label="2. Возраст
 entropy = 1.0
 samples = 2
 distribution: [0, 1, 1]
 label = злокачественная опухоль"]
-	node348 -> node351 [label="раз в неделю"]
-	node352 [label="entropy = 0.0
+	node348 -> node352 [label="раз в неделю"]
+	node353 [label="entropy = 0.0
 samples = 1
 distribution: [0, 0, 1]
 label = норма"]
-	node351 -> node352 [label="< 64"]
-	node353 [label="entropy = 0.0
+	node352 -> node353 [label="< 64"]
+	node354 [label="entropy = 0.0
 samples = 1
 distribution: [0, 1, 0]
 label = злокачественная опухоль"]
-	node351 -> node353 [label=">= 64"]
-	node354 [label="entropy = 0.0
-samples = 2
-distribution: [0, 2, 0]
-label = злокачественная опухоль"]
-	node348 -> node354 [label="реже, чем раз в месяц"]
+	node352 -> node354 [label=">= 64"]
 	node355 [label="2. Возраст
 entropy = 0.81
 samples = 4
