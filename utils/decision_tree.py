@@ -22,14 +22,12 @@ class DecisionTree:
     def __init__(
             self,
             *,
-            criterion='entropy',
+            criterion='gini',
             min_samples_split=2,
             min_samples_leaf=1,
             min_impurity_decrease=0.05
-    ):
-        if criterion != 'entropy':
-            print('Я пока не умею работать с таким критерием. Посчитаю через энтропию.')
-        self.__criterion = 'entropy'
+    ) -> None:
+        self.__criterion = criterion
         self.__min_samples_split = min_samples_split
         self.__min_samples_leaf = min_samples_leaf
         self.__min_impurity_decrease = min_impurity_decrease
@@ -205,11 +203,12 @@ class DecisionTree:
         impurity = None
         if self.__criterion == 'entropy':
             impurity = self.__entropy(Y)
+        elif self.__criterion == 'gini':
+            impurity = self.__gini(Y)
 
         return impurity
 
-    @staticmethod
-    def __entropy(Y):
+    def __entropy(self, Y):
         """Считает энтропию в множестве.
 
         Args:
@@ -221,12 +220,22 @@ class DecisionTree:
         n = Y.shape[0]  # количество точек в множестве
 
         entropy = 0
-        for label in set(Y.tolist()):  # перебор по классам
+        for label in self.__class_names:  # перебор по классам
             m_i = (Y == label).sum()
             if m_i != 0:
                 entropy -= (m_i/n) * math.log2(m_i/n)
 
         return entropy
+
+    def __gini(self, Y):
+        """."""
+        n = Y.shape[0]  # количество точек в множестве
+
+        gini = 1
+        for label in self.__class_names:  # перебор по классам
+            gini -= ((Y == label).sum() / n) ** 2
+
+        return gini
 
     def __information_gain(self, X, Y, feature_name, impurity):
         """Возвращает прирост информативности для разделения по признаку.
