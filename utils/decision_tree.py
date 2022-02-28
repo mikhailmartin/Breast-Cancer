@@ -228,12 +228,21 @@ class DecisionTree:
         return entropy
 
     def __gini(self, Y):
-        """."""
+        """Считает коэффициент Джини в множестве.
+
+        Args:
+            Y (pd.Series): c метками для множества.
+
+        Returns:
+            gini: коэффициент Джини.
+        """
         n = Y.shape[0]  # количество точек в множестве
 
-        gini = 1
+        gini = 0
         for label in self.__class_names:  # перебор по классам
-            gini -= ((Y == label).sum() / n) ** 2
+            m_i = (Y == label).sum()
+            p_i = m_i/n
+            gini += p_i * (1 - p_i)
 
         return gini
 
@@ -283,25 +292,27 @@ class DecisionTree:
         """Считает прирост информации для разделения по численному признаку."""
         A = X.shape[0]
 
-        best_gain = 0
-        best_threshold = None
+        best_information_gain, best_threshold = 0, None
         for threshold in range(int(X[feature_name].max())):
             A_less = (X[feature_name] < threshold).sum()
             y_less = Y[X[feature_name] < threshold]
             A_more = (X[feature_name] >= threshold).sum()
             y_more = Y[X[feature_name] >= threshold]
+            # проверка на пустое дочернее множество
+            if A_less == 0 or A_more == 0:
+                continue
 
-            numerical_information_gain = (
+            current_information_gain = (
                     impurity -
                     (A_less/A) * self.__impurity(y_less) -
                     (A_more/A) * self.__impurity(y_more)
             )
 
-            if best_gain is None or best_gain < numerical_information_gain:
-                best_gain = numerical_information_gain
+            if best_information_gain < current_information_gain:
+                best_information_gain = current_information_gain
                 best_threshold = threshold
 
-        return best_gain, best_threshold
+        return best_information_gain, best_threshold
 
     def __split(self, X, Y, feature_name, threshold):
         """Разделяет множество по признаку.
@@ -330,9 +341,10 @@ class DecisionTree:
         """Расщепляет множество согласно категориальному признаку."""
         xs, ys, feature_values = [], [], []
         for feature_value in set(X[feature_name].tolist()):
-            xs.append(X[X[feature_name] == feature_value])
-            ys.append(Y[X[feature_name] == feature_value])
-            feature_values.append(feature_value)
+            if (X[feature_name] == feature_value).sum():
+                xs.append(X[X[feature_name] == feature_value])
+                ys.append(Y[X[feature_name] == feature_value])
+                feature_values.append(feature_value)
 
         return xs, ys, feature_values
 
