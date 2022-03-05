@@ -5,6 +5,7 @@ import functools
 import math
 
 from graphviz import Digraph
+import pandas as pd
 
 
 def counter(function):
@@ -360,6 +361,38 @@ class DecisionTree:
         feature_values = [f'< {threshold}', f'>= {threshold}']
 
         return xs, ys, feature_values
+
+    def predict(self, X):
+        """Предсказывает метки классов для точек данных в X."""
+        Y = None
+        if isinstance(X, pd.DataFrame):
+            Y = [self.predict(point) for _, point in X.iterrows()]
+        elif isinstance(X, pd.Series):
+            Y = self.__predict(self.__tree, X)
+
+        return Y
+
+    def __predict(self, node, point):
+        """Предсказывает метку класса для точки данных."""
+        Y = None
+        # если мы дошли до листа
+        if node.split_feature is None:
+            Y = node.label
+        elif node.split_feature in self.__categorical_feature_names:
+            # ищем ту ветвь, по которой нужно идти
+            for child in node.childs:
+                if child.feature_value == point[node.split_feature]:
+                    Y = self.__predict(child, point)
+                    break
+        elif node.split_feature in self.__numerical_feature_names:
+            # ищем ту ветвь, по которой нужно идти
+            threshold = float(node.childs[0].feature_value[2:])
+            if point[node.split_feature] < threshold:
+                Y = self.__predict(node.childs[0], point)
+            elif point[node.split_feature] >= threshold:
+                Y = self.__predict(node.childs[1], point)
+
+        return Y
 
     def render(
             self,
