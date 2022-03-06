@@ -39,42 +39,34 @@ class DecisionTree:
         self.__numerical_feature_names = None
         self.__tree = None
         self.__graph = None
-        self.__feature_importances_ = None
+        self.__feature_importances = None
         self.__total_samples = None
 
     @property
-    def feature_names(self):
+    def feature_names_(self):
         return self.__feature_names
 
     @property
-    def class_names(self):
+    def class_names_(self):
         return self.__class_names
 
     @property
-    def categorical_feature_names(self):
+    def categorical_feature_names_(self):
         return self.__categorical_feature_names
 
     @property
-    def numerical_feature_names(self):
+    def numerical_feature_names_(self):
         return self.__numerical_feature_names
-
-    @property
-    def tree(self):
-        return self.__tree
-
-    @property
-    def graph(self):
-        return self.__graph
 
     @property
     def feature_importances_(self):
         total = 0
-        for importance in self.__feature_importances_.values():
+        for importance in self.__feature_importances.values():
             total += importance
-        for feature in self.__feature_importances_.keys():
-            self.__feature_importances_[feature] /= total
+        for feature in self.__feature_importances.keys():
+            self.__feature_importances[feature] /= total
 
-        return self.__feature_importances_
+        return self.__feature_importances
 
     def fit(self, X, Y, categorical_feature_names, numerical_feature_names, *, special_cases=None):
         """Обучает дерево решений.
@@ -93,9 +85,9 @@ class DecisionTree:
         self.__numerical_feature_names = numerical_feature_names
 
         self.__total_samples = X.shape[0]
-        self.__feature_importances_ = dict.fromkeys(self.__feature_names, 0)
+        self.__feature_importances = dict.fromkeys(self.__feature_names, 0)
 
-        available_feature_names = self.feature_names.copy()
+        available_feature_names = self.__feature_names.copy()
         # удаляем те признаки, которые пока не могут рассматриваться
         if special_cases:
             for value in special_cases.values():
@@ -152,7 +144,7 @@ class DecisionTree:
         distribution = []
         label = None
         max_samples_per_class = -1
-        for class_name in self.class_names:
+        for class_name in self.__class_names:
             samples_per_class = (Y == class_name).sum()
             distribution.append(samples_per_class)
             if max_samples_per_class < samples_per_class:
@@ -161,9 +153,9 @@ class DecisionTree:
 
         if best_feature:
             if isinstance(best_gain, float):
-                self.__feature_importances_[best_feature] += (samples/self.__total_samples) * best_gain
+                self.__feature_importances[best_feature] += (samples / self.__total_samples) * best_gain
             elif isinstance(best_gain, tuple):
-                self.__feature_importances_[best_feature] += (samples/self.__total_samples) * best_gain[0]
+                self.__feature_importances[best_feature] += (samples / self.__total_samples) * best_gain[0]
 
         childs = []
         if best_feature:
@@ -341,7 +333,7 @@ class DecisionTree:
     def __categorical_split(X, Y, feature_name):
         """Расщепляет множество согласно категориальному признаку."""
         xs, ys, feature_values = [], [], []
-        for feature_value in set(X[feature_name].tolist()):
+        for feature_value in sorted(list(set(X[feature_name].tolist()))):
             if (X[feature_name] == feature_value).sum():
                 xs.append(X[X[feature_name] == feature_value])
                 ys.append(Y[X[feature_name] == feature_value])
@@ -402,7 +394,8 @@ class DecisionTree:
             show_num_samples=False,
             show_distribution=False,
             show_label=False,
-            **kwargs):
+            **kwargs
+    ):
         """Визуализирует дерево решений.
 
         Если указаны именованные параметры, сохраняет визуализацию в виде файла(ов).
@@ -420,14 +413,16 @@ class DecisionTree:
         """
         if self.__graph is None:
             self.__create_graph(
-                rounded, show_impurity, show_num_samples, show_distribution, show_label)
+                rounded, show_impurity, show_num_samples, show_distribution, show_label
+            )
         if kwargs:
             self.__graph.render(**kwargs)
 
         return self.__graph
 
     def __create_graph(
-            self, rounded, show_impurity, show_num_samples, show_distribution, show_label):
+            self, rounded, show_impurity, show_num_samples, show_distribution, show_label
+    ):
         """Создаёт объект класса Digraph, содержащий описание графовой структуры дерева для
         визуализации."""
         node_attr = {'shape': 'box'}
@@ -435,7 +430,7 @@ class DecisionTree:
             node_attr['style'] = 'rounded'
         self.__graph = Digraph(name='дерево решений', node_attr=node_attr)
         self.__add_node(
-            self.tree, None, show_impurity, show_num_samples, show_distribution, show_label
+            self.__tree, None, show_impurity, show_num_samples, show_distribution, show_label
         )
 
     @counter
