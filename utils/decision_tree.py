@@ -468,6 +468,14 @@ class DecisionTree:
                 child, node_name, show_impurity, show_num_samples, show_distribution, show_label
             )
 
+    def score(self, X, Y):
+        """Возвращает точность по заданным тестовым данным и меткам."""
+        from sklearn.metrics import accuracy_score
+
+        score = accuracy_score(Y, self.predict(X))
+
+        return score
+
 
 class Node:
     """Узел дерева решений."""
