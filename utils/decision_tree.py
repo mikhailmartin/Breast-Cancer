@@ -153,9 +153,11 @@ class DecisionTree:
 
         if best_feature:
             if isinstance(best_gain, float):
-                self.__feature_importances[best_feature] += (samples / self.__total_samples) * best_gain
+                self.__feature_importances[best_feature] += \
+                    (samples/self.__total_samples) * best_gain
             elif isinstance(best_gain, tuple):
-                self.__feature_importances[best_feature] += (samples / self.__total_samples) * best_gain[0]
+                self.__feature_importances[best_feature] += \
+                    (samples/self.__total_samples) * best_gain[0]
 
         childs = []
         if best_feature:
