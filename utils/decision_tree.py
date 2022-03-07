@@ -23,10 +23,10 @@ class DecisionTree:
     def __init__(
             self,
             *,
-            criterion='gini',
+            criterion='entropy',
             min_samples_split=2,
             min_samples_leaf=1,
-            min_impurity_decrease=0.05
+            min_impurity_decrease=0.05,
     ) -> None:
         self.__criterion = criterion
         self.__min_samples_split = min_samples_split
@@ -394,7 +394,7 @@ class DecisionTree:
             show_num_samples=False,
             show_distribution=False,
             show_label=False,
-            **kwargs
+            **kwargs,
     ):
         """Визуализирует дерево решений.
 
@@ -441,7 +441,7 @@ class DecisionTree:
             show_impurity,
             show_num_samples,
             show_distribution,
-            show_label
+            show_label,
     ):
         """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
         node_name = f'node{self.__add_node.count}'
@@ -477,7 +477,7 @@ class Node:
             samples,
             distribution,
             label,
-            childs
+            childs,
     ):
         self.split_feature = split_feature
         self.feature_value = feature_value
