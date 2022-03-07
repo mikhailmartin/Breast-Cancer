@@ -115,6 +115,7 @@ class DecisionTree:
             node: узел дерева.
         """
         available_feature_names = available_feature_names.copy()
+        special_cases = special_cases.copy()
 
         # выбор лучшего признака для разбиения
         impurity = self.__impurity(Y)
