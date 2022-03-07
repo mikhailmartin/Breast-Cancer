@@ -356,6 +356,35 @@ class DecisionTree:
 
         return xs, ys, feature_values
 
+    def get_params(self, deep=True):
+        """Возвращает параметры этого классификатора."""
+        params = {
+            'min_samples_split': self.__min_samples_split,
+            'min_samples_leaf': self.__min_samples_leaf,
+            'min_impurity_decrease': self.__min_impurity_decrease,
+        }
+
+        return params
+
+    def set_params(self, **params):
+        """Задаёт параметры этому классификатору."""
+        if not params:
+            return self
+        valid_params = self.get_params(deep=True)
+
+        for param, value in params.items():
+            if param not in valid_params:
+                raise ValueError(
+                    f'Invalid parameter {param} for estimator {self}. '
+                    'Check the list of available parameters '
+                    'with `estimator.get_params().keys()`.'
+                )
+
+            setattr(self, param, value)
+            valid_params[param] = value
+
+        return self
+
     def predict(self, X):
         """Предсказывает метки классов для точек данных в X."""
         Y = None
