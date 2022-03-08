@@ -183,6 +183,8 @@ class DecisionTree:
                         self.__generate_node(x, y, fv, available_feature_names, special_cases)
                     )
 
+        assert label is not None, 'label is None'
+
         node = Node(best_feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
@@ -388,11 +390,14 @@ class DecisionTree:
 
     def predict(self, X):
         """Предсказывает метки классов для точек данных в X."""
-        Y = None
         if isinstance(X, pd.DataFrame):
             Y = [self.predict(point) for _, point in X.iterrows()]
         elif isinstance(X, pd.Series):
             Y = self.__predict(self.__tree, X)
+        else:
+            raise ValueError('X должен представлять собой pd.DataFrame или pd.Series.')
+
+        assert Y is not None, 'предсказывает None'
 
         return Y
 
@@ -402,6 +407,7 @@ class DecisionTree:
         # если мы дошли до листа
         if node.split_feature is None:
             Y = node.label
+            assert Y is not None, 'Y is None'
         elif node.split_feature in self.__categorical_feature_names:
             # ищем ту ветвь, по которой нужно идти
             for child in node.childs:
@@ -415,6 +421,11 @@ class DecisionTree:
                 Y = self.__predict(node.childs[0], point)
             elif point[node.split_feature] >= threshold:
                 Y = self.__predict(node.childs[1], point)
+        else:
+            assert False, ('node.split_feature и не None, и не в categorical_feature_names и не в'
+                           'numerical_feature_names')
+
+        assert Y is not None, 'Y is None'
 
         return Y
 
