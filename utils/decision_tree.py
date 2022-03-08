@@ -47,23 +47,23 @@ class DecisionTree:
         self.__total_samples = None
 
     @property
-    def feature_names_(self):
+    def feature_names(self):
         return self.__feature_names
 
     @property
-    def class_names_(self):
+    def class_names(self):
         return self.__class_names
 
     @property
-    def categorical_feature_names_(self):
+    def categorical_feature_names(self):
         return self.__categorical_feature_names
 
     @property
-    def numerical_feature_names_(self):
+    def numerical_feature_names(self):
         return self.__numerical_feature_names
 
     @property
-    def feature_importances_(self):
+    def feature_importances(self):
         total = 0
         for importance in self.__feature_importances.values():
             total += importance
