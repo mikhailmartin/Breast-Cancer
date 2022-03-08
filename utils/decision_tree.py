@@ -1,6 +1,10 @@
 """Кастомная реализация дерева решений, которая может работать с категориальными и численными
 признаками.
 """
+from __future__ import annotations
+
+from typing import Dict, List, Optional, Tuple, Union
+
 import functools
 import math
 
@@ -68,7 +72,15 @@ class DecisionTree:
 
         return self.__feature_importances
 
-    def fit(self, X, Y, categorical_feature_names, numerical_feature_names, *, special_cases=None):
+    def fit(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            categorical_feature_names: List[str],
+            numerical_feature_names: List[str],
+            *,
+            special_cases: Optional[Dict[str, Union[str, Dict]]] = None,
+    ) -> None:
         """Обучает дерево решений.
 
         Args:
@@ -100,7 +112,14 @@ class DecisionTree:
         self.__tree = self.__generate_node(X, Y, None, available_feature_names, special_cases)
 
     @counter
-    def __generate_node(self, X, Y, feature_value, available_feature_names, special_cases=None):
+    def __generate_node(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_value: str,
+            available_feature_names: List[str],
+            special_cases: Optional[Dict[str, Union[str, Dict]]] = None,
+    ) -> Node:
         """Рекурсивная функция создания узлов дерева.
 
         Args:
@@ -189,11 +208,11 @@ class DecisionTree:
 
         return node
 
-    def __impurity(self, Y):
+    def __impurity(self, Y: pd.Series) -> float:
         """Считает загрязнённость для множества.
 
         Args:
-            Y (pd.Series): c метками для множества.
+            Y: c метками для множества.
 
         Returns:
             impurity: загрязнённость множества.
@@ -206,11 +225,11 @@ class DecisionTree:
 
         return impurity
 
-    def __entropy(self, Y):
+    def __entropy(self, Y: pd.Series) -> float:
         """Считает энтропию в множестве.
 
         Args:
-            Y (pd.Series): c метками для множества.
+            Y: c метками для множества.
 
         Returns:
             entropy: энтропия множества.
@@ -225,11 +244,11 @@ class DecisionTree:
 
         return entropy
 
-    def __gini(self, Y):
+    def __gini(self, Y: pd.Series) -> float:
         """Считает коэффициент Джини в множестве.
 
         Args:
-            Y (pd.Series): c метками для множества.
+            Y: c метками для множества.
 
         Returns:
             gini: коэффициент Джини.
@@ -244,7 +263,13 @@ class DecisionTree:
 
         return gini
 
-    def __information_gain(self, X, Y, feature_name, impurity):
+    def __information_gain(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            impurity: float,
+    ) -> float:
         """Возвращает прирост информативности для разделения по признаку.
 
         Формула в LaTeX:
@@ -273,7 +298,13 @@ class DecisionTree:
 
         return information_gain
 
-    def __categorical_information_gain(self, X, Y, feature_name, impurity):
+    def __categorical_information_gain(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            impurity: float,
+    ) -> float:
         """Считает прирост информации для разделения по категориальному признаку."""
         A = X.shape[0]
         second_term = 0
@@ -286,7 +317,13 @@ class DecisionTree:
 
         return categorical_information_gain
 
-    def __numerical_information_gain(self, X, Y, feature_name, impurity):
+    def __numerical_information_gain(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            impurity: float,
+    ) -> Tuple[float, float]:
         """Считает прирост информации для разделения по численному признаку."""
         A = X.shape[0]
 
@@ -312,7 +349,13 @@ class DecisionTree:
 
         return best_information_gain, best_threshold
 
-    def __split(self, X, Y, feature_name, threshold):
+    def __split(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            threshold: Tuple,
+    ) -> Tuple[List, List, List]:
         """Разделяет множество по признаку.
 
         Args:
@@ -335,7 +378,11 @@ class DecisionTree:
         return xs, ys, feature_values
 
     @staticmethod
-    def __categorical_split(X, Y, feature_name):
+    def __categorical_split(
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+    ) -> Tuple[List, List, List]:
         """Расщепляет множество согласно категориальному признаку."""
         xs, ys, feature_values = [], [], []
         for feature_value in sorted(list(set(X[feature_name].tolist()))):
@@ -347,7 +394,12 @@ class DecisionTree:
         return xs, ys, feature_values
 
     @staticmethod
-    def __numerical_split(X, Y, feature_name, threshold):
+    def __numerical_split(
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            threshold,
+    ) -> Tuple[List, List, List]:
         """Расщепляет множество согласно численному признаку."""
         x_less = X[X[feature_name] < threshold]
         x_more = X[X[feature_name] >= threshold]
@@ -359,7 +411,7 @@ class DecisionTree:
 
         return xs, ys, feature_values
 
-    def get_params(self, deep=True):
+    def get_params(self, deep: Optional[bool] = True) -> Dict:
         """Возвращает параметры этого классификатора."""
         params = {
             'min_samples_split': self.__min_samples_split,
@@ -388,7 +440,7 @@ class DecisionTree:
 
         return self
 
-    def predict(self, X):
+    def predict(self, X: Union[pd.DataFrame, pd.Series]) -> Union[List[str], str]:
         """Предсказывает метки классов для точек данных в X."""
         if isinstance(X, pd.DataFrame):
             Y = [self.predict(point) for _, point in X.iterrows()]
@@ -401,7 +453,7 @@ class DecisionTree:
 
         return Y
 
-    def __predict(self, node, point):
+    def __predict(self, node: Node, point: pd.Series) -> str:
         """Предсказывает метку класса для точки данных."""
         Y = None
         # если мы дошли до листа
@@ -432,13 +484,13 @@ class DecisionTree:
     def render(
             self,
             *,
-            rounded=False,
-            show_impurity=False,
-            show_num_samples=False,
-            show_distribution=False,
-            show_label=False,
+            rounded: Optional[bool] = False,
+            show_impurity: Optional[bool] = False,
+            show_num_samples: Optional[bool] = False,
+            show_distribution: Optional[bool] = False,
+            show_label: Optional[bool] = False,
             **kwargs,
-    ):
+    ) -> Digraph:
         """Визуализирует дерево решений.
 
         Если указаны именованные параметры, сохраняет визуализацию в виде файла(ов).
@@ -464,8 +516,13 @@ class DecisionTree:
         return self.__graph
 
     def __create_graph(
-            self, rounded, show_impurity, show_num_samples, show_distribution, show_label
-    ):
+            self,
+            rounded: bool,
+            show_impurity: bool,
+            show_num_samples: bool,
+            show_distribution: bool,
+            show_label: bool,
+    ) -> None:
         """Создаёт объект класса Digraph, содержащий описание графовой структуры дерева для
         визуализации."""
         node_attr = {'shape': 'box'}
@@ -479,13 +536,13 @@ class DecisionTree:
     @counter
     def __add_node(
             self,
-            node,
-            parent_name,
-            show_impurity,
-            show_num_samples,
-            show_distribution,
-            show_label,
-    ):
+            node: Node,
+            parent_name: str,
+            show_impurity: bool,
+            show_num_samples: bool,
+            show_distribution: bool,
+            show_label: bool,
+    ) -> None:
         """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
         node_name = f'node{self.__add_node.count}'
         node_content = ''
@@ -509,7 +566,7 @@ class DecisionTree:
                 child, node_name, show_impurity, show_num_samples, show_distribution, show_label
             )
 
-    def score(self, X, Y):
+    def score(self, X: pd.DataFrame, Y: pd.Series) -> float:
         """Возвращает точность по заданным тестовым данным и меткам."""
         from sklearn.metrics import accuracy_score
 

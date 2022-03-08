@@ -1,11 +1,20 @@
 """Здесь содержатся разнообразные утилиты для визуализации."""
+from typing import List, Optional, Tuple, Union
+
+import matplotlib.axes
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import tensorflow as tf
 
 from utils import definitions as defs
 
 
-def autolabel(ax, labels=None, height_factor=1.01):
+def autolabel(
+        ax: matplotlib.axes.Axes,
+        labels: Optional[List[str]] = None,
+        height_factor: Optional[float] = 1.01,
+) -> None:
     """Подписывает значение столбцов в гистограмме."""
     for i, patch in enumerate(ax.patches):
         height = patch.get_height()
@@ -21,24 +30,32 @@ def autolabel(ax, labels=None, height_factor=1.01):
             height_factor * height,
             f'{label}',
             ha='center',
-            va='bottom')
+            va='bottom',
+        )
 
 
-def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
+def plot_pies(
+        df: pd.DataFrame,
+        feature_name: str,
+        label_column: str,
+        *,
+        nrows: Optional[int] = None,
+        ncols: Optional[int] = None,
+) -> None:
     """Визуализирует распределение значений признака в виде круговой диаграммы.
 
     Args:
-        dataframe: DataFrame, из которого будет вытаскиваться распределение.
-        feature: признак, для которого визуализируется распределение ответов.
+        df: DataFrame, из которого будет вытаскиваться распределение.
+        feature_name: признак, для которого визуализируется распределение ответов.
         label_column: название столбца с метками.
         nrows: количество строчек на рисунке.
         ncols: количество столбцов на рисунке.
     """
-    df = dataframe.copy()
-    if df[feature].isnull().sum():
-        df.replace({feature: {np.NaN: '-'}}, inplace=True)
+    df = df.copy()
+    if df[feature_name].isnull().sum():
+        df.replace({feature_name: {np.NaN: '-'}}, inplace=True)
 
-    values = sorted(list(set(df[feature].tolist())))
+    values = sorted(list(set(df[feature_name].tolist())))
     labels = sorted(list(set(df[label_column].tolist())))
     if nrows is None or ncols is None:
         nrows = 1
@@ -46,33 +63,42 @@ def plot_pies(dataframe, feature, label_column, *, nrows=None, ncols=None):
 
     fig, axes = plt.subplots(nrows, ncols, figsize=(24, 5))
     axes = axes.flat
-    fig.suptitle(feature, fontsize=16)
+    fig.suptitle(feature_name, fontsize=16)
     # отдельные пироги по классам
     for label, ax in zip(labels, axes[:len(labels)]):
         ax.set_title(label)
         sizes = [
-            df[(df[label_column] == label) & (df[feature] == value)].shape[0]
+            df[(df[label_column] == label) & (df[feature_name] == value)].shape[0]
             for value in values
         ]
         ax.pie(sizes, autopct='%1.1f%%')
     # пирог для всего датасета
     axes[-1].set_title('целый датасет')
-    sizes = [df[df[feature] == value].shape[0] for value in values]
+    sizes = [df[df[feature_name] == value].shape[0] for value in values]
     wedges, _, _ = axes[-1].pie(sizes, autopct='%1.1f%%')
     axes[-1].legend(wedges, values, bbox_to_anchor=(1, 0, 0.5, 1))
 
     plt.show()
 
 
-def plot_hists(df, feature, label_column, *, bins=None, xlim, nrows=None, ncols=None):
+def plot_hists(
+        df: pd.DataFrame,
+        feature_name: str,
+        label_column: str,
+        *,
+        bins: Optional[int] = None,
+        xlim: Tuple[Union[int, float], Union[int, float]],
+        nrows: Optional[int] = None,
+        ncols: Optional[int] = None,
+) -> None:
     """Визуализирует гистограммы значений признака.
 
     Args:
         df: DataFrame, из которого будет вытаскиваться гистограммы.
-        feature: вопрос, для которого визуализируются гистограммы.
+        feature_name: вопрос, для которого визуализируются гистограммы.
         label_column: название столбца с метками.
         bins: количество бинов гистограмм.
-        xlim (tuple): пределы шкалы по x.
+        xlim: пределы шкалы по x.
         nrows: количество строчек на рисунке.
         ncols: количество столбцов на рисунке.
     """
@@ -83,14 +109,14 @@ def plot_hists(df, feature, label_column, *, bins=None, xlim, nrows=None, ncols=
 
     fig, axes = plt.subplots(nrows, ncols, figsize=(24, 5), sharey=True)
     axes = axes.flat
-    fig.suptitle(feature, fontsize=16)
+    fig.suptitle(feature_name, fontsize=16)
     # отдельные гистограммы по классам
     for label, ax in zip(labels, axes[:len(labels)]):
-        ax.hist(df.loc[df[label_column] == label, feature].tolist(), bins=bins)
+        ax.hist(df.loc[df[label_column] == label, feature_name].tolist(), bins=bins)
         ax.set_title(label)
         ax.set_xlim(*xlim)
     # гистограмма для всего датасета
-    axes[-1].hist(df[feature].tolist(), bins=bins)
+    axes[-1].hist(df[feature_name].tolist(), bins=bins)
     axes[-1].set_title('целый датасет')
     axes[-1].set_xlim(*xlim)
 
@@ -111,7 +137,10 @@ def plot_distribution(n1_old, n2_old, n3_old, n1_new, n2_new, n3_new):
     plt.show()
 
 
-def get_accuracy_matrix(df, question):
+def get_accuracy_matrix(
+        df: pd.DataFrame,
+        question: str
+) -> Tuple[List[List[float]], List[str]]:
     """Подсчитывает матрицу точностей совпадений ответа на вопрос и диагноза.
 
     Args:
@@ -148,7 +177,10 @@ def get_accuracy_matrix(df, question):
     return accuracy_matrix, answers
 
 
-def plot_accuracy_matrix(df, question):
+def plot_accuracy_matrix(
+        df: pd.DataFrame,
+        question: str
+) -> None:
     """Визуализирует матрицу точностей.
 
     Args:
@@ -195,7 +227,12 @@ def plot_accuracy_matrix(df, question):
     plt.show()
 
 
-def get_confusion_matrix(ys_true, ys_pred, true_labels, pred_labels):
+def get_confusion_matrix(
+        ys_true: List[str],
+        ys_pred: List[str],
+        true_labels: List[str],
+        pred_labels: List[str],
+) -> np.ndarray:
     """Подсчитывает матрицу ошибок.
 
     Args:
@@ -210,10 +247,16 @@ def get_confusion_matrix(ys_true, ys_pred, true_labels, pred_labels):
     confusion_matrix = np.zeros((len(true_labels), len(pred_labels)), dtype='int64')
     for y_true, y_pred in zip(ys_true, ys_pred):
         confusion_matrix[true_labels.index(y_true)][pred_labels.index(y_pred)] += 1
+
     return confusion_matrix
 
 
-def plot_confusion_matrix(confusion_matrix, true_labels, pred_labels, threshold=None):
+def plot_confusion_matrix(
+        confusion_matrix: np.ndarray,
+        true_labels: List[str],
+        pred_labels: List[str],
+        threshold: Optional[float] = None,
+) -> None:
     """Визуализирует матрицу ошибок.
 
     Args:
@@ -246,7 +289,7 @@ def plot_confusion_matrix(confusion_matrix, true_labels, pred_labels, threshold=
     plt.show()
 
 
-def plot_history(history):
+def plot_history(history: tf.keras.callbacks.History) -> None:
     """Визуализирует историю обучения.
 
     Args:

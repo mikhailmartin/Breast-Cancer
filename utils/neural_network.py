@@ -1,4 +1,6 @@
 """Здесь содержаться утилиты для работы с нейросетями."""
+from typing import Dict, List, Tuple
+
 import tensorflow as tf
 
 
@@ -40,7 +42,7 @@ INPUT_NAMES = {
 }
 
 
-def dataset_from_csv(file_path):
+def dataset_from_csv(file_path: str) -> tf.data.Dataset:
     """Читает Dataset из CSV-файла. One-hot-encode'ит метки.
 
     Args:
@@ -56,7 +58,8 @@ def dataset_from_csv(file_path):
         column_names=INPUT_NAMES.keys(),
         label_name='label',
         header=False,
-        num_epochs=1)
+        num_epochs=1,
+    )
     # one-hot-encoding метки
     dataset = dataset.map(lambda point, label: (point, tf.one_hot(label, depth=3)))
     dataset.batch(1)
@@ -65,11 +68,11 @@ def dataset_from_csv(file_path):
 
 
 # архитектура нейросети
-def create_model(layer_width, entire_ds):
+def create_model(layer_width: int, entire_ds: tf.data.Dataset) -> tf.keras.Model:
     """Создаёт модель.
 
     Args:
-        layer_width (int): ширина слоёв.
+        layer_width: ширина слоёв.
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
@@ -91,7 +94,7 @@ def create_model(layer_width, entire_ds):
     return model
 
 
-def create_inputs(input_names):
+def create_inputs(input_names: Dict[str, str]) -> Tuple[List[tf.keras.Input], List[tf.keras.Input]]:
     """Возвращает 2 списка: из категориальных и численных входов.
 
     Args:
@@ -112,7 +115,10 @@ def create_inputs(input_names):
     return categorical_inputs, numerical_inputs
 
 
-def encode_categorical_inputs(inputs, entire_ds):
+def encode_categorical_inputs(
+        inputs: List[tf.keras.Input],
+        entire_ds: tf.data.Dataset,
+) -> List[tf.Tensor]:
     """Для категориальных признаков создаёт слой one-hot-encoding.
 
     Args:
@@ -131,11 +137,11 @@ def encode_categorical_inputs(inputs, entire_ds):
     return encoded_categorical_features
 
 
-def encode_categorical_input(inpt, entire_ds):
+def encode_categorical_input(inpt: tf.keras.Input, entire_ds: tf.data.Dataset) -> tf.Tensor:
     """One-hot-encode'ит категориальный признак.
 
     Args:
-        inpt (tf.keras.Input): вход нейросети категориального признака.
+        inpt: вход нейросети категориального признака.
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
@@ -144,7 +150,8 @@ def encode_categorical_input(inpt, entire_ds):
     lookup = tf.keras.layers.IntegerLookup(
         output_mode='binary',
         num_oov_indices=0,
-        mask_token=-1)
+        mask_token=-1,
+    )
     # Подготавливаем Dataset, который содержит только необходимый признак
     feature_ds = entire_ds.map(lambda x, y: x[inpt.name])
     feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
