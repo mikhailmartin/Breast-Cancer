@@ -129,19 +129,19 @@ def encode_categorical_inputs(
         encoded_categorical_features: список предобработанных признаков.
     """
     encoded_categorical_features = [
-        encode_categorical_input(inpt, entire_ds)
-        for inpt in inputs
-        if INPUT_NAMES[inpt.name] == 'categorical'
+        encode_categorical_input(input_, entire_ds)
+        for input_ in inputs
+        if INPUT_NAMES[input_.name] == 'categorical'
     ]
 
     return encoded_categorical_features
 
 
-def encode_categorical_input(inpt: tf.keras.Input, entire_ds: tf.data.Dataset) -> tf.Tensor:
+def encode_categorical_input(input_: tf.keras.Input, entire_ds: tf.data.Dataset) -> tf.Tensor:
     """One-hot-encode'ит категориальный признак.
 
     Args:
-        inpt: вход нейросети категориального признака.
+        input_: вход нейросети категориального признака.
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
@@ -153,11 +153,11 @@ def encode_categorical_input(inpt: tf.keras.Input, entire_ds: tf.data.Dataset) -
         mask_token=-1,
     )
     # Подготавливаем Dataset, который содержит только необходимый признак
-    feature_ds = entire_ds.map(lambda x, y: x[inpt.name])
+    feature_ds = entire_ds.map(lambda x, y: x[input_.name])
     feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
     # Изучаем набор возможных строковых значений и присваиваем им фиксированный целочисленный индекс
     lookup.adapt(feature_ds)
     # Превращаем строковый вход в целочисленные индексы
-    encoded_feature = lookup(inpt)
+    encoded_feature = lookup(input_)
 
     return encoded_feature
