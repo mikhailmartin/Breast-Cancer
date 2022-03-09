@@ -459,13 +459,17 @@ class DecisionTree:
         # если мы дошли до листа
         if node.split_feature is None:
             Y = node.label
-            assert Y is not None, 'Y is None'
+            assert Y is not None, 'label оказался None'
         elif node.split_feature in self.__categorical_feature_names:
             # ищем ту ветвь, по которой нужно идти
             for child in node.childs:
                 if child.feature_value == point[node.split_feature]:
                     Y = self.__predict(child, point)
                     break
+            else:
+                # если такой ветви нет
+                if Y is None:
+                    Y = node.label
         elif node.split_feature in self.__numerical_feature_names:
             # ищем ту ветвь, по которой нужно идти
             threshold = float(node.childs[0].feature_value[2:])
@@ -473,6 +477,8 @@ class DecisionTree:
                 Y = self.__predict(node.childs[0], point)
             elif point[node.split_feature] >= threshold:
                 Y = self.__predict(node.childs[1], point)
+            else:
+                assert False, 'пришли сюда'
         else:
             assert False, ('node.split_feature и не None, и не в categorical_feature_names и не в'
                            'numerical_feature_names')
