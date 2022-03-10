@@ -204,29 +204,11 @@ class DecisionTree:
         available_feature_names = available_feature_names.copy()
         special_cases = special_cases.copy()
 
-        # выбор лучшего признака для разбиения
         impurity = self.__impurity(Y)
 
-        best_feature = None
-        best_gain = self.__min_impurity_decrease
-        for feature_name in available_feature_names:
-            current_gain = self.__information_gain(X, Y, feature_name, impurity)
-            if isinstance(best_gain, float) and isinstance(current_gain, float):
-                if best_gain < current_gain:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(current_gain, float):
-                if best_gain[0] < current_gain:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, float) and isinstance(current_gain, tuple):
-                if best_gain < current_gain[0]:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(current_gain, tuple):
-                if best_gain[0] < current_gain[0]:
-                    best_gain = current_gain
-                    best_feature = feature_name
+        split_feature, split_gain = self.__choose_split_feature(
+            X, Y, available_feature_names, impurity
+        )
 
         samples = X.shape[0]
         distribution = []
@@ -239,31 +221,31 @@ class DecisionTree:
                 max_samples_per_class = samples_per_class
                 label = class_name
 
-        if best_feature:
-            if isinstance(best_gain, float):
-                self.__feature_importances[best_feature] += \
-                    (samples/self.__total_samples) * best_gain
-            elif isinstance(best_gain, tuple):
-                self.__feature_importances[best_feature] += \
-                    (samples/self.__total_samples) * best_gain[0]
+        if split_feature:
+            if isinstance(split_gain, float):
+                self.__feature_importances[split_feature] += \
+                    (samples/self.__total_samples) * split_gain
+            elif isinstance(split_gain, tuple):
+                self.__feature_importances[split_feature] += \
+                    (samples/self.__total_samples) * split_gain[0]
 
         childs = []
-        if best_feature:
+        if split_feature:
             # удаление категориальных признаков
-            if best_feature in self.__categorical_feature_names:
-                available_feature_names.remove(best_feature)
+            if split_feature in self.__categorical_feature_names:
+                available_feature_names.remove(split_feature)
             # добавление открывшихся признаков
             if special_cases:
-                if best_feature in special_cases.keys():
-                    if isinstance(special_cases[best_feature], str):
-                        available_feature_names.append(special_cases[best_feature])
-                    elif isinstance(special_cases[best_feature], list):
-                        available_feature_names.extend(special_cases[best_feature])
-                    special_cases.pop(best_feature)
+                if split_feature in special_cases.keys():
+                    if isinstance(special_cases[split_feature], str):
+                        available_feature_names.append(special_cases[split_feature])
+                    elif isinstance(special_cases[split_feature], list):
+                        available_feature_names.extend(special_cases[split_feature])
+                    special_cases.pop(split_feature)
             # рекурсивное создание потомков
             num_samples = X.shape[0]
             if num_samples >= self.__min_samples_split:
-                xs, ys, feature_values = self.__split(X, Y, best_feature, best_gain)
+                xs, ys, feature_values = self.__split(X, Y, split_feature, split_gain)
 
                 for x, y, fv in zip(xs, ys, feature_values):
                     childs.append(
@@ -272,7 +254,7 @@ class DecisionTree:
 
         assert label is not None, 'label is None'
 
-        node = Node(best_feature, feature_value, impurity, samples, distribution, label, childs)
+        node = Node(split_feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
 
@@ -331,6 +313,37 @@ class DecisionTree:
 
         return gini
 
+    def __choose_split_feature(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            available_feature_names: List[str],
+            impurity: float,
+    ) -> Tuple:
+        """Выбирает лучший признак для разбиения."""
+        best_feature = None
+        best_gain = self.__min_impurity_decrease
+        for feature_name in available_feature_names:
+            current_gain = self.__information_gain(X, Y, feature_name, impurity)
+            if isinstance(best_gain, float) and isinstance(current_gain, float):
+                if best_gain < current_gain:
+                    best_gain = current_gain
+                    best_feature = feature_name
+            elif isinstance(best_gain, tuple) and isinstance(current_gain, float):
+                if best_gain[0] < current_gain:
+                    best_gain = current_gain
+                    best_feature = feature_name
+            elif isinstance(best_gain, float) and isinstance(current_gain, tuple):
+                if best_gain < current_gain[0]:
+                    best_gain = current_gain
+                    best_feature = feature_name
+            elif isinstance(best_gain, tuple) and isinstance(current_gain, tuple):
+                if best_gain[0] < current_gain[0]:
+                    best_gain = current_gain
+                    best_feature = feature_name
+
+        return best_feature, best_gain
+
     def __information_gain(
             self,
             X: pd.DataFrame,
@@ -378,6 +391,8 @@ class DecisionTree:
         second_term = 0
         for feature_value in set(X[feature_name].tolist()):
             A_i = (X[feature_name] == feature_value).sum()
+            if A_i < self.__min_samples_leaf:
+                return 0
             y_i = Y[X[feature_name] == feature_value]
             second_term += (A_i/A) * self.__impurity(y_i)
 
@@ -402,7 +417,7 @@ class DecisionTree:
             A_more = (X[feature_name] >= threshold).sum()
             y_more = Y[X[feature_name] >= threshold]
             # проверка на пустое дочернее множество
-            if A_less == 0 or A_more == 0:
+            if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
                 continue
 
             current_information_gain = (
