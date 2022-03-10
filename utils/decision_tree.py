@@ -91,6 +91,74 @@ class DecisionTree:
             special_cases: словарь {признак, который должен быть первым: признак или список
               признаков, которые могут быть после}.
         """
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError('X должен представлять собой pd.DataFrame.')
+
+        if not isinstance(Y, pd.Series):
+            raise ValueError('Y должен представлять собой pd.Series.')
+
+        if X.shape[0] != Y.shape[0]:
+            raise ValueError('X и Y должны быть одной длины.')
+
+        if not isinstance(categorical_feature_names, list):
+            raise ValueError('categorical_feature_names должен представлять собой список строк.')
+        for elem in categorical_feature_names:
+            if not isinstance(elem, str):
+                raise ValueError(
+                    'categorical_feature_names должен представлять собой список строк.'
+                    )
+
+        if not isinstance(numerical_feature_names, list):
+            raise ValueError('numerical_feature_names должен представлять собой список строк.')
+        for elem in numerical_feature_names:
+            if not isinstance(elem, str):
+                raise ValueError('numerical_feature_names должен представлять собой список строк.')
+
+        if special_cases:
+            if not isinstance(special_cases, dict):
+                raise ValueError(
+                    'special_cases должен представлять собой словарь, в котором ключи - строки, а '
+                    'значения - либо строки, либо списки строк.'
+                )
+            for key in special_cases.keys():
+                if not isinstance(key, str):
+                    raise ValueError(
+                        'special_cases должен представлять собой словарь, в котором ключи - '
+                        'строки, а значения - либо строки, либо списки строк.'
+                    )
+            for value in special_cases.values():
+                if not isinstance(value, (str, list)):
+                    raise ValueError(
+                        'special_cases должен представлять собой словарь, в котором ключи - '
+                        'строки, а значения - либо строки, либо списки строк.'
+                    )
+                if isinstance(value, list):
+                    for elem in value:
+                        if not isinstance(elem, str):
+                            raise ValueError(
+                                'special_cases должен представлять собой словарь, в котором '
+                                'ключи - строки, а значения - либо строки, либо списки строк.'
+                            )
+
+        for feature_name in categorical_feature_names:
+            if feature_name not in X.columns:
+                raise ValueError(
+                    f'categorical_feature_names содержит признак {feature_name}, которого нет в '
+                    'обучающих данных.'
+                )
+        for feature_name in numerical_feature_names:
+            if feature_name not in X.columns:
+                raise ValueError(
+                    f'numerical_feature_names содержит признак {feature_name}, которого нет в '
+                    'обучающих данных.'
+                )
+        for feature_name in X.columns:
+            if feature_name not in categorical_feature_names + numerical_feature_names:
+                raise ValueError(
+                    f'Обучающие данные содержат признак {feature_name}, который не определён ни в '
+                    f'categorical_feature_names, ни в numerical_feature_names.'
+                )
+
         self.__feature_names = list(X.columns)
         self.__class_names = sorted(list(set(Y.tolist())))
         self.__categorical_feature_names = categorical_feature_names
