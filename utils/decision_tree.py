@@ -642,6 +642,15 @@ class DecisionTree:
 
     def score(self, X: pd.DataFrame, Y: pd.Series) -> float:
         """Возвращает точность по заданным тестовым данным и меткам."""
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError('X должен представлять собой pd.DataFrame.')
+
+        if not isinstance(Y, pd.Series):
+            raise ValueError('Y должен представлять собой pd.Series.')
+
+        if X.shape[0] != Y.shape[0]:
+            raise ValueError('X и Y должны быть одной длины.')
+
         from sklearn.metrics import accuracy_score
 
         score = accuracy_score(Y, self.predict(X))
