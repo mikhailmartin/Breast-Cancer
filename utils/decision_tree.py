@@ -590,6 +590,7 @@ class DecisionTree:
             show_num_samples: показывать ли количество точек в узле.
             show_distribution: показывать ли распределение точек по классам.
             show_label: показывать ли класс, к которому относится узел.
+            **kwargs: аргументы для graphviz.Digraph.render.
 
         Returns:
             graph: объект класса Digraph, содержащий описание графовой структуры дерева для
