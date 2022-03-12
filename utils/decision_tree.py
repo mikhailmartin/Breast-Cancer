@@ -201,45 +201,45 @@ class DecisionTree:
         Returns:
             node: узел дерева.
         """
-        available_feature_names = available_feature_names.copy()
-        special_cases = special_cases.copy()
-
         impurity = self.__impurity(Y)
-
-        split_feature, split_gain, threshold = self.__choose_split_feature(
-            X, Y, available_feature_names, impurity
-        )
-
         samples = X.shape[0]
         distribution = self.__distribution(Y)
         label = self.__label(Y)
 
-        if split_feature:
-            self.__feature_importances[split_feature] += (samples/self.__total_samples) * split_gain
-
         childs = []
-        # рекурсивное создание потомков
-        if split_feature and (samples >= self.__min_samples_split):
-            xs, ys, feature_values = self.__split(X, Y, split_feature, threshold)
+        split_feature = None
+        if samples >= self.__min_samples_split:
+            split_feature, split_gain, threshold = self.__choose_split_feature(
+                X, Y, available_feature_names, impurity
+            )
 
-            # удаление категориальных признаков
-            if split_feature in self.__categorical_feature_names:
-                available_feature_names.remove(split_feature)
-            # добавление открывшихся признаков
-            if special_cases:
-                if split_feature in special_cases.keys():
-                    if isinstance(special_cases[split_feature], str):
-                        available_feature_names.append(special_cases[split_feature])
-                    elif isinstance(special_cases[split_feature], list):
-                        available_feature_names.extend(special_cases[split_feature])
-                    else:
-                        assert False, 'пришли сюда'
-                    special_cases.pop(split_feature)
+            if split_feature:
+                available_feature_names = available_feature_names.copy()
+                special_cases = special_cases.copy()
 
-            for x, y, fv in zip(xs, ys, feature_values):
-                childs.append(
-                    self.__generate_node(x, y, fv, available_feature_names, special_cases)
-                )
+                self.__feature_importances[split_feature] += \
+                    (samples/self.__total_samples) * split_gain
+
+                # удаление категориальных признаков
+                if split_feature in self.__categorical_feature_names:
+                    available_feature_names.remove(split_feature)
+                # добавление открывшихся признаков
+                if special_cases:
+                    if split_feature in special_cases.keys():
+                        if isinstance(special_cases[split_feature], str):
+                            available_feature_names.append(special_cases[split_feature])
+                        elif isinstance(special_cases[split_feature], list):
+                            available_feature_names.extend(special_cases[split_feature])
+                        else:
+                            assert False, 'пришли сюда'
+                        special_cases.pop(split_feature)
+
+                # рекурсивное создание потомков
+                xs, ys, feature_values = self.__split(X, Y, split_feature, threshold)
+                for x, y, fv in zip(xs, ys, feature_values):
+                    childs.append(
+                        self.__generate_node(x, y, fv, available_feature_names, special_cases)
+                    )
 
         assert label is not None, 'label is None'
 
