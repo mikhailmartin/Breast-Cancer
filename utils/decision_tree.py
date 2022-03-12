@@ -3,7 +3,7 @@
 """
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import functools
 import math
@@ -206,7 +206,7 @@ class DecisionTree:
 
         impurity = self.__impurity(Y)
 
-        split_feature, split_gain = self.__choose_split_feature(
+        split_feature, split_gain, threshold = self.__choose_split_feature(
             X, Y, available_feature_names, impurity
         )
 
@@ -215,17 +215,12 @@ class DecisionTree:
         label = self.__label(Y)
 
         if split_feature:
-            if isinstance(split_gain, float):
-                self.__feature_importances[split_feature] += \
-                    (samples/self.__total_samples) * split_gain
-            elif isinstance(split_gain, tuple):
-                self.__feature_importances[split_feature] += \
-                    (samples/self.__total_samples) * split_gain[0]
+            self.__feature_importances[split_feature] += (samples/self.__total_samples) * split_gain
 
         childs = []
         # рекурсивное создание потомков
         if split_feature and (samples >= self.__min_samples_split):
-            xs, ys, feature_values = self.__split(X, Y, split_feature, split_gain)
+            xs, ys, feature_values = self.__split(X, Y, split_feature, threshold)
 
             # удаление категориальных признаков
             if split_feature in self.__categorical_feature_names:
@@ -331,30 +326,20 @@ class DecisionTree:
             Y: pd.Series,
             available_feature_names: List[str],
             impurity: float,
-    ) -> Tuple:
+    ) -> Tuple[Any, float, Any]:
         """Выбирает лучший признак для разбиения."""
         best_feature = None
-        best_gain = self.__min_impurity_decrease
-        for feature_name in available_feature_names:
-            current_gain = self.__information_gain(X, Y, feature_name, impurity)
-            if isinstance(best_gain, float) and isinstance(current_gain, float):
-                if best_gain < current_gain:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(current_gain, float):
-                if best_gain[0] < current_gain:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, float) and isinstance(current_gain, tuple):
-                if best_gain < current_gain[0]:
-                    best_gain = current_gain
-                    best_feature = feature_name
-            elif isinstance(best_gain, tuple) and isinstance(current_gain, tuple):
-                if best_gain[0] < current_gain[0]:
-                    best_gain = current_gain
-                    best_feature = feature_name
+        best_gain = 0
+        threshold = None
 
-        return best_feature, best_gain
+        for feature_name in available_feature_names:
+            current_gain, current_threshold = self.__information_gain(X, Y, feature_name, impurity)
+            if current_gain >= self.__min_impurity_decrease and current_gain > best_gain:
+                best_feature = feature_name
+                best_gain = current_gain
+                threshold = current_threshold
+
+        return best_feature, best_gain, threshold
 
     def __information_gain(
             self,
@@ -362,7 +347,7 @@ class DecisionTree:
             Y: pd.Series,
             feature_name: str,
             impurity: float,
-    ) -> float:
+    ) -> Tuple[float, Any]:
         """Возвращает прирост информативности для разделения по признаку.
 
         Формула в LaTeX:
@@ -381,15 +366,17 @@ class DecisionTree:
             impurity: загрязнённость до разделения множества по признаку.
 
         Returns:
-            information_gain: прирост информативности.
+            inf_gain: прирост информативности.
+            threshold: порог принятия решения для численного признака.
         """
-        information_gain = None
         if feature_name in self.__categorical_feature_names:
-            information_gain = self.__categorical_information_gain(X, Y, feature_name, impurity)
+            inf_gain, threshold = self.__categorical_information_gain(X, Y, feature_name, impurity)
         elif feature_name in self.__numerical_feature_names:
-            information_gain = self.__numerical_information_gain(X, Y, feature_name, impurity)
+            inf_gain, threshold = self.__numerical_information_gain(X, Y, feature_name, impurity)
+        else:
+            assert False, 'пришли сюда'
 
-        return information_gain
+        return inf_gain, threshold
 
     def __categorical_information_gain(
             self,
@@ -397,20 +384,20 @@ class DecisionTree:
             Y: pd.Series,
             feature_name: str,
             impurity: float,
-    ) -> float:
+    ) -> Tuple[float, None]:
         """Считает прирост информации для разделения по категориальному признаку."""
         A = X.shape[0]
         second_term = 0
         for feature_value in set(X[feature_name].tolist()):
             A_i = (X[feature_name] == feature_value).sum()
             if A_i < self.__min_samples_leaf:
-                return 0
+                return 0, None
             y_i = Y[X[feature_name] == feature_value]
             second_term += (A_i/A) * self.__impurity(y_i)
 
         categorical_information_gain = impurity - second_term
 
-        return categorical_information_gain
+        return categorical_information_gain, None
 
     def __numerical_information_gain(
             self,
@@ -418,7 +405,7 @@ class DecisionTree:
             Y: pd.Series,
             feature_name: str,
             impurity: float,
-    ) -> Tuple[float, float]:
+    ) -> Tuple[float, int]:
         """Считает прирост информации для разделения по численному признаку."""
         A = X.shape[0]
 
@@ -449,7 +436,7 @@ class DecisionTree:
             X: pd.DataFrame,
             Y: pd.Series,
             feature_name: str,
-            threshold: Tuple,
+            threshold: int,
     ) -> Tuple[List, List, List]:
         """Разделяет множество по признаку.
 
@@ -468,7 +455,7 @@ class DecisionTree:
         if feature_name in self.__categorical_feature_names:
             xs, ys, feature_values = self.__categorical_split(X, Y, feature_name)
         elif feature_name in self.__numerical_feature_names:
-            xs, ys, feature_values = self.__numerical_split(X, Y, feature_name, threshold[1])
+            xs, ys, feature_values = self.__numerical_split(X, Y, feature_name, threshold)
 
         return xs, ys, feature_values
 
