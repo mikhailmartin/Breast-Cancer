@@ -212,13 +212,7 @@ class DecisionTree:
 
         samples = X.shape[0]
         distribution = self.__distribution(Y)
-        label = None
-        max_samples_per_class = -1
-        for class_name in self.__class_names:
-            samples_per_class = (Y == class_name).sum()
-            if max_samples_per_class < samples_per_class:
-                max_samples_per_class = samples_per_class
-                label = class_name
+        label = self.__label(Y)
 
         if split_feature:
             if isinstance(split_gain, float):
@@ -263,6 +257,18 @@ class DecisionTree:
         distribution = [(Y == class_name).sum() for class_name in self.__class_names]
 
         return distribution
+
+    def __label(self, Y: pd.Series) -> str:
+        """Выбирает метку для узла дерева."""
+        label = None
+        max_samples_per_class = -1
+        for class_name in self.__class_names:
+            samples_per_class = (Y == class_name).sum()
+            if max_samples_per_class < samples_per_class:
+                max_samples_per_class = samples_per_class
+                label = class_name
+
+        return label
 
     def __impurity(self, Y: pd.Series) -> float:
         """Считает загрязнённость для множества.
