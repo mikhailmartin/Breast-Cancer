@@ -211,12 +211,11 @@ class DecisionTree:
         )
 
         samples = X.shape[0]
-        distribution = []
+        distribution = self.__distribution(Y)
         label = None
         max_samples_per_class = -1
         for class_name in self.__class_names:
             samples_per_class = (Y == class_name).sum()
-            distribution.append(samples_per_class)
             if max_samples_per_class < samples_per_class:
                 max_samples_per_class = samples_per_class
                 label = class_name
@@ -258,6 +257,12 @@ class DecisionTree:
         node = Node(split_feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
+
+    def __distribution(self, Y: pd.Series) -> List[int]:
+        """Подсчитывает распределение точек данных по классам."""
+        distribution = [(Y == class_name).sum() for class_name in self.__class_names]
+
+        return distribution
 
     def __impurity(self, Y: pd.Series) -> float:
         """Считает загрязнённость для множества.
