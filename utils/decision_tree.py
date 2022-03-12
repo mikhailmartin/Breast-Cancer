@@ -27,11 +27,13 @@ class DecisionTree:
     def __init__(
             self,
             *,
+            max_depth=None,
             criterion='entropy',
             min_samples_split=2,
             min_samples_leaf=1,
             min_impurity_decrease=0.05,
     ) -> None:
+        self.__max_depth = max_depth
         self.__criterion = criterion
         self.__min_samples_split = min_samples_split
         self.__min_samples_leaf = min_samples_leaf
@@ -177,7 +179,7 @@ class DecisionTree:
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
 
-        self.__tree = self.__generate_node(X, Y, None, available_feature_names, special_cases)
+        self.__tree = self.__generate_node(X, Y, None, 1, available_feature_names, special_cases)
 
     @counter
     def __generate_node(
@@ -185,6 +187,7 @@ class DecisionTree:
             X: pd.DataFrame,
             Y: pd.Series,
             feature_value: str,
+            depth: int,
             available_feature_names: List[str],
             special_cases: Optional[Dict[str, Union[str, Dict]]] = None,
     ) -> Node:
@@ -194,6 +197,7 @@ class DecisionTree:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
             feature_value: значение признака, по которому этот узел был сформирован.
+            depth: глубина узла.
             available_feature_names: список доступных признаков для разбиения входного множества.
             special_cases: словарь {признак, который должен быть первым: признак, который может быть
               после}.
@@ -208,7 +212,8 @@ class DecisionTree:
 
         childs = []
         split_feature = None
-        if samples >= self.__min_samples_split:
+        if samples >= self.__min_samples_split and \
+                (not self.__max_depth or (depth <= self.__max_depth)):
             split_feature, split_gain, threshold = self.__choose_split_feature(
                 X, Y, available_feature_names, impurity
             )
@@ -237,9 +242,10 @@ class DecisionTree:
                 # рекурсивное создание потомков
                 xs, ys, feature_values = self.__split(X, Y, split_feature, threshold)
                 for x, y, fv in zip(xs, ys, feature_values):
-                    childs.append(
-                        self.__generate_node(x, y, fv, available_feature_names, special_cases)
+                    child = self.__generate_node(
+                        x, y, fv, depth + 1, available_feature_names, special_cases
                     )
+                    childs.append(child)
 
         assert label is not None, 'label is None'
 
@@ -496,6 +502,7 @@ class DecisionTree:
     def get_params(self, deep: Optional[bool] = True) -> Dict:
         """Возвращает параметры этого классификатора."""
         params = {
+            'max_depth': self.__max_depth,
             'min_samples_split': self.__min_samples_split,
             'min_samples_leaf': self.__min_samples_leaf,
             'min_impurity_decrease': self.__min_impurity_decrease,
