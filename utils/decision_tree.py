@@ -272,14 +272,7 @@ class DecisionTree:
         return label
 
     def __impurity(self, Y: pd.Series) -> float:
-        """Считает загрязнённость для множества.
-
-        Args:
-            Y: c метками для множества.
-
-        Returns:
-            impurity: загрязнённость множества.
-        """
+        """Считает загрязнённость для множества."""
         impurity = None
         if self.__criterion == 'entropy':
             impurity = self.__entropy(Y)
@@ -289,14 +282,7 @@ class DecisionTree:
         return impurity
 
     def __entropy(self, Y: pd.Series) -> float:
-        """Считает энтропию в множестве.
-
-        Args:
-            Y: c метками для множества.
-
-        Returns:
-            entropy: энтропия множества.
-        """
+        """Считает энтропию в множестве."""
         n = Y.shape[0]  # количество точек в множестве
 
         entropy = 0
@@ -308,14 +294,7 @@ class DecisionTree:
         return entropy
 
     def __gini(self, Y: pd.Series) -> float:
-        """Считает коэффициент Джини в множестве.
-
-        Args:
-            Y: c метками для множества.
-
-        Returns:
-            gini: коэффициент Джини.
-        """
+        """Считает коэффициент Джини в множестве."""
         n = Y.shape[0]  # количество точек в множестве
 
         gini = 0
