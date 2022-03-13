@@ -33,6 +33,31 @@ class DecisionTree:
             min_samples_leaf: Optional[int] = 1,
             min_impurity_decrease: Optional[float] = 0.05,
     ) -> None:
+        if max_depth is not None and not isinstance(max_depth, int):
+            raise ValueError('max_depth должен представлять собой int.')
+
+        if criterion not in ['entropy', 'gini']:
+            raise ValueError('Для criterion доступны значения "entropy" и "gini".')
+
+        if not isinstance(min_samples_split, int) or min_samples_split <= 1:
+            raise ValueError(
+                'min_samples_split должен представлять собой int и быть строго больше 1.'
+            )
+
+        if not isinstance(min_samples_leaf, int) or min_samples_leaf <= 0:
+            raise ValueError(
+                'min_samples_leaf должен представлять собой int и быть строго больше 0.'
+            )
+
+        if not isinstance(min_impurity_decrease, float) or min_impurity_decrease < 0:
+            raise ValueError(
+                'min_impurity_decrease должен представлять собой float и быть неотрицательным.'
+            )
+
+        if min_samples_split < 2 * min_samples_leaf:
+            raise ValueError(
+                'min_samples_split должен быть строго в 2 раза больше min_samples_leaf.'
+            )
         self.__max_depth = max_depth
         self.__criterion = criterion
         self.__min_samples_split = min_samples_split
