@@ -27,11 +27,11 @@ class DecisionTree:
     def __init__(
             self,
             *,
-            max_depth=None,
-            criterion='entropy',
-            min_samples_split=2,
-            min_samples_leaf=1,
-            min_impurity_decrease=0.05,
+            max_depth: Optional[int] = None,
+            criterion: Optional[str] = 'entropy',
+            min_samples_split: Optional[int] = 2,
+            min_samples_leaf: Optional[int] = 1,
+            min_impurity_decrease: Optional[float] = 0.05,
     ) -> None:
         self.__max_depth = max_depth
         self.__criterion = criterion
