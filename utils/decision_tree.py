@@ -649,7 +649,7 @@ class DecisionTree:
         if node.feature:
             node_content += f'{node.feature}\n'
         if show_impurity:
-            node_content += f'{self.__criterion} = {node.impurity:2.2}\n'
+            node_content += f'{self.__criterion} = {node.impurity:.3f}\n'
         if show_num_samples:
             node_content += f'samples = {node.samples}\n'
         if show_distribution:
