@@ -3,7 +3,7 @@
 """
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import functools
 import math
@@ -246,36 +246,33 @@ class DecisionTree:
         label = self.__label(Y)
 
         childs = []
-        split_feature = None
+        feature = None
         if samples >= self.__min_samples_split and \
                 (not self.__max_depth or (depth <= self.__max_depth)):
-            split_feature, split_gain, threshold = self.__choose_split_feature(
-                X, Y, available_feature_names, impurity
-            )
+            feature, xs, ys, feature_values, inf_gain = self.__split(X, Y, available_feature_names)
 
-            if split_feature:
+            if feature:
                 available_feature_names = available_feature_names.copy()
                 special_cases = special_cases.copy()
 
-                self.__feature_importances[split_feature] += \
-                    (samples/self.__total_samples) * split_gain
+                self.__feature_importances[feature] += \
+                    (samples/self.__total_samples) * inf_gain
 
                 # удаление категориальных признаков
-                if split_feature in self.__categorical_feature_names:
-                    available_feature_names.remove(split_feature)
+                if feature in self.__categorical_feature_names:
+                    available_feature_names.remove(feature)
                 # добавление открывшихся признаков
                 if special_cases:
-                    if split_feature in special_cases.keys():
-                        if isinstance(special_cases[split_feature], str):
-                            available_feature_names.append(special_cases[split_feature])
-                        elif isinstance(special_cases[split_feature], list):
-                            available_feature_names.extend(special_cases[split_feature])
+                    if feature in special_cases.keys():
+                        if isinstance(special_cases[feature], str):
+                            available_feature_names.append(special_cases[feature])
+                        elif isinstance(special_cases[feature], list):
+                            available_feature_names.extend(special_cases[feature])
                         else:
                             assert False, 'пришли сюда'
-                        special_cases.pop(split_feature)
+                        special_cases.pop(feature)
 
                 # рекурсивное создание потомков
-                xs, ys, feature_values = self.__split(X, Y, split_feature, threshold)
                 for x, y, fv in zip(xs, ys, feature_values):
                     child = self.__generate_node(
                         x, y, fv, depth + 1, available_feature_names, special_cases
@@ -284,7 +281,7 @@ class DecisionTree:
 
         assert label is not None, 'label is None'
 
-        node = Node(split_feature, feature_value, impurity, samples, distribution, label, childs)
+        node = Node(feature, feature_value, impurity, samples, distribution, label, childs)
 
         return node
 
@@ -340,39 +337,145 @@ class DecisionTree:
 
         return gini
 
-    def __choose_split_feature(
+    def __split(
             self,
             X: pd.DataFrame,
             Y: pd.Series,
             available_feature_names: List[str],
-            impurity: float,
-    ) -> Tuple[Any, float, Any]:
-        """Выбирает лучший признак для разбиения."""
-        best_feature = None
-        best_gain = 0
-        threshold = None
+    ) -> Tuple[str, List[pd.DataFrame], List[pd.Series], List[str], float]:
+        """Разделяет входное множество наилучшим образом.
 
+        Args:
+            X: DataFrame с точками данных.
+            Y: Series с соответствующими метками.
+            available_feature_names: список доступных признаков для разбиения входного множества.
+
+        Returns:
+            best_feature_name: признак, по которому лучше всего разбивать входное множество.
+            best_xs: список DataFrame'ов с точками данных дочерних подмножеств.
+            best_ys: список Series с соответствующими метками дочерних подмножеств.
+            best_feature_values: значения признаков, соответствующие дочерним подмножествам.
+            best_inf_gain: прирост информативности после разбиения.
+        """
+        best_feature_name = None
+        best_xs = []
+        best_ys = []
+        best_feature_values = []
+        best_inf_gain = 0
         for feature_name in available_feature_names:
-            current_gain, current_threshold = self.__information_gain(X, Y, feature_name, impurity)
-            if current_gain >= self.__min_impurity_decrease and current_gain > best_gain:
-                best_feature = feature_name
-                best_gain = current_gain
-                threshold = current_threshold
+            if feature_name in self.__categorical_feature_names:
+                inf_gain, xs, ys, feature_values = self.__categorical_split(X, Y, feature_name)
+            elif feature_name in self.__numerical_feature_names:
+                inf_gain, xs, ys, feature_values = self.__numerical_split(X, Y, feature_name)
+            else:
+                assert False, 'пришли сюда'
 
-        return best_feature, best_gain, threshold
+            if inf_gain >= self.__min_impurity_decrease and inf_gain > best_inf_gain:
+                best_inf_gain = inf_gain
+                best_feature_name = feature_name
+                best_xs = xs
+                best_ys = ys
+                best_feature_values = feature_values
 
-    def __information_gain(
+        return best_feature_name, best_xs, best_ys, best_feature_values, best_inf_gain
+
+    def __categorical_split(
             self,
             X: pd.DataFrame,
             Y: pd.Series,
             feature_name: str,
-            impurity: float,
-    ) -> Tuple[float, Any]:
-        """Возвращает прирост информативности для разделения по признаку.
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], List[str]]:
+        """Разделяет входное множество по категориальному признаку.
+
+        Args:
+            X: DataFrame с точками данных.
+            Y: Series с соответствующими метками.
+            feature_name: признак, по которому нужно разделить входное множество.
+
+        Returns:
+            inf_gain: прирост информативности при разделении.
+            xs: список DataFrame'ов с точками данных дочерних подмножеств.
+            ys: список Series с соответствующими метками дочерних подмножеств.
+            feature_values: значения признаков, соответствующие дочерним подмножествам.
+        """
+        # список со значениями признака
+        partition = sorted(list(set(X[feature_name].tolist())))
+
+        xs = []
+        ys = []
+        feature_values = []
+        for feature_value in partition:
+            if (X[feature_name] == feature_value).sum() < self.__min_samples_leaf:
+                return 0, [], [], []
+            else:
+                xs.append(X[X[feature_name] == feature_value])
+                ys.append(Y[X[feature_name] == feature_value])
+                feature_values.append(feature_value)
+
+        inf_gain = self.__information_gain(Y, ys)
+
+        return inf_gain, xs, ys, feature_values
+
+    def __numerical_split(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], List[str]]:
+        """Разделяет входное множество по численному признаку, выбирая наилучший порог.
+
+        Args:
+            X: DataFrame с точками данных.
+            Y: Series с соответствующими метками.
+            feature_name: признак, по которому нужно разделить входное множество.
+
+        Returns:
+            best_inf_gain: прирост информативности при разделении.
+            best_xs: список DataFrame'ов с точками данных дочерних подмножеств.
+            best_ys: список Series с соответствующими метками дочерних подмножеств.
+            best_feature_values: значения признаков, соответствующие дочерним подмножествам.
+        """
+        best_inf_gain = 0
+        best_xs = []
+        best_ys = []
+        best_feature_values = []
+        for threshold in range(int(X[feature_name].min()) + 1, int(X[feature_name].max())):
+            x_less = X[X[feature_name] < threshold]
+            y_less = Y[X[feature_name] < threshold]
+            A_less = y_less.shape[0]
+
+            x_more = X[X[feature_name] >= threshold]
+            y_more = Y[X[feature_name] >= threshold]
+            A_more = y_more.shape[0]
+
+            xs = [x_less, x_more]
+            ys = [y_less, y_more]
+            feature_values = [f'< {threshold}', f'>= {threshold}']
+
+            if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
+                continue
+
+            inf_gain = self.__information_gain(Y, ys)
+
+            if best_inf_gain < inf_gain:
+                best_inf_gain = inf_gain
+                best_xs = xs
+                best_ys = ys
+                best_feature_values = feature_values
+
+        return best_inf_gain, best_xs, best_ys, best_feature_values
+
+    def __information_gain(
+            self,
+            Y: pd.Series,
+            ys: List[pd.Series],
+    ) -> float:
+        """Считает прирост информативности.
 
         Формула в LaTeX:
         Gain(A, Q) = H(A, S) -\sum\limits^q_{i=1} \frac{|A_i|}{|A|} H(A_i, S),
         где
+        H - функция энтропии;
         A - множество точек данных;
         Q - метка данных;
         q - множество значений метки, т.е. классы;
@@ -380,140 +483,27 @@ class DecisionTree:
         A_i - множество элементов A, на которых Q имеет значение i.
 
         Args:
-            X: DataFrame с точками данных.
-            Y: Series с соответствующими метками.
-            feature_name: название признака, по которому будет проходить разделение.
-            impurity: загрязнённость до разделения множества по признаку.
+            Y: Series с метками родительского множества.
+            ys: список Series с метками дочерних подмножеств.
 
         Returns:
             inf_gain: прирост информативности.
-            threshold: порог принятия решения для численного признака.
         """
-        if feature_name in self.__categorical_feature_names:
-            inf_gain, threshold = self.__categorical_information_gain(X, Y, feature_name, impurity)
-        elif feature_name in self.__numerical_feature_names:
-            inf_gain, threshold = self.__numerical_information_gain(X, Y, feature_name, impurity)
-        else:
-            assert False, 'пришли сюда'
+        A = Y.shape[0]
 
-        return inf_gain, threshold
-
-    def __categorical_information_gain(
-            self,
-            X: pd.DataFrame,
-            Y: pd.Series,
-            feature_name: str,
-            impurity: float,
-    ) -> Tuple[float, None]:
-        """Считает прирост информации для разделения по категориальному признаку."""
-        A = X.shape[0]
         second_term = 0
-        for feature_value in set(X[feature_name].tolist()):
-            A_i = (X[feature_name] == feature_value).sum()
-            if A_i < self.__min_samples_leaf:
-                return 0, None
-            y_i = Y[X[feature_name] == feature_value]
+        for y_i in ys:
+            A_i = y_i.shape[0]
             second_term += (A_i/A) * self.__impurity(y_i)
 
-        categorical_information_gain = impurity - second_term
+        inf_gain = self.__impurity(Y) - second_term
 
-        return categorical_information_gain, None
+        return inf_gain
 
-    def __numerical_information_gain(
+    def get_params(
             self,
-            X: pd.DataFrame,
-            Y: pd.Series,
-            feature_name: str,
-            impurity: float,
-    ) -> Tuple[float, int]:
-        """Считает прирост информации для разделения по численному признаку."""
-        A = X.shape[0]
-
-        best_information_gain, best_threshold = 0, None
-        for threshold in range(int(X[feature_name].max())):
-            A_less = (X[feature_name] < threshold).sum()
-            y_less = Y[X[feature_name] < threshold]
-            A_more = (X[feature_name] >= threshold).sum()
-            y_more = Y[X[feature_name] >= threshold]
-            # проверка на пустое дочернее множество
-            if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
-                continue
-
-            current_information_gain = (
-                    impurity -
-                    (A_less/A) * self.__impurity(y_less) -
-                    (A_more/A) * self.__impurity(y_more)
-            )
-
-            if best_information_gain < current_information_gain:
-                best_information_gain = current_information_gain
-                best_threshold = threshold
-
-        return best_information_gain, best_threshold
-
-    def __split(
-            self,
-            X: pd.DataFrame,
-            Y: pd.Series,
-            feature_name: str,
-            threshold: int,
-    ) -> Tuple[List, List, List]:
-        """Разделяет множество по признаку.
-
-        Args:
-            X: DataFrame с точками данных.
-            Y: Series с соответствующими метками.
-            feature_name: признак, по которому будет происходить разделение.
-            threshold: порог разбиения для численного признака.
-
-        Returns:
-            xs: список с подмножествами точек данных.
-            ys: список с подмножествами соответствующих меток.
-            feature_values: список со значениями признака, по которому расщепляется множество.
-        """
-        xs, ys, feature_values = None, None, None
-        if feature_name in self.__categorical_feature_names:
-            xs, ys, feature_values = self.__categorical_split(X, Y, feature_name)
-        elif feature_name in self.__numerical_feature_names:
-            xs, ys, feature_values = self.__numerical_split(X, Y, feature_name, threshold)
-
-        return xs, ys, feature_values
-
-    @staticmethod
-    def __categorical_split(
-            X: pd.DataFrame,
-            Y: pd.Series,
-            feature_name: str,
-    ) -> Tuple[List, List, List]:
-        """Расщепляет множество согласно категориальному признаку."""
-        xs, ys, feature_values = [], [], []
-        for feature_value in sorted(list(set(X[feature_name].tolist()))):
-            if (X[feature_name] == feature_value).sum():
-                xs.append(X[X[feature_name] == feature_value])
-                ys.append(Y[X[feature_name] == feature_value])
-                feature_values.append(feature_value)
-
-        return xs, ys, feature_values
-
-    @staticmethod
-    def __numerical_split(
-            X: pd.DataFrame,
-            Y: pd.Series,
-            feature_name: str,
-            threshold,
-    ) -> Tuple[List, List, List]:
-        """Расщепляет множество согласно численному признаку."""
-        x_less = X[X[feature_name] < threshold]
-        x_more = X[X[feature_name] >= threshold]
-        xs = [x_less, x_more]
-        y_less = Y[X[feature_name] < threshold]
-        y_more = Y[X[feature_name] >= threshold]
-        ys = [y_less, y_more]
-        feature_values = [f'< {threshold}', f'>= {threshold}']
-
-        return xs, ys, feature_values
-
-    def get_params(self, deep: Optional[bool] = True) -> Dict:
+            deep: Optional[bool] = True,
+    ) -> Dict:
         """Возвращает параметры этого классификатора."""
         params = {
             'max_depth': self.__max_depth,
@@ -560,25 +550,25 @@ class DecisionTree:
         """Предсказывает метку класса для точки данных."""
         Y = None
         # если мы дошли до листа
-        if node.split_feature is None:
+        if node.feature is None:
             Y = node.label
             assert Y is not None, 'label оказался None'
-        elif node.split_feature in self.__categorical_feature_names:
+        elif node.feature in self.__categorical_feature_names:
             # ищем ту ветвь, по которой нужно идти
             for child in node.childs:
-                if child.feature_value == point[node.split_feature]:
+                if child.feature_value == point[node.feature]:
                     Y = self.__predict(child, point)
                     break
             else:
                 # если такой ветви нет
                 if Y is None:
                     Y = node.label
-        elif node.split_feature in self.__numerical_feature_names:
+        elif node.feature in self.__numerical_feature_names:
             # ищем ту ветвь, по которой нужно идти
             threshold = float(node.childs[0].feature_value[2:])
-            if point[node.split_feature] < threshold:
+            if point[node.feature] < threshold:
                 Y = self.__predict(node.childs[0], point)
-            elif point[node.split_feature] >= threshold:
+            elif point[node.feature] >= threshold:
                 Y = self.__predict(node.childs[1], point)
             else:
                 assert False, 'пришли сюда'
@@ -656,8 +646,8 @@ class DecisionTree:
         """Рекурсивно добавляет описание узла и его связь с родительским узлом (если имеется)."""
         node_name = f'node{self.__add_node.count}'
         node_content = ''
-        if node.split_feature:
-            node_content += f'{node.split_feature}\n'
+        if node.feature:
+            node_content += f'{node.feature}\n'
         if show_impurity:
             node_content += f'{self.__criterion} = {node.impurity:2.2}\n'
         if show_num_samples:
@@ -698,7 +688,7 @@ class Node:
     """Узел дерева решений."""
     def __init__(
             self,
-            split_feature,
+            feature,
             feature_value,
             impurity,
             samples,
@@ -706,7 +696,7 @@ class Node:
             label,
             childs,
     ):
-        self.split_feature = split_feature
+        self.feature = feature
         self.feature_value = feature_value
         self.impurity = impurity
         self.samples = samples
