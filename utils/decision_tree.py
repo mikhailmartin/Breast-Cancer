@@ -22,6 +22,25 @@ def counter(function):
     return wrapper
 
 
+def categorical_partition(collection):
+    if len(collection) == 1:
+        yield [collection]
+        return
+
+    first = collection[0]
+    for smaller in categorical_partition(collection[1:]):
+        # insert `first` in each of the subpartition's subsets
+        for n, subset in enumerate(smaller):
+            yield smaller[:n] + [[first] + subset] + smaller[n+1:]
+        # put `first` in its own subset
+        yield [[first]] + smaller
+
+
+def rank_partition(collection):
+    for i in range(1, len(collection)):
+        yield collection[:i], collection[i:]
+
+
 class DecisionTree:
     """Дерево решений.
 
@@ -30,6 +49,8 @@ class DecisionTree:
         class_names: отсортированный список классов.
         categorical_feature_names: список всех категориальных признаков, находившихся в обучающих
           данных.
+        rank_feature_names: словарь, в котором ключ представляет собой название рангового признака,
+          а ключ - упорядоченный список его значений.
         numerical_feature_names: список всех численных признаков, находившихся в обучающих данных.
         feature_importances: словарь, в котором ключ представляет собой название признака, а
           значение - его нормализованная значимость.
@@ -76,8 +97,9 @@ class DecisionTree:
 
         self.__feature_names = None
         self.__class_names = None
-        self.__categorical_feature_names = None
-        self.__numerical_feature_names = None
+        self.__cat_feature_names = None
+        self.__rank_feature_names = None
+        self.__num_feature_names = None
         self.__tree = None
         self.__graph = None
         self.__feature_importances = None
@@ -93,11 +115,15 @@ class DecisionTree:
 
     @property
     def categorical_feature_names(self):
-        return self.__categorical_feature_names
+        return self.__cat_feature_names
+
+    @property
+    def rank_feature_names(self):
+        return self.__rank_feature_names
 
     @property
     def numerical_feature_names(self):
-        return self.__numerical_feature_names
+        return self.__num_feature_names
 
     @property
     def feature_importances(self):
@@ -113,9 +139,10 @@ class DecisionTree:
             self,
             X: pd.DataFrame,
             Y: pd.Series,
-            categorical_feature_names: List[str],
-            numerical_feature_names: List[str],
             *,
+            categorical_feature_names: Optional[List[str]] = None,
+            rank_feature_names: Optional[Dict[str, List[str]]] = None,
+            numerical_feature_names: Optional[List[str]] = None,
             special_cases: Optional[Dict[str, Union[str, Dict]]] = None,
     ) -> None:
         """Обучает дерево решений.
@@ -124,6 +151,8 @@ class DecisionTree:
             X: DataFrame с точками данных.
             Y: Series с соответствующими метками.
             categorical_feature_names: список категориальных признаков.
+            rank_feature_names: словарь, в котором ключ представляет собой название рангового
+              признака, а ключ - упорядоченный список его значений.
             numerical_feature_names: список численных признаков.
             special_cases: словарь {признак, который должен быть первым: признак или список
               признаков, которые могут быть после}.
@@ -137,33 +166,59 @@ class DecisionTree:
         if X.shape[0] != Y.shape[0]:
             raise ValueError('X и Y должны быть одной длины.')
 
-        if not isinstance(categorical_feature_names, list):
-            raise ValueError('categorical_feature_names должен представлять собой список строк.')
-        for elem in categorical_feature_names:
-            if not isinstance(elem, str):
+        if not any((categorical_feature_names, rank_feature_names, numerical_feature_names)):
+            raise ValueError(
+                'Признаки должны быть отнесены хотя бы к одной из возможных групп '
+                '(categorical_feature_names, rank_feature_names и numerical_feature_names).'
+            )
+
+        if categorical_feature_names is not None:
+            if not isinstance(categorical_feature_names, list):
                 raise ValueError(
                     'categorical_feature_names должен представлять собой список строк.'
+                )
+            for elem in categorical_feature_names:
+                if not isinstance(elem, str):
+                    raise ValueError(
+                        'categorical_feature_names должен представлять собой список строк.'
+                        )
+
+        if rank_feature_names is not None:
+            if not isinstance(rank_feature_names, dict):
+                raise ValueError(
+                    'rank_feature_names должен представлять собой словарь, в котором ключ '
+                    'представляет собой название рангового признака, а ключ - упорядоченный список '
+                    'его значений.'
+                )
+            for key, value in rank_feature_names.items():
+                if not isinstance(key, str):
+                    raise ValueError('Ключи в rank_feature_names должны представлять собой строки.')
+                if not isinstance(value, list):
+                    raise ValueError(
+                        'Значения в rank_feature_names должны представлять собой списки.'
                     )
 
-        if not isinstance(numerical_feature_names, list):
-            raise ValueError('numerical_feature_names должен представлять собой список строк.')
-        for elem in numerical_feature_names:
-            if not isinstance(elem, str):
+        if numerical_feature_names is not None:
+            if not isinstance(numerical_feature_names, list):
                 raise ValueError('numerical_feature_names должен представлять собой список строк.')
+            for elem in numerical_feature_names:
+                if not isinstance(elem, str):
+                    raise ValueError(
+                        'numerical_feature_names должен представлять собой список строк.'
+                    )
 
-        if special_cases:
+        if special_cases is not None:
             if not isinstance(special_cases, dict):
                 raise ValueError(
                     'special_cases должен представлять собой словарь, в котором ключи - строки, а '
                     'значения - либо строки, либо списки строк.'
                 )
-            for key in special_cases.keys():
+            for key, value in special_cases.items():
                 if not isinstance(key, str):
                     raise ValueError(
                         'special_cases должен представлять собой словарь, в котором ключи - '
                         'строки, а значения - либо строки, либо списки строк.'
                     )
-            for value in special_cases.values():
                 if not isinstance(value, (str, list)):
                     raise ValueError(
                         'special_cases должен представлять собой словарь, в котором ключи - '
@@ -177,29 +232,44 @@ class DecisionTree:
                                 'ключи - строки, а значения - либо строки, либо списки строк.'
                             )
 
-        for feature_name in categorical_feature_names:
-            if feature_name not in X.columns:
-                raise ValueError(
-                    f'categorical_feature_names содержит признак {feature_name}, которого нет в '
-                    'обучающих данных.'
-                )
-        for feature_name in numerical_feature_names:
-            if feature_name not in X.columns:
-                raise ValueError(
-                    f'numerical_feature_names содержит признак {feature_name}, которого нет в '
-                    'обучающих данных.'
-                )
+        a = []
+        if categorical_feature_names:
+            for feature_name in categorical_feature_names:
+                if feature_name not in X.columns:
+                    raise ValueError(
+                        f'categorical_feature_names содержит признак {feature_name}, которого нет '
+                        'в обучающих данных.'
+                    )
+            a += categorical_feature_names
+        if rank_feature_names:
+            for feature_name in rank_feature_names.keys():
+                if feature_name not in X.columns:
+                    raise ValueError(
+                        f'rank_feature_names содержит признак {feature_name}, которого нет в '
+                        'обучающих данных.'
+                    )
+            a += list(rank_feature_names.keys())
+        if numerical_feature_names:
+            for feature_name in numerical_feature_names:
+                if feature_name not in X.columns:
+                    raise ValueError(
+                        f'numerical_feature_names содержит признак {feature_name}, которого нет в '
+                        'обучающих данных.'
+                    )
+            a += numerical_feature_names
         for feature_name in X.columns:
-            if feature_name not in categorical_feature_names + numerical_feature_names:
+            if feature_name not in a:
                 raise ValueError(
                     f'Обучающие данные содержат признак {feature_name}, который не определён ни в '
-                    f'categorical_feature_names, ни в numerical_feature_names.'
+                    'categorical_feature_names, ни в rank_feature_names, ни в '
+                    'numerical_feature_names.'
                 )
 
         self.__feature_names = list(X.columns)
         self.__class_names = sorted(list(set(Y.tolist())))
-        self.__categorical_feature_names = categorical_feature_names
-        self.__numerical_feature_names = numerical_feature_names
+        self.__cat_feature_names = categorical_feature_names
+        self.__rank_feature_names = rank_feature_names
+        self.__num_feature_names = numerical_feature_names
 
         self.__total_samples = X.shape[0]
         self.__feature_importances = dict.fromkeys(self.__feature_names, 0)
@@ -213,6 +283,8 @@ class DecisionTree:
                 elif isinstance(value, list):
                     for feature_name in value:
                         available_feature_names.remove(feature_name)
+                else:
+                    assert False, 'пришли сюда'
 
         self.__tree = self.__generate_node(X, Y, None, 1, available_feature_names, special_cases)
 
@@ -221,7 +293,7 @@ class DecisionTree:
             self,
             X: pd.DataFrame,
             Y: pd.Series,
-            feature_value: str,
+            feature_value: Union[None, List[str]],
             depth: int,
             available_feature_names: List[str],
             special_cases: Optional[Dict[str, Union[str, Dict]]] = None,
@@ -259,8 +331,8 @@ class DecisionTree:
                     (samples/self.__total_samples) * inf_gain
 
                 # удаление категориальных признаков
-                if feature in self.__categorical_feature_names:
-                    available_feature_names.remove(feature)
+                # if feature in self.__categorical_feature_names:
+                #     available_feature_names.remove(feature)
                 # добавление открывшихся признаков
                 if special_cases:
                     if feature in special_cases.keys():
@@ -342,7 +414,7 @@ class DecisionTree:
             X: pd.DataFrame,
             Y: pd.Series,
             available_feature_names: List[str],
-    ) -> Tuple[str, List[pd.DataFrame], List[pd.Series], List[str], float]:
+    ) -> Tuple[str, List[pd.DataFrame], List[pd.Series], Tuple, float]:
         """Разделяет входное множество наилучшим образом.
 
         Args:
@@ -360,12 +432,14 @@ class DecisionTree:
         best_feature_name = None
         best_xs = []
         best_ys = []
-        best_feature_values = []
+        best_feature_values = tuple()
         best_inf_gain = 0
         for feature_name in available_feature_names:
-            if feature_name in self.__categorical_feature_names:
-                inf_gain, xs, ys, feature_values = self.__categorical_split(X, Y, feature_name)
-            elif feature_name in self.__numerical_feature_names:
+            if self.__cat_feature_names and feature_name in self.__cat_feature_names:
+                inf_gain, xs, ys, feature_values = self.__best_categorical_split(X, Y, feature_name)
+            elif self.__rank_feature_names and feature_name in self.__rank_feature_names:
+                inf_gain, xs, ys, feature_values = self.__best_rank_split(X, Y, feature_name)
+            elif self.__num_feature_names and feature_name in self.__num_feature_names:
                 inf_gain, xs, ys, feature_values = self.__numerical_split(X, Y, feature_name)
             else:
                 assert False, 'пришли сюда'
@@ -377,15 +451,18 @@ class DecisionTree:
                 best_ys = ys
                 best_feature_values = feature_values
 
+        for list_ in best_feature_values:
+            assert isinstance(list_, list)
+
         return best_feature_name, best_xs, best_ys, best_feature_values, best_inf_gain
 
-    def __categorical_split(
+    def __best_categorical_split(
             self,
             X: pd.DataFrame,
             Y: pd.Series,
             feature_name: str,
-    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], List[str]]:
-        """Разделяет входное множество по категориальному признаку.
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], Tuple]:
+        """Разделяет входное множество по категориальному признаку наилучшим образом.
 
         Args:
             X: DataFrame с точками данных.
@@ -398,30 +475,129 @@ class DecisionTree:
             ys: список Series с соответствующими метками дочерних подмножеств.
             feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
-        # список со значениями признака
-        partition = sorted(list(set(X[feature_name].tolist())))
+        if X[feature_name].isnull().any():
+            return 0, [], [], tuple()
 
+        assert not X[feature_name].isnull().any(), (
+            f'в признаке {feature_name} есть NaN\n'
+            f'{set(X["27. Каков тип Вашей занятости?"].tolist())}'
+        )
+
+        available_feature_values = sorted(list(set(X[feature_name].tolist())))
+
+        assert len(available_feature_values) != 0, 'чико-рико'
+
+        partitions = [tuple(i) for i in categorical_partition(available_feature_values)]
+        partitions = partitions[1:]
+
+        best_inf_gain = 0
+        best_xs = []
+        best_ys = []
+        best_feature_values = tuple()
+        for feature_values in partitions:
+            inf_gain, xs, ys = self.__categorical_split(X, Y, feature_name, feature_values)
+            if best_inf_gain < inf_gain:
+                best_inf_gain = inf_gain
+                best_xs = xs
+                best_ys = ys
+                best_feature_values = feature_values
+
+        return best_inf_gain, best_xs, best_ys, best_feature_values
+
+    def __categorical_split(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            feature_values: Tuple,
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series]]:
+        """Разделяет входное множество по категориальному признаку согласно заданным значениям.
+
+        Args:
+            X: DataFrame с точками данных.
+            Y: Series с соответствующими метками.
+            feature_name: признак, по которому нужно разделить входное множество.
+            feature_values: значения признаков, соответствующие дочерним подмножествам.
+
+        Returns:
+            inf_gain: прирост информативности при разделении.
+            xs: список DataFrame'ов с точками данных дочерних подмножеств.
+            ys: список Series с соответствующими метками дочерних подмножеств.
+        """
         xs = []
         ys = []
-        feature_values = []
-        for feature_value in partition:
-            if (X[feature_name] == feature_value).sum() < self.__min_samples_leaf:
-                return 0, [], [], []
+        for list_ in feature_values:
+            mask = X[feature_name].isin(list_)
+            if mask.sum() < self.__min_samples_leaf:
+                return 0, [], []
             else:
-                xs.append(X[X[feature_name] == feature_value])
-                ys.append(Y[X[feature_name] == feature_value])
-                feature_values.append(feature_value)
+                xs.append(X[mask])
+                ys.append(Y[mask])
 
         inf_gain = self.__information_gain(Y, ys)
 
-        return inf_gain, xs, ys, feature_values
+        return inf_gain, xs, ys
+
+    def __best_rank_split(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], Tuple]:
+        """Разделяет входное множество по ранговому признаку наилучшим образом."""
+        if X[feature_name].isnull().all():
+            return 0, [], [], tuple()
+
+        available_feature_values = self.__rank_feature_names[feature_name]
+
+        best_inf_gain = 0
+        best_xs = []
+        best_ys = []
+        best_feature_values = tuple()
+        for feature_values in rank_partition(available_feature_values):
+            inf_gain, xs, ys = self.__rank_split(X, Y, feature_name, feature_values)
+            if best_inf_gain < inf_gain:
+                best_inf_gain = inf_gain
+                best_xs = xs
+                best_ys = ys
+                best_feature_values = feature_values
+
+        return best_inf_gain, best_xs, best_ys, best_feature_values
+
+    def __rank_split(
+            self,
+            X: pd.DataFrame,
+            Y: pd.Series,
+            feature_name: str,
+            feature_values: Tuple[List[str], List[str]],
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series]]:
+        """Разделяет входное множество по ранговому признаку согласно заданным значениям."""
+        left_list_, right_list_ = feature_values
+
+        left_mask = X[feature_name].isin(left_list_)
+        right_mask = X[feature_name].isin(right_list_)
+
+        assert X.shape[0] == left_mask.sum() + right_mask.sum(), (
+            f'feature_name = {feature_name}\n'
+            f'feature_values = {feature_values}'
+        )
+
+        if left_mask.sum() < self.__min_samples_leaf or right_mask.sum() < self.__min_samples_leaf:
+            return 0, [], []
+        else:
+            xs = [X[left_mask], X[right_mask]]
+            ys = [Y[left_mask], Y[right_mask]]
+
+        inf_gain = self.__information_gain(Y, ys)
+
+        return inf_gain, xs, ys
 
     def __numerical_split(
             self,
             X: pd.DataFrame,
             Y: pd.Series,
             feature_name: str,
-    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], List[str]]:
+    ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], Tuple]:
         """Разделяет входное множество по численному признаку, выбирая наилучший порог.
 
         Args:
@@ -435,10 +611,13 @@ class DecisionTree:
             best_ys: список Series с соответствующими метками дочерних подмножеств.
             best_feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
+        if X[feature_name].isnull().all():
+            return 0, [], [], tuple()
+
         best_inf_gain = 0
         best_xs = []
         best_ys = []
-        best_feature_values = []
+        best_feature_values = tuple()
         for threshold in range(int(X[feature_name].min()) + 1, int(X[feature_name].max())):
             x_less = X[X[feature_name] < threshold]
             y_less = Y[X[feature_name] < threshold]
@@ -450,7 +629,7 @@ class DecisionTree:
 
             xs = [x_less, x_more]
             ys = [y_less, y_more]
-            feature_values = [f'< {threshold}', f'>= {threshold}']
+            feature_values = [f'< {threshold}'], [f'>= {threshold}']
 
             if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
                 continue
@@ -553,7 +732,7 @@ class DecisionTree:
         if node.feature is None:
             Y = node.label
             assert Y is not None, 'label оказался None'
-        elif node.feature in self.__categorical_feature_names:
+        elif node.feature in self.__cat_feature_names + list(self.__rank_feature_names.keys()):
             # ищем ту ветвь, по которой нужно идти
             for child in node.childs:
                 if child.feature_value == point[node.feature]:
@@ -563,9 +742,9 @@ class DecisionTree:
                 # если такой ветви нет
                 if Y is None:
                     Y = node.label
-        elif node.feature in self.__numerical_feature_names:
+        elif node.feature in self.__num_feature_names:
             # ищем ту ветвь, по которой нужно идти
-            threshold = float(node.childs[0].feature_value[2:])
+            threshold = float(node.childs[0].feature_value[0][2:])
             if point[node.feature] < threshold:
                 Y = self.__predict(node.childs[0], point)
             elif point[node.feature] >= threshold:
@@ -659,7 +838,12 @@ class DecisionTree:
 
         self.__graph.node(name=node_name, label=node_content)
         if parent_name:
-            self.__graph.edge(parent_name, node_name, label=f'{node.feature_value}')
+            if isinstance(node.feature_value, list):
+                a = [str(i) for i in node.feature_value]
+                node_label = '\n'.join(a)
+            else:
+                assert False, 'пришли сюда'
+            self.__graph.edge(parent_name, node_name, label=node_label)
 
         for child in node.childs:
             self.__add_node(
