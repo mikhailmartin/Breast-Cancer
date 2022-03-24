@@ -52,10 +52,14 @@ def plot_pies(
         ncols: количество столбцов на рисунке.
     """
     df = df.copy()
-    if df[feature_name].isnull().sum():
+    if df[feature_name].isnull().any():
         df.replace({feature_name: {np.NaN: '-'}}, inplace=True)
-
-    values = sorted(list(set(df[feature_name].tolist())))
+        values = set(df[feature_name].tolist())
+        values.remove('-')
+        values = sorted(list(values))
+        values.insert(0, '-')
+    else:
+        values = sorted(list(set(df[feature_name].tolist())))
     labels = sorted(list(set(df[label_column].tolist())))
     if nrows is None or ncols is None:
         nrows = 1
