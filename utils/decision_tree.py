@@ -618,22 +618,24 @@ class DecisionTree:
         if X[feature_name].isnull().all():
             return 0, [], [], tuple()
 
+        a = sorted(X[feature_name].tolist())
+        thresholds = [(a[i] + a[i + 1]) / 2 for i in range(len(a) - 1)]
         best_inf_gain = 0
         best_xs = []
         best_ys = []
         best_feature_values = tuple()
-        for threshold in range(int(X[feature_name].min()) + 1, int(X[feature_name].max())):
-            x_less = X[X[feature_name] < threshold]
-            y_less = Y[X[feature_name] < threshold]
+        for threshold in thresholds:
+            x_less = X[X[feature_name] <= threshold]
+            y_less = Y[X[feature_name] <= threshold]
             A_less = y_less.shape[0]
 
-            x_more = X[X[feature_name] >= threshold]
-            y_more = Y[X[feature_name] >= threshold]
+            x_more = X[X[feature_name] > threshold]
+            y_more = Y[X[feature_name] > threshold]
             A_more = y_more.shape[0]
 
             xs = [x_less, x_more]
             ys = [y_less, y_more]
-            feature_values = [f'< {threshold}'], [f'>= {threshold}']
+            feature_values = [f'<= {threshold}'], [f'> {threshold}']
 
             if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
                 continue
@@ -748,10 +750,10 @@ class DecisionTree:
                     Y = node.label
         elif node.feature in self.__num_feature_names:
             # ищем ту ветвь, по которой нужно идти
-            threshold = float(node.childs[0].feature_value[0][2:])
-            if point[node.feature] < threshold:
+            threshold = float(node.childs[0].feature_value[0][3:])
+            if point[node.feature] <= threshold:
                 Y = self.__predict(node.childs[0], point)
-            elif point[node.feature] >= threshold:
+            elif point[node.feature] > threshold:
                 Y = self.__predict(node.childs[1], point)
             else:
                 assert False, 'пришли сюда'
