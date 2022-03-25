@@ -152,8 +152,9 @@ def get_accuracy_matrix(
         question: вопрос, для которого будет построена матрица точностей.
 
     Returns:
-        matrix: собственно матрица точностей.
-        answers: ответы на вопрос.
+        Кортеж `(accuracy_matrix, answers)`.
+          matrix: собственно матрица точностей.
+          answers: ответы на вопрос.
     """
     # временный DataFrame только с ответами на вопрос и метками
     tmp = df[[question, defs.LABEL]]
@@ -246,7 +247,7 @@ def get_confusion_matrix(
         pred_labels: множество предсказываемых меток.
 
     Returns:
-        confusion_matrix: матрица ошибок.
+        Матрица ошибок.
     """
     confusion_matrix = np.zeros((len(true_labels), len(pred_labels)), dtype='int64')
     for y_true, y_pred in zip(ys_true, ys_pred):

@@ -49,7 +49,7 @@ def dataset_from_csv(file_path: str) -> tf.data.Dataset:
         file_path: путь до CSV-файла.
 
     Returns:
-        dataset: датасет.
+        датасет.
     """
     # создаём Dataset, читая CSV-файл
     dataset = tf.data.experimental.make_csv_dataset(
@@ -74,9 +74,6 @@ def create_model(layer_width: int, entire_ds: tf.data.Dataset) -> tf.keras.Model
     Args:
         layer_width: ширина слоёв.
         entire_ds: целый датасет, из которого изучается статистика данных.
-
-    Returns:
-        model: собственно модель.
     """
     input_names = INPUT_NAMES.copy()
     input_names.pop('label')
@@ -101,8 +98,9 @@ def create_inputs(input_names: Dict[str, str]) -> Tuple[List[tf.keras.Input], Li
         input_names: словарь {название_входа: его тип (численный, категориальный)}.
 
     Returns:
-        categorical_inputs: список категориальных входов.
-        numerical_inputs: список численных входов.
+        Кортеж `(categorical_inputs, numerical_inputs)`.
+          categorical_inputs: список категориальных входов.
+          numerical_inputs: список численных входов.
     """
     categorical_inputs = []
     numerical_inputs = []
@@ -126,7 +124,7 @@ def encode_categorical_inputs(
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
-        encoded_categorical_features: список предобработанных признаков.
+        Список предобработанных признаков.
     """
     encoded_categorical_features = [
         encode_categorical_input(input_, entire_ds)
@@ -145,7 +143,7 @@ def encode_categorical_input(input_: tf.keras.Input, entire_ds: tf.data.Dataset)
         entire_ds: целый датасет, из которого изучается статистика данных.
 
     Returns:
-        encoded_feature: предобработанный категориальный признак.
+        Предобработанный категориальный признак.
     """
     lookup = tf.keras.layers.IntegerLookup(
         output_mode='binary',
