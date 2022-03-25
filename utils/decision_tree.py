@@ -325,7 +325,6 @@ class DecisionTree:
 
             if feature:
                 available_feature_names = available_feature_names.copy()
-                special_cases = special_cases.copy()
 
                 self.__feature_importances[feature] += \
                     (samples/self.__total_samples) * inf_gain
@@ -335,6 +334,7 @@ class DecisionTree:
                 #     available_feature_names.remove(feature)
                 # добавление открывшихся признаков
                 if special_cases:
+                    special_cases = special_cases.copy()
                     if feature in special_cases.keys():
                         if isinstance(special_cases[feature], str):
                             available_feature_names.append(special_cases[feature])
