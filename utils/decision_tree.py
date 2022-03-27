@@ -59,10 +59,10 @@ class DecisionTree:
             self,
             *,
             max_depth: Optional[int] = None,
-            criterion: Optional[str] = 'entropy',
+            criterion: Optional[str] = 'gini',
             min_samples_split: Optional[int] = 2,
             min_samples_leaf: Optional[int] = 1,
-            min_impurity_decrease: Optional[float] = 0.05,
+            min_impurity_decrease: Optional[float] = 0,
     ) -> None:
         if max_depth is not None and not isinstance(max_depth, int):
             raise ValueError('max_depth должен представлять собой int.')
@@ -232,7 +232,7 @@ class DecisionTree:
                                 'ключи - строки, а значения - либо строки, либо списки строк.'
                             )
 
-        a = []
+        setted_feature_names = []
         if categorical_feature_names:
             for feature_name in categorical_feature_names:
                 if feature_name not in X.columns:
@@ -240,7 +240,7 @@ class DecisionTree:
                         f'categorical_feature_names содержит признак {feature_name}, которого нет '
                         'в обучающих данных.'
                     )
-            a += categorical_feature_names
+            setted_feature_names += categorical_feature_names
         if rank_feature_names:
             for feature_name in rank_feature_names.keys():
                 if feature_name not in X.columns:
@@ -248,7 +248,7 @@ class DecisionTree:
                         f'rank_feature_names содержит признак {feature_name}, которого нет в '
                         'обучающих данных.'
                     )
-            a += list(rank_feature_names.keys())
+            setted_feature_names += list(rank_feature_names.keys())
         if numerical_feature_names:
             for feature_name in numerical_feature_names:
                 if feature_name not in X.columns:
@@ -256,9 +256,9 @@ class DecisionTree:
                         f'numerical_feature_names содержит признак {feature_name}, которого нет в '
                         'обучающих данных.'
                     )
-            a += numerical_feature_names
+            setted_feature_names += numerical_feature_names
         for feature_name in X.columns:
-            if feature_name not in a:
+            if feature_name not in setted_feature_names:
                 raise ValueError(
                     f'Обучающие данные содержат признак {feature_name}, который не определён ни в '
                     'categorical_feature_names, ни в rank_feature_names, ни в '
@@ -548,7 +548,7 @@ class DecisionTree:
             feature_name: str,
     ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], Tuple]:
         """Разделяет входное множество по ранговому признаку наилучшим образом."""
-        if X[feature_name].isnull().all():
+        if X[feature_name].isnull().any():
             return 0, [], [], tuple()
 
         available_feature_values = self.__rank_feature_names[feature_name]
@@ -615,7 +615,7 @@ class DecisionTree:
               ys: список Series с соответствующими метками дочерних подмножеств.
               feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
-        if X[feature_name].isnull().all():
+        if X[feature_name].isnull().any():
             return 0, [], [], tuple()
 
         a = sorted(X[feature_name].tolist())
@@ -692,6 +692,7 @@ class DecisionTree:
         """Возвращает параметры этого классификатора."""
         params = {
             'max_depth': self.__max_depth,
+            'criterion': self.__criterion,
             'min_samples_split': self.__min_samples_split,
             'min_samples_leaf': self.__min_samples_leaf,
             'min_impurity_decrease': self.__min_impurity_decrease,
@@ -708,9 +709,8 @@ class DecisionTree:
         for param, value in params.items():
             if param not in valid_params:
                 raise ValueError(
-                    f'Invalid parameter {param} for estimator {self}. '
-                    'Check the list of available parameters '
-                    'with `estimator.get_params().keys()`.'
+                    f'Недопустимый параметр {param} для дерева {self}. Проверьте список доступных '
+                    'параметров с помощью `estimator.get_params().keys()`.'
                 )
 
             setattr(self, param, value)
