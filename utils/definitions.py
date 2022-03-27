@@ -285,7 +285,6 @@ MALIGNANT_TUMOR_PATH = os.path.join('data', 'origin', 'Таблица учёта
 # данные после ETL
 ETLED_DATA_PATH_step_1 = os.path.join('data', 'ETLed data step 1.xlsx')
 ETLED_DATA_PATH_step_2 = os.path.join('data', 'ETLed data step 2.xlsx')
-ETLED_DATA_PATH_step_3 = os.path.join('data', 'ETLed data step 3.xlsx')
 # train/val/test разбивка в CSV-файлах
 ENTIRE_DATA_PATH = os.path.join('data', 'train val test', 'entire data.csv')
 TRAIN_DATA_PATH = os.path.join('data', 'train val test', 'train data.csv')
