@@ -9,6 +9,7 @@ import functools
 import math
 
 from graphviz import Digraph
+import numpy as np
 import pandas as pd
 
 
@@ -62,7 +63,7 @@ class DecisionTree:
             criterion: Optional[str] = 'gini',
             min_samples_split: Optional[int] = 2,
             min_samples_leaf: Optional[int] = 1,
-            min_impurity_decrease: Optional[float] = 0,
+            min_impurity_decrease: Optional[float] = 0.,
     ) -> None:
         if max_depth is not None and not isinstance(max_depth, int):
             raise ValueError('max_depth должен представлять собой int.')
@@ -477,20 +478,18 @@ class DecisionTree:
               ys: список Series с соответствующими метками дочерних подмножеств.
               feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
-        if X[feature_name].isnull().any():
+        available_feature_values = set(X[feature_name].tolist())
+        if np.NaN in available_feature_values:
+            available_feature_values.remove(np.NaN)
+        if len(available_feature_values) == 0:
             return 0, [], [], tuple()
+        available_feature_values = sorted(list(available_feature_values))
 
-        assert not X[feature_name].isnull().any(), (
-            f'в признаке {feature_name} есть NaN\n'
-            f'{set(X["27. Каков тип Вашей занятости?"].tolist())}'
-        )
+        assert len(available_feature_values) != 0, 'добрый почантек'
 
-        available_feature_values = sorted(list(set(X[feature_name].tolist())))
-
-        assert len(available_feature_values) != 0, 'чико-рико'
-
+        # получаем список всех возможных разбиений
         partitions = [tuple(i) for i in categorical_partition(available_feature_values)]
-        partitions = partitions[1:]
+        partitions = partitions[1:]  # убираем вариант без разбиения
 
         best_inf_gain = 0
         best_xs = []
@@ -527,15 +526,20 @@ class DecisionTree:
               xs: список DataFrame'ов с точками данных дочерних подмножеств.
               ys: список Series с соответствующими метками дочерних подмножеств.
         """
+        nan_x = X[X[feature_name].isnull()]
+        nan_y = Y[X[feature_name].isnull()]
+
         xs = []
         ys = []
         for list_ in feature_values:
             mask = X[feature_name].isin(list_)
-            if mask.sum() < self.__min_samples_leaf:
+            x = pd.concat([X[mask], nan_x])
+            y = pd.concat([Y[mask], nan_y])
+            if y.shape[0] < self.__min_samples_leaf:
                 return 0, [], []
             else:
-                xs.append(X[mask])
-                ys.append(Y[mask])
+                xs.append(x)
+                ys.append(y)
 
         inf_gain = self.__information_gain(Y, ys)
 
@@ -548,9 +552,6 @@ class DecisionTree:
             feature_name: str,
     ) -> Tuple[float, List[pd.DataFrame], List[pd.Series], Tuple]:
         """Разделяет входное множество по ранговому признаку наилучшим образом."""
-        if X[feature_name].isnull().any():
-            return 0, [], [], tuple()
-
         available_feature_values = self.__rank_feature_names[feature_name]
 
         best_inf_gain = 0
@@ -575,21 +576,24 @@ class DecisionTree:
             feature_values: Tuple[List[str], List[str]],
     ) -> Tuple[float, List[pd.DataFrame], List[pd.Series]]:
         """Разделяет входное множество по ранговому признаку согласно заданным значениям."""
+        nan_x = X[X[feature_name].isnull()]
+        nan_y = Y[X[feature_name].isnull()]
+
         left_list_, right_list_ = feature_values
 
         left_mask = X[feature_name].isin(left_list_)
         right_mask = X[feature_name].isin(right_list_)
 
-        assert X.shape[0] == left_mask.sum() + right_mask.sum(), (
-            f'feature_name = {feature_name}\n'
-            f'feature_values = {feature_values}'
-        )
+        left_x = pd.concat([X[left_mask], nan_x])
+        left_y = pd.concat([Y[left_mask], nan_y])
+        right_x = pd.concat([X[right_mask], nan_x])
+        right_y = pd.concat([Y[right_mask], nan_y])
 
-        if left_mask.sum() < self.__min_samples_leaf or right_mask.sum() < self.__min_samples_leaf:
+        if left_y.shape[0] < self.__min_samples_leaf or right_y.shape[0] < self.__min_samples_leaf:
             return 0, [], []
         else:
-            xs = [X[left_mask], X[right_mask]]
-            ys = [Y[left_mask], Y[right_mask]]
+            xs = [left_x, right_x]
+            ys = [left_y, right_y]
 
         inf_gain = self.__information_gain(Y, ys)
 
@@ -615,29 +619,28 @@ class DecisionTree:
               ys: список Series с соответствующими метками дочерних подмножеств.
               feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
-        if X[feature_name].isnull().any():
-            return 0, [], [], tuple()
+        nan_x = X[X[feature_name].isnull()]
+        nan_y = Y[X[feature_name].isnull()]
 
-        a = sorted(X[feature_name].tolist())
-        thresholds = [(a[i] + a[i + 1]) / 2 for i in range(len(a) - 1)]
+        points = sorted(X.loc[X[feature_name].notnull(), feature_name].tolist())
+        thresholds = [(points[i] + points[i + 1]) / 2 for i in range(len(points) - 1)]
         best_inf_gain = 0
         best_xs = []
         best_ys = []
         best_feature_values = tuple()
         for threshold in thresholds:
-            x_less = X[X[feature_name] <= threshold]
-            y_less = Y[X[feature_name] <= threshold]
-            A_less = y_less.shape[0]
+            x_less = pd.concat([X[X[feature_name] <= threshold], nan_x])
+            y_less = pd.concat([Y[X[feature_name] <= threshold], nan_y])
 
-            x_more = X[X[feature_name] > threshold]
-            y_more = Y[X[feature_name] > threshold]
-            A_more = y_more.shape[0]
+            x_more = pd.concat([X[X[feature_name] > threshold], nan_x])
+            y_more = pd.concat([Y[X[feature_name] > threshold], nan_y])
 
             xs = [x_less, x_more]
             ys = [y_less, y_more]
             feature_values = [f'<= {threshold}'], [f'> {threshold}']
 
-            if A_less < self.__min_samples_leaf or A_more < self.__min_samples_leaf:
+            if y_less.shape[0] < self.__min_samples_leaf or \
+                    y_more.shape[0] < self.__min_samples_leaf:
                 continue
 
             inf_gain = self.__information_gain(Y, ys)
@@ -682,6 +685,8 @@ class DecisionTree:
             second_term += (A_i/A) * self.__impurity(y_i)
 
         inf_gain = self.__impurity(Y) - second_term
+
+        assert isinstance(inf_gain, float), f'бам-бам, бим-бим {type(inf_gain)}'
 
         return inf_gain
 
