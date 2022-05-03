@@ -277,19 +277,5 @@ LABELS = [
     LABEL_3,
 ]
 
-# пути
-# исходные данные
-NORM_PATH = os.path.join('data', 'origin', 'Таблица учёта НОРМА.xlsx')
-BENIGN_TUMOR_PATH = os.path.join('data', 'origin', 'Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx')
-MALIGNANT_TUMOR_PATH = os.path.join('data', 'origin', 'Таблица учёта ОНКОЛОГИЯ.xlsx')
-# данные после ETL
-ETLED_DATA_PATH_step_1 = os.path.join('data', 'ETLed data step 1.xlsx')
-ETLED_DATA_PATH_step_2 = os.path.join('data', 'ETLed data step 2.xlsx')
-# train/val/test разбивка в CSV-файлах
-ENTIRE_DATA_PATH = os.path.join('data', 'train val test', 'entire data.csv')
-TRAIN_DATA_PATH = os.path.join('data', 'train val test', 'train data.csv')
-VAL_DATA_PATH = os.path.join('data', 'train val test', 'val data.csv')
-TEST_DATA_PATH = os.path.join('data', 'train val test', 'test data.csv')
-# обученные модели
-GENERALIZING_MODEL = os.path.join(os.getcwd(), 'models', 'generalizing model')
-OVERFITTED_MODEL = os.path.join(os.getcwd(), 'models', 'overfitted model')
+ETLED_DATA_PATH = os.path.join('data', 'ETLed data.xlsx')
+NEURAL_NETWORK = os.path.join(os.getcwd(), 'models', 'neural network')

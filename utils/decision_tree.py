@@ -64,6 +64,7 @@ class DecisionTree:
             min_samples_split: Optional[int] = 2,
             min_samples_leaf: Optional[int] = 1,
             min_impurity_decrease: Optional[float] = 0.,
+            max_childs: Optional[int] = None,
     ) -> None:
         if max_depth is not None and not isinstance(max_depth, int):
             raise ValueError('max_depth должен представлять собой int.')
@@ -90,11 +91,18 @@ class DecisionTree:
             raise ValueError(
                 'min_samples_split должен быть строго в 2 раза больше min_samples_leaf.'
             )
+
+        if max_childs is not None and not isinstance(max_childs, int) or \
+                isinstance(max_childs, int) and max_childs < 2:
+            raise ValueError(
+                'max_childs должен представлять собой int и быть строго больше 1.'
+            )
         self.__max_depth = max_depth
         self.__criterion = criterion
         self.__min_samples_split = min_samples_split
         self.__min_samples_leaf = min_samples_leaf
         self.__min_impurity_decrease = min_impurity_decrease
+        self.__max_childs = max_childs
 
         self.__feature_names = None
         self.__class_names = None
@@ -330,9 +338,6 @@ class DecisionTree:
                 self.__feature_importances[feature] += \
                     (samples/self.__total_samples) * inf_gain
 
-                # удаление категориальных признаков
-                # if feature in self.__categorical_feature_names:
-                #     available_feature_names.remove(feature)
                 # добавление открывшихся признаков
                 if special_cases:
                     special_cases = special_cases.copy()
@@ -478,11 +483,16 @@ class DecisionTree:
               ys: список Series с соответствующими метками дочерних подмножеств.
               feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
+        best_inf_gain = 0
+        best_xs = []
+        best_ys = []
+        best_feature_values = tuple()
+
         available_feature_values = set(X[feature_name].tolist())
         if np.NaN in available_feature_values:
             available_feature_values.remove(np.NaN)
-        if len(available_feature_values) == 0:
-            return 0, [], [], tuple()
+        if len(available_feature_values) <= 1:
+            return best_inf_gain, best_xs, best_ys, best_feature_values
         available_feature_values = sorted(list(available_feature_values))
 
         assert len(available_feature_values) != 0, 'добрый почантек'
@@ -490,11 +500,10 @@ class DecisionTree:
         # получаем список всех возможных разбиений
         partitions = [tuple(i) for i in categorical_partition(available_feature_values)]
         partitions = partitions[1:]  # убираем вариант без разбиения
+        partitions = sorted(partitions, key=len)
+        if self.__max_childs:
+            partitions = list(filter(lambda x: len(x) <= self.__max_childs, partitions))
 
-        best_inf_gain = 0
-        best_xs = []
-        best_ys = []
-        best_feature_values = tuple()
         for feature_values in partitions:
             inf_gain, xs, ys = self.__categorical_split(X, Y, feature_name, feature_values)
             if best_inf_gain < inf_gain:
@@ -692,7 +701,7 @@ class DecisionTree:
 
     def get_params(
             self,
-            deep: Optional[bool] = True,
+            deep: Optional[bool] = True,  # реализован для sklearn.model_selection.GridSearchCV
     ) -> Dict:
         """Возвращает параметры этого классификатора."""
         params = {

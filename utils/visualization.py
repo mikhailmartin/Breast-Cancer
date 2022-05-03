@@ -127,16 +127,15 @@ def plot_hists(
     plt.show()
 
 
-def plot_distribution(n1_old, n2_old, n3_old, n1_new, n2_new, n3_new):
-    fig, axes = plt.subplots(1, 2, figsize=(18, 5), sharey=True)
+def plot_distribution(
+        num1: int,
+        num2: int,
+        num3: int
+) -> None:
+    fig, ax = plt.subplots(figsize=(9, 5))
     fig.suptitle('Распределение точек данных по классам', fontsize=16)
-    axes[0].set_title('до очистки')
-    axes[0].bar(defs.LABELS, [n1_old, n2_old, n3_old], tick_label=defs.LABELS)
-    autolabel(axes[0], height_factor=0.85)
-
-    axes[1].set_title('после очистки')
-    axes[1].bar(defs.LABELS, [n1_new, n2_new, n3_new], tick_label=defs.LABELS)
-    autolabel(axes[1], height_factor=0.85)
+    ax.bar(defs.LABELS, [num1, num2, num3], tick_label=defs.LABELS)
+    autolabel(ax, height_factor=0.85)
 
     plt.show()
 
