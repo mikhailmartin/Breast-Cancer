@@ -313,3 +313,29 @@ def plot_history(history: tf.keras.callbacks.History) -> None:
     axes[1].legend()
 
     plt.show()
+
+
+def plot_scatter(dataframe, feature1, feature2, *, target=None):
+    """Отрисовывает диаграмму рассеяния для двух признаков."""
+    ax = plt.subplot()
+
+    if target:
+        labels = sorted(list(set(dataframe[target])))
+        colors = [plt.cm.tab10(i / float(len(labels) - 1)) for i in range(len(labels))]
+        for label, color in zip(labels, colors):
+            mask = (dataframe[target] == label)
+            ax.scatter(
+                dataframe.loc[mask, feature1],
+                dataframe.loc[mask, feature2],
+                marker='.',
+                color=color,
+                label=label,
+                )
+            ax.legend()
+    else:
+        ax.scatter(dataframe[feature1], dataframe[feature2], marker='.')
+
+    ax.set_xlabel(feature1)
+    ax.set_ylabel(feature2)
+
+    plt.show()
