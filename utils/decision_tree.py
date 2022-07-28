@@ -535,8 +535,8 @@ class DecisionTree:
               xs: список DataFrame'ов с точками данных дочерних подмножеств.
               ys: список Series с соответствующими метками дочерних подмножеств.
         """
-        nan_x = X[X[feature_name].isnull()]
-        nan_y = Y[X[feature_name].isnull()]
+        nan_x = X[X[feature_name].isna()]
+        nan_y = Y[X[feature_name].isna()]
 
         xs = []
         ys = []
@@ -585,8 +585,8 @@ class DecisionTree:
             feature_values: Tuple[List[str], List[str]],
     ) -> Tuple[float, List[pd.DataFrame], List[pd.Series]]:
         """Разделяет входное множество по ранговому признаку согласно заданным значениям."""
-        nan_x = X[X[feature_name].isnull()]
-        nan_y = Y[X[feature_name].isnull()]
+        nan_x = X[X[feature_name].isna()]
+        nan_y = Y[X[feature_name].isna()]
 
         left_list_, right_list_ = feature_values
 
@@ -628,10 +628,10 @@ class DecisionTree:
               ys: список Series с соответствующими метками дочерних подмножеств.
               feature_values: значения признаков, соответствующие дочерним подмножествам.
         """
-        nan_x = X[X[feature_name].isnull()]
-        nan_y = Y[X[feature_name].isnull()]
+        nan_x = X[X[feature_name].isna()]
+        nan_y = Y[X[feature_name].isna()]
 
-        points = sorted(X.loc[X[feature_name].notnull(), feature_name].tolist())
+        points = sorted(X.loc[X[feature_name].notna(), feature_name].tolist())
         thresholds = [(points[i] + points[i + 1]) / 2 for i in range(len(points) - 1)]
         best_inf_gain = 0
         best_xs = []

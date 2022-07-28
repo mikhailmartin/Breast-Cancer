@@ -52,7 +52,7 @@ def plot_pies(
         ncols: количество столбцов на рисунке.
     """
     df = df.copy()
-    if df[feature_name].isnull().any():
+    if df[feature_name].isna().any():
         df.replace({feature_name: {np.NaN: '-'}}, inplace=True)
         values = set(df[feature_name].tolist())
         values.remove('-')
