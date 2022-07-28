@@ -53,7 +53,7 @@ def plot_pies(
     """
     df = df.copy()
     if df[feature_name].isna().any():
-        df.replace({feature_name: {np.NaN: '-'}}, inplace=True)
+        df[feature_name].replace({np.NaN: '-'}, inplace=True)
         values = set(df[feature_name].tolist())
         values.remove('-')
         values = sorted(list(values))
