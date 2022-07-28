@@ -260,6 +260,7 @@ def plot_confusion_matrix(
         true_labels: List[str],
         pred_labels: List[str],
         threshold: Optional[float] = None,
+        dpi: Optional[int] = 70,
 ) -> None:
     """Визуализирует матрицу ошибок.
 
@@ -269,7 +270,7 @@ def plot_confusion_matrix(
         pred_labels: множество предсказываемых меток.
         threshold: порог принятия решения.
     """
-    ax = plt.subplot()
+    fig, ax = plt.subplots(dpi=dpi)
     ax.imshow(confusion_matrix)
     # подписываем метки на оси Y
     ax.set_yticks(range(confusion_matrix.shape[0]))
@@ -293,13 +294,14 @@ def plot_confusion_matrix(
     plt.show()
 
 
-def plot_history(history: tf.keras.callbacks.History) -> None:
+def plot_history(history: tf.keras.callbacks.History, *, dpi: Optional[int] = 70) -> None:
     """Визуализирует историю обучения.
 
     Args:
         history: собственно история.
+        dpi: количество пикселей на дюйм.
     """
-    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5), dpi=dpi)
     axes[0].plot(history.history['accuracy'], label='train_accuracy')
     axes[0].plot(history.history['val_accuracy'], label='val_accuracy')
     axes[0].set_xlabel('эпохи')
