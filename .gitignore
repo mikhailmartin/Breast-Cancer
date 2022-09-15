@@ -6,3 +6,6 @@
 .ipynb_checkpoints/
 # bytecode
 __pycache__/
+
+# CatBoost
+/catboost_info
