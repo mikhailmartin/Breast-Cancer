@@ -231,69 +231,6 @@ def plot_accuracy_matrix(
     plt.show()
 
 
-def get_confusion_matrix(
-        ys_true: List[str],
-        ys_pred: List[str],
-        true_labels: List[str],
-        pred_labels: List[str],
-) -> np.ndarray:
-    """Подсчитывает матрицу ошибок.
-
-    Args:
-        ys_true: метки абсолютной истины.
-        ys_pred: предсказанные метки.
-        true_labels: множество меток абсолютной истины.
-        pred_labels: множество предсказываемых меток.
-
-    Returns:
-        Матрица ошибок.
-    """
-    confusion_matrix = np.zeros((len(true_labels), len(pred_labels)), dtype='int64')
-    for y_true, y_pred in zip(ys_true, ys_pred):
-        confusion_matrix[true_labels.index(y_true)][pred_labels.index(y_pred)] += 1
-
-    return confusion_matrix
-
-
-def plot_confusion_matrix(
-        confusion_matrix: np.ndarray,
-        true_labels: List[str],
-        pred_labels: List[str],
-        threshold: Optional[float] = None,
-        dpi: Optional[int] = 70,
-) -> None:
-    """Визуализирует матрицу ошибок.
-
-    Args:
-        confusion_matrix: матрица ошибок.
-        true_labels: множество меток абсолютной истины.
-        pred_labels: множество предсказываемых меток.
-        threshold: порог принятия решения.
-    """
-    fig, ax = plt.subplots(dpi=dpi)
-    ax.imshow(confusion_matrix)
-    # подписываем метки на оси Y
-    ax.set_yticks(range(confusion_matrix.shape[0]))
-    ax.set_yticklabels(true_labels)
-    ax.set_ylabel('Правильные метки')
-    # прописываем метки на оси X
-    ax.set_xticks(range(confusion_matrix.shape[1]))
-    ax.set_xticklabels(pred_labels)
-    plt.setp(ax.get_xticklabels(), rotation=30, ha='right', rotation_mode='anchor')
-    ax.set_xlabel('Предсказанные метки')
-    # прописываем циферки
-    for i in range(confusion_matrix.shape[0]):
-        for j in range(confusion_matrix.shape[1]):
-            if confusion_matrix[i][j] < ((confusion_matrix.max() + confusion_matrix.min()) / 2):
-                ax.text(j, i, str(confusion_matrix[i][j]), ha='center', va='center', color='yellow')
-            else:
-                ax.text(j, i, str(confusion_matrix[i][j]), ha='center', va='center', color='black')
-    if threshold:
-        ax.set_title(f'Порог принятия решения: {threshold:2.0%}')
-
-    plt.show()
-
-
 def plot_history(history: tf.keras.callbacks.History, *, dpi: Optional[int] = 70) -> None:
     """Визуализирует историю обучения.
 
