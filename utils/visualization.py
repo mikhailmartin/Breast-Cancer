@@ -1,13 +1,16 @@
 """Здесь содержатся разнообразные утилиты для визуализации."""
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import matplotlib.axes
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from scipy import stats
+import seaborn as sns
+sns.set_theme()
 
-from utils import definitions as defs
+import utils
 
 
 def autolabel(
@@ -91,7 +94,7 @@ def plot_hists(
         label_column: str,
         *,
         bins: Optional[int] = None,
-        xlim: Tuple[Union[int, float], Union[int, float]],
+        xlim: Tuple[int | float, int | float],
         nrows: Optional[int] = None,
         ncols: Optional[int] = None,
 ) -> None:
@@ -127,6 +130,259 @@ def plot_hists(
     plt.show()
 
 
+def num_feature_report(
+        data: pd.DataFrame,
+        *,
+        feature_colname: str,
+        target_colname: str,
+        value_range: Optional[Tuple[float | None, float | None]] = (None, None),
+        figsize: Optional[Tuple[float, float]] = (6.4, 4.8),
+        histplot_args: Dict = None,
+) -> Tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
+    """
+    Визуализирует разницу в распределениях численного непрерывного признака для целевых классов.
+
+    Args:
+        data: pd.DataFrame, содержащий исследуемый признак и целевую переменную.
+        feature_colname: название столбца с исследуемым признаком.
+        target_colname: название столбца с целевой переменной.
+        value_range: задаваемый диапазон рассматриваемых значений.
+        figsize: (ширина, высота) рисунка в дюймах.
+        histplot_args: аргументы для seaborn.histplot().
+
+    Returns:
+        Кортеж `(fig, axes)`.
+          fig: matplotlib.Figure, содержащий все графики.
+          axes: matplotlib.axes.Axes, содержащие отрисованные график.
+    """
+    # подготовка данных
+    data = data[[feature_colname, target_colname]].copy()
+    data = slice_by_value_range(data, feature_colname, value_range)
+
+    if histplot_args is None:
+        histplot_args = {}
+
+    if data[feature_colname].isna().sum():
+        fig, axes = plt.subplots(1, 3, figsize=figsize)
+        na_bar_plot(data, feature_colname=feature_colname, target_colname=target_colname, ax=axes[2])
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=figsize)
+
+    # Violinplot
+    sns.violinplot(
+        data=data,
+        x=feature_colname,
+        y=target_colname,
+        orient='h',
+        ax=axes[0],
+    )
+    axes[0].set(title='Violinplot')
+
+    # Density Histogram
+    sns.histplot(
+        data=data,
+        x=feature_colname,
+        hue=target_colname,
+        stat='density',
+        common_norm=False,
+        ax=axes[1],
+        **histplot_args,
+    )
+    axes[1].set(title='Density Histogram')
+
+    fig.suptitle(f'num_feature_report для признака {feature_colname}')
+
+    labels = data[target_colname].unique()
+    results = stats.ttest_ind(
+        data.loc[
+            (data[target_colname] == labels[0]) & data[feature_colname].notna(), feature_colname],
+        data.loc[
+            (data[target_colname] == labels[1]) & data[feature_colname].notna(), feature_colname],
+    )
+
+    if results.pvalue < .05:
+        print(f't-критерий Стьюдента: Выборки различимы (p-значение: {results.pvalue:.3f})')
+    else:
+        print(f't-критерий Стьюдента: Выборки неразличимы (p-значение: {results.pvalue:.3f})')
+
+    return fig, axes
+
+
+def cat_feature_report(
+        data: pd.DataFrame,
+        *,
+        feature_colname: str,
+        target_colname: str,
+        figsize: Optional[Tuple[float, float]] = (6.4, 4.8),
+) -> Tuple[matplotlib.figure.Figure, List[matplotlib.axes.Axes]]:
+    """
+    Визуализирует разницу в распределениях категориального признака для целевых классов.
+
+    Args:
+        data: pd.DataFrame, содержащий исследуемый признак и целевую переменную.
+        feature_colname: название столбца с исследуемым признаком.
+        target_colname: название столбца с целевой переменной.
+        figsize: (ширина, высота) рисунка в дюймах.
+
+    Returns:
+        Кортеж `(fig, ax)`.
+          fig: matplotlib.Figure, содержащий все графики.
+          axes: matplotlib.axes.Axes, содержащие отрисованные график.
+    """
+    data = data[[feature_colname, target_colname]].copy()
+
+    if data[feature_colname].isna().sum():
+        fig, axes = plt.subplots(1, 2, figsize=figsize)
+        na_bar_plot(
+            data, feature_colname=feature_colname, target_colname=target_colname, ax=axes[1])
+        data = data[data[feature_colname].notna()]
+    else:
+        fig, axes = plt.subplots(1, 1, figsize=figsize)
+        axes = [axes]  # заглушка
+
+    bar_plot(data, feature_colname=feature_colname, target_colname=target_colname, ax=axes[0])
+    axes[0].set(
+        xlabel='Целевые классы',
+        ylabel='Доли категорий',
+    )
+    fig.suptitle(f'cat_feature_report для признака {feature_colname}')
+
+    return fig, axes
+
+
+def na_bar_plot(
+        data: pd.DataFrame,
+        *,
+        feature_colname: str,
+        target_colname: str,
+        ax: Optional[matplotlib.axes.Axes] = None,
+) -> matplotlib.axes.Axes:
+    """
+    Визуализирует разницу в доле пропусков для целевых классов.
+
+    Args:
+        data: pd.DataFrame, содержащий исследуемый признак и целевую переменную.
+        feature_colname: название столбца с исследуемым признаком.
+        target_colname: название столбца с целевой переменной.
+        ax: matplotlib.axes.Axes, на котором следует отрисовать график.
+
+    Returns:
+        ax: matplotlib.axes.Axes с отрисованным графиком.
+    """
+    data = data[[feature_colname, target_colname]].copy()
+
+    if not ax:
+        ax = plt.subplot()
+
+    data['has_na'] = data[feature_colname].isna().replace({True: 'пропуск', False: 'значение'})
+    del data[feature_colname]
+
+    bar_plot(data, feature_colname='has_na', target_colname=target_colname, ax=ax)
+    ax.set(ylabel='Доли пропусков')
+
+    return ax
+
+
+def bar_plot(
+        data: pd.DataFrame,
+        *,
+        feature_colname: str,
+        target_colname: str,
+        ax: Optional[matplotlib.axes.Axes] = None,
+) -> matplotlib.axes.Axes:
+    """
+    Визуализирует распределение значений признака в виде столбчатой диаграммы для целевых классов.
+
+    Args:
+        data: pd.DataFrame, содержащий исследуемый признак и целевую переменную.
+        feature_colname: название столбца с исследуемым признаком.
+        target_colname: название столбца с целевой переменной.
+        ax: ранее созданный ax.
+
+    Returns:
+        ax: matplotlib.axes.Axes с отрисованным графиком.
+    """
+    data = data[[feature_colname, target_colname]].copy()
+
+    labels = sorted(data[target_colname].unique())
+    categories = sorted(data[feature_colname].unique())
+
+    if not ax:
+        ax = plt.subplot()
+
+    a = []
+    for category in categories:
+        category_ratios = []
+        for label in labels:
+            class_df = data[data[target_colname] == label]
+            all_count = class_df.shape[0]
+            category_count = class_df[class_df[feature_colname] == category].shape[0]
+            ratio = category_count / all_count
+            category_ratios.append(ratio)
+
+        all_count = data.shape[0]
+        category_count = data[data[feature_colname] == category].shape[0]
+        ratio = category_count / all_count
+        category_ratios.append(ratio)
+
+        a.append(category_ratios)
+
+    labels = [str(label) for label in labels] + ['весь датасет']
+
+    bottom = np.zeros(len(labels))
+    for i, category in enumerate(categories):
+        ax.bar(labels, a[i], bottom=bottom, label=category)
+        bottom += a[i]
+
+    # add annotations
+    for c in ax.containers:
+
+        # customize the label to account for cases when there might not be a bar section
+        labels = [f'{h:2.3%}' if (h := v.get_height()) > .05 else '' for v in c]
+
+        # set the bar label
+        ax.bar_label(c, labels=labels, label_type='center', fontsize=8)
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    ax.legend(bbox_to_anchor=(1, 1.05), title='Категории')
+    ax.set(
+        xlabel='Целевые классы',
+        ylabel='Доли категорий',
+    )
+
+    return ax
+
+
+def slice_by_value_range(
+        data: pd.DataFrame,
+        feature_colname: str,
+        value_range: Optional[Tuple[float | None, float | None]] = (None, None),
+):
+    """
+    Возвращает срез pd.DataFrame по задаваемому признаку и диапазону значений.
+
+    Args:
+        data: pd.DataFrame, который необходимо обрезать.
+        feature_colname: название столбца с признаком, по которому необходимо сделать срез.
+        value_range: задаваемый диапазон рассматриваемых значений.
+
+    Returns:
+        data: срезанный pd.DataFrame.
+    """
+    data = data.copy()
+
+    min_value = value_range[0]
+    max_value = value_range[1]
+    if min_value:
+        data = data[data[feature_colname] >= min_value]
+    if max_value:
+        data = data[data[feature_colname] <= max_value]
+
+    return data
+
+
 def plot_distribution(
         num1: int,
         num2: int,
@@ -134,7 +390,7 @@ def plot_distribution(
 ) -> None:
     fig, ax = plt.subplots(figsize=(9, 5))
     fig.suptitle('Распределение точек данных по классам', fontsize=16)
-    ax.bar(defs.LABELS, [num1, num2, num3], tick_label=defs.LABELS)
+    ax.bar(utils.constants.LABELS, [num1, num2, num3], tick_label=utils.constants.LABELS)
     autolabel(ax, height_factor=0.85)
 
     plt.show()
@@ -144,7 +400,8 @@ def get_accuracy_matrix(
         df: pd.DataFrame,
         question: str
 ) -> Tuple[List[List[float]], List[str]]:
-    """Подсчитывает матрицу точностей совпадений ответа на вопрос и диагноза.
+    """
+    Подсчитывает матрицу точностей совпадений ответа на вопрос и диагноза.
 
     Args:
         df: DataFrame, из которого будет вытаскиваться информация.
@@ -156,7 +413,7 @@ def get_accuracy_matrix(
           answers: ответы на вопрос.
     """
     # временный DataFrame только с ответами на вопрос и метками
-    tmp = df[[question, defs.LABEL]]
+    tmp = df[[question, utils.constants.LABEL]]
     # сбрасывание всех NaN
     tmp.dropna()
 
@@ -164,11 +421,11 @@ def get_accuracy_matrix(
     answer_set = tmp.value_counts(subset=question).index
     for answer in answer_set:
         row = []
-        for label in defs.LABELS:
-            tp = tmp[(tmp[question] == answer) & (tmp[defs.LABEL] == label)].shape[0]
-            tn = tmp[(tmp[question] != answer) & (tmp[defs.LABEL] != label)].shape[0]
-            fp = tmp[(tmp[question] == answer) & (tmp[defs.LABEL] != label)].shape[0]
-            fn = tmp[(tmp[question] != answer) & (tmp[defs.LABEL] == label)].shape[0]
+        for label in utils.constants.LABELS:
+            tp = tmp[(tmp[question] == answer) & (tmp[utils.constants.LABEL] == label)].shape[0]
+            tn = tmp[(tmp[question] != answer) & (tmp[utils.constants.LABEL] != label)].shape[0]
+            fp = tmp[(tmp[question] == answer) & (tmp[utils.constants.LABEL] != label)].shape[0]
+            fn = tmp[(tmp[question] != answer) & (tmp[utils.constants.LABEL] == label)].shape[0]
 
             accuracy = (tp + tn) / (tp + tn + fp + fn)
 
@@ -185,7 +442,8 @@ def plot_accuracy_matrix(
         df: pd.DataFrame,
         question: str
 ) -> None:
-    """Визуализирует матрицу точностей.
+    """
+    Визуализирует матрицу точностей.
 
     Args:
         df: DataFrame, из которого будет вытаскиваться информация.
@@ -198,8 +456,8 @@ def plot_accuracy_matrix(
     # визуализируем матрицу в виде тепловой карты
     ax.imshow(matrix)
 
-    ax.set_xticks(range(len(defs.LABELS)))
-    ax.set_xticklabels(defs.LABELS)
+    ax.set_xticks(range(len(utils.constants.LABELS)))
+    ax.set_xticklabels(utils.constants.LABELS)
     ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)
     plt.setp(ax.get_xticklabels(), rotation=-30, ha='right', rotation_mode='anchor')
 
@@ -208,7 +466,7 @@ def plot_accuracy_matrix(
 
     ax.spines[:].set_visible(False)
 
-    ax.set_xticks(np.arange(len(defs.LABELS) + 1) - .5, minor=True)
+    ax.set_xticks(np.arange(len(utils.constants.LABELS) + 1) - .5, minor=True)
     ax.set_yticks(np.arange(len(matrix) + 1) - .5, minor=True)
     ax.grid(which='minor', color='w', linestyle='-', linewidth=3)
     ax.tick_params(which='minor', bottom=False, left=False)
@@ -222,7 +480,7 @@ def plot_accuracy_matrix(
         return string
 
     for i in range(len(matrix)):
-        for j in range(len(defs.LABELS)):
+        for j in range(len(utils.constants.LABELS)):
             if matrix[i][j] < ((matrix.max() + matrix.min()) / 2):
                 ax.text(j, i, redact(matrix[i][j]), ha='center', va='center', color='white')
             else:
@@ -232,7 +490,8 @@ def plot_accuracy_matrix(
 
 
 def plot_history(history: tf.keras.callbacks.History, *, dpi: Optional[int] = 70) -> None:
-    """Визуализирует историю обучения.
+    """
+    Визуализирует историю обучения.
 
     Args:
         history: собственно история.
@@ -269,7 +528,7 @@ def plot_scatter(dataframe, feature1, feature2, *, target=None):
                 marker='.',
                 color=color,
                 label=label,
-                )
+            )
             ax.legend()
     else:
         ax.scatter(dataframe[feature1], dataframe[feature2], marker='.')
