@@ -8,4 +8,6 @@
 __pycache__/
 
 # CatBoost
-/catboost_info
+catboost_info/
+
+*.gv
