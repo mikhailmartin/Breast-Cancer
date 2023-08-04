@@ -1,0 +1,118 @@
+schema: '2.0'
+stages:
+  mini_etl:
+    cmd:
+    - python -m src.data.mini_ETL "data/raw/Таблица учёта НОРМА.xlsx" "data/raw/Таблица
+      учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx" "data/raw/Таблица учёта ОНКОЛОГИЯ.xlsx" data/interim/etled.csv
+    deps:
+    - path: data/raw/Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx
+      hash: md5
+      md5: 73ecb70fd3596ae7b5aede3797a0babd
+      size: 47414
+    - path: data/raw/Таблица учёта НОРМА.xlsx
+      hash: md5
+      md5: 2a91d34a5d428d9beb95d1631a639fdd
+      size: 48548
+    - path: data/raw/Таблица учёта ОНКОЛОГИЯ.xlsx
+      hash: md5
+      md5: 863fcfee9939fed148ddebaeeb593552
+      size: 49021
+    - path: src/data/mini_ETL.py
+      hash: md5
+      md5: bc314490106ae2d73ebb26b4d32e0a70
+      size: 10740
+    outs:
+    - path: data/interim/etled.csv
+      hash: md5
+      md5: 52c96854386eed75baab22dd2b583d89
+      size: 423286
+  meaningful_ordinal_encoding:
+    cmd:
+    - python -m src.data.meaningful_ordinal_encoding data/interim/etled.csv data/interim/encoded.csv
+    deps:
+    - path: data/interim/etled.csv
+      hash: md5
+      md5: 52c96854386eed75baab22dd2b583d89
+      size: 423286
+    - path: src/data/meaningful_ordinal_encoding.py
+      hash: md5
+      md5: a03e2820da8f4ebe8365ce163b8ca135
+      size: 1333
+    outs:
+    - path: data/interim/encoded.csv
+      hash: md5
+      md5: 877a79e197e15e4bd96ab3a7a5fee48e
+      size: 152191
+  train_decision_tree_pipe:
+    cmd:
+    - python -m src.models.train_decision_tree_pipe data/processed/train_data.csv
+      models/decision_tree_pipe.pkl
+    deps:
+    - path: data/processed/train_data.csv
+      hash: md5
+      md5: 10105a9070ee40448c1e3d591caa5555
+      size: 114921
+    - path: src/models/train_decision_tree_pipe.py
+      hash: md5
+      md5: 96858ea71cdf76c785af05e1af8e40fc
+      size: 2275
+    outs:
+    - path: models/decision_tree_pipe.pkl
+      hash: md5
+      md5: 4831720e45fb558ce2032ae2a18a4114
+      size: 47392
+  train_catboost_pipe:
+    cmd:
+    - python -m src.models.train_catboost_pipe data/processed/train_data.csv models/catboost_pipe.pkl
+    deps:
+    - path: data/processed/train_data.csv
+      hash: md5
+      md5: 10105a9070ee40448c1e3d591caa5555
+      size: 114921
+    - path: src/models/train_catboost_pipe.py
+      hash: md5
+      md5: 0637509759ca39d752321ca3a91489ef
+      size: 1952
+    outs:
+    - path: models/catboost_pipe.pkl
+      hash: md5
+      md5: 0937e43694bff8f0ad3a38682dd6ab5d
+      size: 1127401
+  visualization:
+    cmd:
+    - python -m src.visualization.visualize data/interim/encoded.csv models/catboost_pipe.pkl
+      reports/figures/SHAP_values.png
+    deps:
+    - path: data/interim/encoded.csv
+      hash: md5
+      md5: 877a79e197e15e4bd96ab3a7a5fee48e
+      size: 152191
+    - path: models/catboost_pipe.pkl
+      hash: md5
+      md5: 0937e43694bff8f0ad3a38682dd6ab5d
+      size: 1127401
+    - path: src/visualization/visualize.py
+      hash: md5
+      md5: f5d30b950e579f47623c9f73f72085d5
+      size: 1173
+  data_splitting:
+    cmd:
+    - python -m src.data.data_splitting data/interim/encoded.csv data/processed/
+    deps:
+    - path: data/interim/encoded.csv
+      hash: md5
+      md5: 877a79e197e15e4bd96ab3a7a5fee48e
+      size: 152191
+    - path: src/data/data_splitting.py
+      hash: md5
+      md5: 5486b0b92368c876ab3a516925a359b6
+      size: 726
+    outs:
+    - path: data/processed/test_data.csv
+      hash: md5
+      md5: 10105a9070ee40448c1e3d591caa5555
+      size: 114921
+    - path: data/processed/train_data.csv
+      hash: md5
+      md5: 10105a9070ee40448c1e3d591caa5555
+      size: 114921

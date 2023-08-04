@@ -9,5 +9,3 @@ __pycache__/
 
 # CatBoost
 catboost_info/
-
-*.gv

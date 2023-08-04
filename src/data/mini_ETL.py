@@ -1,15 +1,22 @@
+import click
 import numpy as np
 import pandas as pd
 
 import src
 
 
+@click.command()
+@click.argument('norm_data_path', type=click.Path(exists=True))
+@click.argument('benign_tumor_data_path', type=click.Path(exists=True))
+@click.argument('malignant_tumor_data_path', type=click.Path(exists=True))
+@click.argument('etled_data_path', type=click.Path())
 def mini_etl(
         norm_data_path: str,
         benign_tumor_data_path: str,
         malignant_tumor_data_path: str,
         etled_data_path: str,
 ) -> None:
+
     norm_data = pd.read_excel(norm_data_path, index_col=0, nrows=src.constants.NORM_N_ROWS)
     norm_data.drop(columns=['Дата рождения', 'Дата тестирования', 'Пол', '?1', '?2'], inplace=True)
     norm_data[src.constants.TARGET] = src.constants.LABELS[0]
@@ -289,9 +296,4 @@ def convert_time_interval(cell_content):
 
 
 if __name__ == '__main__':
-    mini_etl(
-        src.constants.NORM_PATH,
-        src.constants.BENIGN_TUMOR_PATH,
-        src.constants.MALIGNANT_TUMOR_PATH,
-        src.constants.ETLED_DATA_PATH,
-    )
+    mini_etl()

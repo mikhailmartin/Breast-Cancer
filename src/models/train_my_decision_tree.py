@@ -1,17 +1,19 @@
+import click
 import joblib
 import pandas as pd
-
-from sklearn.model_selection import train_test_split
 
 import src
 
 
+@click.command()
+@click.argument('input_data_path', type=click.Path(exists=True))
+@click.argument('output_model_path', type=click.Path())
 def train_my_decision_train(input_data_path: str, output_model_path: str) -> None:
-    data = pd.read_csv(input_data_path)
-    X = data.drop(columns=src.constants.TARGET)
-    y = data[src.constants.TARGET]
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, stratify=y, random_state=src.constants.RANDOM_STATE)
+
+    train_data = pd.read_csv(input_data_path)
+
+    X_train = train_data.drop(columns=src.constants.TARGET)
+    y_train = train_data[src.constants.TARGET]
 
     model = src.my_decision_tree.MyDecisionTreeClassifier(
         min_samples_leaf=1, min_samples_split=2)
@@ -25,5 +27,4 @@ def train_my_decision_train(input_data_path: str, output_model_path: str) -> Non
 
 
 if __name__ == '__main__':
-    train_my_decision_train(
-        src.constants.ENCODED_DATA_PATH, src.constants.MY_DECISION_TREE_MODEL_PATH)
+    train_my_decision_train()

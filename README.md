@@ -4,6 +4,7 @@
 научной работы в лаборатории управления здравоохранением при Институте Проблем Управления им. В.А.
 Трапезникова РАН.
 
+
 ## Набор данных
 Датасет был предоставлен в ИПУ. Из себя он представляет 595 заполненных анкет-опросников,
 размеченных на 3 класса: «норма», «доброкачественная опухоль» и «злокачественная опухоль». Каждый
@@ -11,18 +12,23 @@
 обследование на наличие и характер новообразований молочной железы.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mikhailmartin/Breast-Cancer/master/reports/figures/target distribution.png" width="800"/>
+  <img src="https://raw.githubusercontent.com/mikhailmartin/Breast-Cancer/master/reports/figures/target distribution.png"/>
 </p>
 
+
 ## Структура проекта
+
+старается соответствовать шаблону [Cookiecutter Data Science](https://github.com/drivendata/cookiecutter-data-science).
+
 ```
 ├── README.md
 ├── data
 |   ├── raw                              <- Исходные Excel-таблички
-|   ├── etled                            <- Собранный воедино и почищенный в ходе ETL датасет
-|   └── encoded                          <- Осмысленное OrdinalEncoding
+|   ├── interim                          <- Собранный воедино и почищенный в ходе ETL датасет
+|   └── processed                        <- Осмысленное OrdinalEncoding
+|
 ├── models                               <- Обученные модели-классификаторы
-├── my_ds_tools                          <- Сабмодуль с тулзами
+|
 ├── notebooks
 |   ├── EDA.ipynb                        <- EDA с визуализацией разниц в распределении признаков
 |   |                                       между классами. Также здесь исследую примеры с
@@ -33,42 +39,70 @@
 |   ├── Neural Network.ipynb             <- Эксперименты с персептроном-классификатором с двумя
 |   |                                       скрытыми слоями
 |   └── CatBoost.ipynb                   <- Эксперименты с GBDT CatBoost
-├── src
-|   ├── __init__.py
-|   ├── constants.py                     <- Константы
-|   ├── decision_tree.py                 <- Класс вышеупомянутого собственного дерева решений
-|   ├── data
-|   |   ├── mini_ETL.py.py               <- ETL на минималках: свожу excel-таблицы в единый датасет,
-|   |   |                                   расставляю целевые переменные и исправляю опечатки
-|   |   └── meaningful_ordinal_encoding.py  <- Осмысленный OrdinalEncoding ранговых признаков
-|   └── models                           <- Скрипты обучения моделей
-|       ├── train_catboost_pipe.py
-|       ├── train_decision_tree_pipe.py
-|       └── train_my_decision_tree_pipe.py
-└── win_requirements.txt                 <- Необходимые пакеты для виртуального окружения
+|
+├── reports
+|   └── figures
+|
+├── win_requirements.txt                 <- Необходимые пакеты для виртуального окружения
+|
+├── my_ds_tools                          <- Сабмодуль с тулзами
+|
+└── src
+    ├── __init__.py
+    |
+    ├── constants.py                     <- Константы
+    |
+    ├── decision_tree.py                 <- Класс вышеупомянутого собственного дерева решений
+    |
+    ├── data
+    |   ├── __init__.py
+    |   ├── mini_ETL.py                  <- ETL на минималках: свожу excel-таблицы в единый датасет,
+    |   |                                   расставляю целевые переменные и исправляю опечатки
+    |   └── meaningful_ordinal_encoding.py  <- Осмысленный OrdinalEncoding ранговых признаков
+    |
+    ├── models                           <- Скрипты обучения моделей
+    |   ├── __init__.py
+    |   ├── train_catboost_pipe.py
+    |   ├── train_decision_tree_pipe.py
+    |   └── train_my_decision_tree_pipe.py
+    |
+    └── visualization
+        ├── __init__.py
+        └── visualize.py
 ```
+
 
 ## Результаты экспериментов
-| Модель                         | validation accuracy |
-|--------------------------------|---------------------|
-| sklearn DecisionTreeClassifier | 0.5942222222222223  |
-| MyDecisionTreeClassifier       | 0.5466666666666666  |
-| Neural Network                 |                     |
-| CatBoost                       | 0.6977777777777778  |
+| Модель                         | mean CV accuracy   |
+|--------------------------------|--------------------|
+| sklearn DecisionTreeClassifier | 0.5942222222222223 |
+| MyDecisionTreeClassifier       | 0.5466666666666666 |
+| Neural Network                 |                    |
+| CatBoost                       | 0.6977777777777778 |
 
-Модель на CatBoost была выбрана в качестве базового классификатора. Оценка значимости признаков
+Модель на CatBoost была выбрана в качестве базового классификатора. Значимость признаков оценивалась
 через SHAP значения.
 
-## Интерпретатор и окружение
-Я использовал интерпретатор [Python 3.10.7](https://www.python.org/downloads/release/python-3107/).
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mikhailmartin/Breast-Cancer/master/reports/figures/SHAP_values.png"/>
+</p>
 
-Рекомендую использовать виртуальное окружение. Его можно создать следующей командой:
+
+## Интерпретатор и окружение
+Я использовал интерпретатор [Python 3.11.4](https://www.python.org/downloads/release/python-3114/).
+
+Создаём и активируем виртуальное окружение:
 ```commandline
 python -m venv env
+call ./venv/scripts/activate
 ```
-Все необходимые пакеты собраны в файле `win_requirements.txt`.
-Перед установкой пакетов не забудьте активировать виртуальную среду.
-Вы можете установить пакеты одной командой:
+
+Устанавливаем все необходимые пакеты, собранные в `win_requirements.txt`:
 ```commandline
-pip install -r win_requirements.txt
+pip install -r ./win_requirements.txt
+```
+
+Прогоняем WorkFlow:
+```commandline
+dvc repro
 ```

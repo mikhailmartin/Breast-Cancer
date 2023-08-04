@@ -1,0 +1,69 @@
+stages:
+
+  mini_etl:
+    cmd:
+      - python -m src.data.mini_ETL "data/raw/Таблица учёта НОРМА.xlsx" "data/raw/Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx" "data/raw/Таблица учёта ОНКОЛОГИЯ.xlsx" data/interim/etled.csv
+    deps:
+      - data/raw/Таблица учёта НОРМА.xlsx
+      - data/raw/Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx
+      - data/raw/Таблица учёта ОНКОЛОГИЯ.xlsx
+      - src/data/mini_ETL.py
+    outs:
+      - data/interim/etled.csv
+
+  meaningful_ordinal_encoding:
+    cmd:
+      - python -m src.data.meaningful_ordinal_encoding data/interim/etled.csv data/interim/encoded.csv
+    deps:
+      - data/interim/etled.csv
+      - src/data/meaningful_ordinal_encoding.py
+    outs:
+      - data/interim/encoded.csv
+
+  data_splitting:
+    cmd:
+      - python -m src.data.data_splitting data/interim/encoded.csv data/processed/
+    deps:
+      - data/interim/encoded.csv
+      - src/data/data_splitting.py
+    outs:
+      - data/processed/train_data.csv
+      - data/processed/test_data.csv
+
+
+  train_decision_tree_pipe:
+    cmd:
+      - python -m src.models.train_decision_tree_pipe data/processed/train_data.csv models/decision_tree_pipe.pkl
+    deps:
+      - data/processed/train_data.csv
+      - src/models/train_decision_tree_pipe.py
+    outs:
+      - models/decision_tree_pipe.pkl
+
+# очень долгое исполнение
+#  train_my_decision_tree_pipe:
+#    cmd:
+#      - python -m src.models.train_my_decision_tree data/processed/train_data.csv models/my_decision_tree.pkl
+#    deps:
+#      - data/processed/train_data.csv
+#      - src/models/train_my_decision_tree.py
+#    outs:
+#      - models/my_decision_tree.pkl
+
+  train_catboost_pipe:
+    cmd:
+      - python -m src.models.train_catboost_pipe data/processed/train_data.csv models/catboost_pipe.pkl
+    deps:
+      - data/processed/train_data.csv
+      - src/models/train_catboost_pipe.py
+    outs:
+      - models/catboost_pipe.pkl
+
+
+  visualization:
+    cmd:
+      - python -m src.visualization.visualize data/interim/encoded.csv models/catboost_pipe.pkl reports/figures/SHAP_values.png
+    deps:
+      - data/interim/encoded.csv
+      - models/catboost_pipe.pkl
+      - src/visualization/visualize.py

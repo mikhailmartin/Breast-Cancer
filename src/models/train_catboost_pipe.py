@@ -1,12 +1,12 @@
 import catboost
+import click
 import joblib
 import pandas as pd
 
 import sklearn
-from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.impute import KNNImputer
+from sklearn.impute import KNNImputer, SimpleImputer
 
 import src
 
@@ -19,12 +19,15 @@ USEFUL_FOR_IMPUT = [
 ]
 
 
+@click.command()
+@click.argument('input_data_path', type=click.Path(exists=True))
+@click.argument('output_model_path', type=click.Path())
 def train_catboost(input_data_path: str, output_model_path: str) -> None:
-    data = pd.read_csv(input_data_path)
-    X = data.drop(columns=src.constants.TARGET)
-    y = data[src.constants.TARGET]
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, stratify=y, random_state=src.constants.RANDOM_STATE)
+
+    train_data = pd.read_csv(input_data_path)
+
+    X_train = train_data.drop(columns=src.constants.TARGET)
+    y_train = train_data[src.constants.TARGET]
 
     model = get_model()
     model.fit(X_train, y_train)
@@ -33,15 +36,23 @@ def train_catboost(input_data_path: str, output_model_path: str) -> None:
 
 
 def get_model() -> sklearn.pipeline.Pipeline:
+
+    knn_imputer = KNNImputer()
+    simple_imputer = SimpleImputer(strategy='constant', fill_value='пропуск')
+
     preprocessing = ColumnTransformer(
         transformers=[
-            ('imputer', KNNImputer(), FEATURES_TO_IMPUT + USEFUL_FOR_IMPUT),
+            ('knn_imputer', knn_imputer, FEATURES_TO_IMPUT + USEFUL_FOR_IMPUT),
+            ('simple_imputer', simple_imputer, list(src.constants.CATEGORICAL_FEATURES)),
         ],
         remainder='passthrough',
         verbose_feature_names_out=False,
     ).set_output(transform='pandas')
 
     catboost_model = catboost.CatBoostClassifier(
+        max_depth=5,
+        cat_features=list(src.constants.CATEGORICAL_FEATURES),
+        verbose=False,
         random_state=src.constants.RANDOM_STATE,
     )
 
@@ -54,4 +65,4 @@ def get_model() -> sklearn.pipeline.Pipeline:
 
 
 if __name__ == '__main__':
-    train_catboost(src.constants.ENCODED_DATA_PATH, src.constants.CATBOOST_MODEL_PATH)
+    train_catboost()
