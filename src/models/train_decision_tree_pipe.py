@@ -26,9 +26,9 @@ USEFUL_FOR_IMPUT = [
 @click.command()
 @click.argument('input_data_path', type=click.Path(exists=True))
 @click.argument('output_model_path', type=click.Path())
-def train_decision_tree(input_data_path: str, output_model_path: str) -> None:
+def train_decision_tree_pipe(input_data_path: str, output_model_path: str) -> None:
 
-    train_data = pd.read_csv(input_data_path)
+    train_data = pd.read_csv(input_data_path, index_col=0)
 
     X_train = train_data.drop(columns=src.constants.TARGET)
     y_train = train_data[src.constants.TARGET]
@@ -54,13 +54,13 @@ def get_model() -> sklearn.pipeline.Pipeline:
 
     decision_tree = DecisionTreeClassifier(
         criterion='log_loss',
-        max_depth=4,
-        min_samples_split=151,
-        min_samples_leaf=193,
-        min_weight_fraction_leaf=0.17600000000000002,
+        max_depth=10,
+        min_samples_split=105,
+        min_samples_leaf=123,
+        min_weight_fraction_leaf=.14300000000000002,
         random_state=src.constants.RANDOM_STATE,
-        max_leaf_nodes=3,
-        min_impurity_decrease=0.216,
+        max_leaf_nodes=9,
+        min_impurity_decrease=.004,
     )
 
     pipe = Pipeline([
@@ -72,4 +72,4 @@ def get_model() -> sklearn.pipeline.Pipeline:
 
 
 if __name__ == '__main__':
-    train_decision_tree()
+    train_decision_tree_pipe()

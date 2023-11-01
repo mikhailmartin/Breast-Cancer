@@ -1,4 +1,6 @@
-"""Здесь содержатся всякие определения, которые не хочется переносить из файла в файл."""
+"""
+Здесь содержатся всякие определения, которые не хочется переносить из файла в файл.
+"""
 import os
 
 
@@ -53,7 +55,9 @@ ANSWER_11_3 = 'раз в неделю'
 ANSWER_11_4 = 'один-два раза в месяц'
 ANSWER_11_5 = 'несколько раз в год'
 ANSWER_11_6 = 'я не общаюсь со взрослыми детьми'
-ANSWERS_11 = [ANSWER_11_1, ANSWER_11_2, ANSWER_11_3, ANSWER_11_4, ANSWER_11_5, ANSWER_11_6]
+ANSWERS_11 = [
+    ANSWER_11_1, ANSWER_11_2, ANSWER_11_3, ANSWER_11_4, ANSWER_11_5, ANSWER_11_6,
+]
 
 QUESTION_12 = '12. Сколько человек живут вместе с Вами?'
 ANSWER_12_1 = 'я живу одна'
@@ -71,7 +75,8 @@ ANSWER_13_5 = 'очень плохие'
 ANSWER_13_6 = 'я не знаю своих соседей'
 ANSWER_13_7 = 'у меня нет соседей'
 ANSWERS_13 = [
-    ANSWER_13_1, ANSWER_13_2, ANSWER_13_3, ANSWER_13_4, ANSWER_13_5, ANSWER_13_6, ANSWER_13_7,
+    ANSWER_13_1, ANSWER_13_2, ANSWER_13_3, ANSWER_13_4, ANSWER_13_5, ANSWER_13_6,
+    ANSWER_13_7,
 ]
 
 QUESTION_14 = '14. Как часто Вы встречаетесь с друзьями?'
@@ -200,14 +205,16 @@ BINARY_FEATURES = {
 }
 
 FEATURES = [
-    QUESTION_2, QUESTION_3, QUESTION_4, QUESTION_5, QUESTION_6, QUESTION_7, QUESTION_8, QUESTION_9,
-    QUESTION_10, QUESTION_11, QUESTION_12, QUESTION_13, QUESTION_14, QUESTION_15, QUESTION_16,
-    QUESTION_17, QUESTION_18, QUESTION_19, QUESTION_20, QUESTION_22, QUESTION_23, QUESTION_24,
-    QUESTION_25, QUESTION_26, QUESTION_27, QUESTION_28, QUESTION_29, QUESTION_30, QUESTION_31,
-    QUESTION_32, QUESTION_33, QUESTION_34, QUESTION_35,
+    QUESTION_2, QUESTION_3, QUESTION_4, QUESTION_5, QUESTION_6, QUESTION_7, QUESTION_8,
+    QUESTION_9, QUESTION_10, QUESTION_11, QUESTION_12, QUESTION_13, QUESTION_14,
+    QUESTION_15, QUESTION_16, QUESTION_17, QUESTION_18, QUESTION_19, QUESTION_20,
+    QUESTION_22, QUESTION_23, QUESTION_24, QUESTION_25, QUESTION_26, QUESTION_27,
+    QUESTION_28, QUESTION_29, QUESTION_30, QUESTION_31, QUESTION_32, QUESTION_33,
+    QUESTION_34, QUESTION_35,
 ]
 
-NORM_PATH = os.path.join(os.getcwd(), '..', '..', 'data', 'raw', 'Таблица учёта НОРМА.xlsx')
+NORM_PATH = os.path.join(
+    os.getcwd(), '..', '..', 'data', 'raw', 'Таблица учёта НОРМА.xlsx')
 BENIGN_TUMOR_PATH = os.path.join(
     os.getcwd(), '..', '..', 'data', 'raw', 'Таблица учёта ДОБРОКАЧЕСТВЕННАЯ.xlsx')
 MALIGNANT_TUMOR_PATH = os.path.join(
@@ -218,9 +225,12 @@ BENIGN_TUMOR_N_ROWS = 199
 MALIGNANT_TUMOR_N_ROWS = 199
 
 ETLED_DATA_PATH = os.path.join(os.getcwd(), '..', '..', 'data', 'etled', 'etled.csv')
-ENCODED_DATA_PATH = os.path.join(os.getcwd(), '..', '..', 'data', 'encoded', 'encoded.csv')
+ENCODED_DATA_PATH = os.path.join(
+    os.getcwd(), '..', '..', 'data', 'encoded', 'encoded.csv')
 
-DECISION_TREE_MODEL_PATH = os.path.join(os.getcwd(), '..', '..', 'models', 'decision_tree_pipe.pkl')
+DECISION_TREE_MODEL_PATH = os.path.join(
+    os.getcwd(), '..', '..', 'models', 'decision_tree_pipe.pkl')
 MY_DECISION_TREE_MODEL_PATH = os.path.join(
     os.getcwd(), '..', '..', 'models', 'my_decision_tree_pipe.pkl')
-CATBOOST_MODEL_PATH = os.path.join(os.getcwd(), '..', '..', 'models', 'catboost_pipe.pkl')
+CATBOOST_MODEL_PATH = os.path.join(
+    os.getcwd(), '..', '..', 'models', 'catboost_pipe.pkl')

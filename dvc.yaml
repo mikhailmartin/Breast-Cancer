@@ -59,10 +59,19 @@ stages:
     outs:
       - models/catboost_pipe.pkl
 
-
-  visualization:
+  train_lightgbm_pipe:
     cmd:
-      - python -m src.visualization.visualize data/interim/encoded.csv models/catboost_pipe.pkl reports/figures/SHAP_values.png
+      - python -m src.models.train_lightgbm_pipe data/processed/train_data.csv models/lightgbm_pipe.pkl
+    deps:
+      - data/processed/train_data.csv
+      - src/models/train_lightgbm_pipe.py
+    outs:
+      - models/lightgbm_pipe.pkl
+
+
+  visualize_catboost_shap:
+    cmd:
+      - python -m src.visualization.visualize data/interim/encoded.csv models/catboost_pipe.pkl
     deps:
       - data/interim/encoded.csv
       - models/catboost_pipe.pkl
