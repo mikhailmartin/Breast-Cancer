@@ -24,45 +24,43 @@
 ├── README.md
 |
 ├── data/
-|   ├── raw/                                   <- Исходные Excel-таблички
-|   ├── interim/                               <- Собранный воедино и почищенный в ходе ETL датасет
-|   └── processed/                             <- Осмысленное OrdinalEncoding
+|   ├── raw/                                          <- Исходные Excel-таблички
+|   ├── interim/                                      <- Собранный воедино и почищенный в ходе ETL датасет
+|   └── processed/                                    <- Осмысленное OrdinalEncoding
 |
-├── models/                                    <- Обученные модели-классификаторы
+├── models/                                           <- Обученные модели-классификаторы
 |
 ├── notebooks/
-|   ├── EDA.ipynb                              <- EDA с визуализацией разниц в распределении признаков
-|   |                                             между классами. Также здесь исследую примеры с
-|   |                                             противоречивыми признаками.
-|   ├── model_DecisionTreeClassifier.ipynb     <- Эксперименты с деревом решений из scikit-learn
-|   ├── model_MyDecisionTreeClassifier.ipynb   <- Эксперименты с собственным деревом решений с
-|   |                                             мультисплитами
-|   ├── model_NeuralNetwork.ipynb              <- Эксперименты с персептроном-классификатором с двумя
-|   |                                             скрытыми слоями
-|   ├── model_CatBoost.ipynb                   <- Эксперименты с GBDT CatBoost
-|   └── model_LightGBM.ipynb                   <- Эксперименты с GBDT LightGBM
+|   ├── EDA.ipynb                                     <- EDA с визуализацией разниц в распределении признаков
+|   |                                                    между классами. Также здесь исследую примеры с
+|   |                                                    противоречивыми признаками.
+|   ├── model_DecisionTreeClassifier.ipynb            <- Эксперименты с деревом решений из scikit-learn
+|   ├── model_MultiSplitDecisionTreeCalssifier.ipynb  <- Эксперименты с собственным деревом решений с
+|   |                                                    мультисплитами
+|   ├── model_NeuralNetwork.ipynb                     <- Эксперименты с персептроном-классификатором с двумя
+|   |                                                    скрытыми слоями
+|   ├── model_CatBoost.ipynb                          <- Эксперименты с GBDT CatBoost
+|   └── model_LightGBM.ipynb                          <- Эксперименты с GBDT LightGBM
 |
 ├── reports/
 |   └── figures/
 |
-├── win_requirements.txt                       <- Необходимые пакеты для виртуального окружения
+├── win_requirements.txt                              <- Необходимые пакеты для виртуального окружения
 |
-├── my_ds_tools/                               <- Сабмодуль с тулзами
+├── my_ds_tools/                                      <- Сабмодуль с тулзами
 |
 └── src/
     ├── __init__.py
     |
-    ├── constants.py                           <- Константы
-    |
-    ├── decision_tree.py                       <- Класс вышеупомянутого собственного дерева решений
+    ├── constants.py                                  <- Константы
     |
     ├── data/
     |   ├── __init__.py
-    |   ├── mini_ETL.py                        <- ETL на минималках: свожу excel-таблицы в единый датасет,
-    |   |                                         расставляю целевые переменные и исправляю опечатки
-    |   └── meaningful_ordinal_encoding.py     <- Осмысленный OrdinalEncoding ранговых признаков
+    |   ├── mini_ETL.py                               <- ETL на минималках: свожу excel-таблицы в единый датасет,
+    |   |                                                расставляю целевые переменные и исправляю опечатки
+    |   └── meaningful_ordinal_encoding.py            <- Осмысленный OrdinalEncoding ранговых признаков
     |
-    ├── models/                                <- Скрипты обучения моделей
+    ├── models/                                       <- Скрипты обучения моделей
     |   ├── __init__.py
     |   ├── train_catboost_pipe.py
     |   ├── train_lightgbm_pipe.py
@@ -79,7 +77,7 @@
 | Модель                              | LeaveOneOut cross-validation accuracy | train accuracy   | test accuracy    |
 |-------------------------------------|---------------------------------------|------------------|------------------|
 | SciKit-Learn DecisionTreeClassifier | 0.59                                  | 0.60             | 0.53             |
-| MyDecisionTreeClassifier            | (на переработке)                      | (на переработке) | (на переработке) |
+| MultiSplitDecisionTreeCalssifier    | (на переработке)                      | (на переработке) | (на переработке) |
 | GBDT CatBoost                       | 0.61                                  | 0.69             | 0.56             |
 | GBDT LightGBM                       | 0.64                                  | 0.66             | 0.52             |
 | Neural Network                      | (на переработке)                      | (на переработке) | (на переработке) |

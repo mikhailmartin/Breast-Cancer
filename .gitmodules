@@ -1,3 +1,6 @@
 [submodule "my_ds_tools"]
 	path = my_ds_tools
 	url = https://github.com/mikhailmartin/my_ds_tools
+[submodule "multi_split_decision_tree"]
+	path = multi_split_decision_tree
+	url = https://github.com/mikhailmartin/multi_split_decision_tree
