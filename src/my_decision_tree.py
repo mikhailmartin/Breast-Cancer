@@ -361,6 +361,7 @@ class MyDecisionTreeClassifier:
 
         self.__tree = self.__generate_node(
             X, y,
+            parent_mask=y.apply(lambda x: True),
             feature_value=None,
             depth=1,
             available_feature_names=available_feature_names,
@@ -372,6 +373,7 @@ class MyDecisionTreeClassifier:
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_value: list[str],
         depth: int,
         available_feature_names: list[str],
@@ -383,6 +385,7 @@ class MyDecisionTreeClassifier:
         Args:
             X: pd.DataFrame с точками данных.
             y: pd.Series с соответствующими метками.
+            parent_mask: булевая маска родительского узла.
             feature_value: значение признака, по которому этот узел был сформирован.
             depth: глубина узла.
             available_feature_names: список доступных признаков для разбиения входного
@@ -393,16 +396,17 @@ class MyDecisionTreeClassifier:
         Returns:
             узел дерева.
         """
-        impurity = self.__impurity(y)
-        samples_num = X.shape[0]
-        distribution = self.__distribution(y)
-        label = y.value_counts().index[0]
+        impurity = self.__impurity(y, parent_mask)
+        samples_num = parent_mask.sum()
+        distribution = self.__distribution(y, parent_mask)
+        label = y[parent_mask].value_counts().index[0]
 
         childs = []
         feature = None
         if samples_num >= self.__min_samples_split and \
                 (not self.__max_depth or (depth <= self.__max_depth)):
-            feature, xs, ys, feature_values, inf_gain = self.__split(X, y, available_feature_names)
+            feature, masks, feature_values, inf_gain = self.__split(
+                X, y, parent_mask, available_feature_names)
 
             if feature:
                 available_feature_names = available_feature_names.copy()
@@ -423,9 +427,9 @@ class MyDecisionTreeClassifier:
                         special_cases.pop(feature)
 
                 # рекурсивное создание потомков
-                for x, y, fv in zip(xs, ys, feature_values):
+                for mask, fv in zip(masks, feature_values):
                     child = self.__generate_node(
-                        x, y, fv, depth+1, available_feature_names, special_cases
+                        X, y, mask, fv, depth+1, available_feature_names, special_cases
                     )
                     childs.append(child)
 
@@ -436,25 +440,28 @@ class MyDecisionTreeClassifier:
 
         return node
 
-    def __distribution(self, y: pd.Series) -> list[int]:
+    def __distribution(self, y: pd.Series, mask: pd.Series) -> list[int]:
         """Подсчитывает распределение точек данных по классам."""
-        distribution = [(y == class_name).sum() for class_name in self.__class_names]
+        distribution = [
+            (mask & (y == class_name)).sum()
+            for class_name in self.__class_names
+        ]
 
         return distribution
 
-    def __impurity(self, Y: pd.Series) -> float:
+    def __impurity(self, y: pd.Series, mask: pd.Series) -> float:
         """Считает загрязнённость для множества."""
         match self.__criterion:
             case 'entropy':
-                impurity = self.__entropy(Y)
+                impurity = self.__entropy(y, mask)
             case 'gini':
-                impurity = self.__gini(Y)
+                impurity = self.__gini(y, mask)
             case _:
                 assert False
 
         return impurity
 
-    def __entropy(self, Y: pd.Series) -> float:
+    def __entropy(self, y: pd.Series, mask: pd.Series) -> float:
         """
         Считает энтропию в множестве.
 
@@ -465,17 +472,17 @@ class MyDecisionTreeClassifier:
         \overline{N} - эффективное количество состояний;
         p_i - вероятность состояния системы.
         """
-        n = Y.shape[0]  # количество точек в множестве
+        n = mask.sum()  # количество точек в множестве
 
         entropy = 0
         for label in self.__class_names:  # перебор по классам
-            m_i = (Y == label).sum()
+            m_i = (mask & (y == label)).sum()
             if m_i != 0:
-                entropy -= (m_i/n) * math.log2(m_i/n)
+                entropy -= (m_i / n) * math.log2(m_i / n)
 
         return entropy
 
-    def __gini(self, Y: pd.Series) -> float:
+    def __gini(self, y: pd.Series, mask: pd.Series) -> float:
         """
         Считает индекс Джини в множестве.
 
@@ -486,12 +493,12 @@ class MyDecisionTreeClassifier:
         C - общее количество классов;
         p_i - вероятность выбора точки с классом i.
         """
-        n = Y.shape[0]  # количество точек в множестве
+        n = mask.sum()  # количество точек в множестве
 
         gini = 0
         for label in self.__class_names:  # перебор по классам
-            m_i = (Y == label).sum()
-            p_i = m_i/n
+            m_i = (mask & (y == label)).sum()
+            p_i = m_i / n
             gini += p_i * (1 - p_i)
 
         return gini
@@ -499,87 +506,89 @@ class MyDecisionTreeClassifier:
     def __split(
         self,
         X: pd.DataFrame,
-        Y: pd.Series,
+        y: pd.Series,
+        parent_mask: pd.Series,
         available_feature_names: list[str],
-    ) -> tuple[str, list[pd.DataFrame], list[pd.Series], tuple, float]:
+    ) -> tuple[str, list[pd.Series], tuple, float]:
         """
         Разделяет входное множество наилучшим образом.
 
         Args:
             X: pd.DataFrame с точками данных.
-            Y: pd.Series с соответствующими метками.
+            y: pd.Series с соответствующими метками.
+            parent_mask: булевая маска родительского узла.
             available_feature_names: список доступных признаков для разбиения входного
               множества.
 
         Returns:
-            Кортеж `(feature_name, xs, ys, feature_values, inf_gain)`.
+            Кортеж `(feature_name, masks, feature_values, inf_gain)`.
               feature_name: признак, по которому лучше всего разбивать входное
                 множество.
-              xs: список DataFrame'ов с точками данных дочерних подмножеств.
-              ys: список Series с соответствующими метками дочерних подмножеств.
+              masks: булевые маски дочерних узлов.
               feature_values: значения признаков, соответствующие дочерним
                 подмножествам.
               inf_gain: прирост информативности после разбиения.
         """
         best_feature_name = None
-        best_xs = []
-        best_ys = []
+        best_masks = []
         best_feature_values = tuple()
         best_inf_gain = 0
         for feature_name in available_feature_names:
             if feature_name in self.__cat_feature_names:
-                inf_gain, xs, ys, feature_values = self.__best_categorical_split(X, Y, feature_name)
+                inf_gain, masks, feature_values = self.__best_categorical_split(
+                    X, y, parent_mask, feature_name)
             elif feature_name in self.__rank_feature_names:
-                inf_gain, xs, ys, feature_values = self.__best_rank_split(X, Y, feature_name)
+                inf_gain, masks, feature_values = self.__best_rank_split(
+                    X, y, parent_mask, feature_name)
             elif feature_name in self.__num_feature_names:
-                inf_gain, xs, ys, feature_values = self.__numerical_split(X, Y, feature_name)
+                inf_gain, masks, feature_values = self.__numerical_split(
+                    X, y, parent_mask, feature_name)
             else:
                 assert False
 
             if inf_gain >= self.__min_impurity_decrease and inf_gain > best_inf_gain:
-                best_inf_gain = inf_gain
                 best_feature_name = feature_name
-                best_xs = xs
-                best_ys = ys
+                best_masks = masks
                 best_feature_values = feature_values
+                best_inf_gain = inf_gain
 
         for list_ in best_feature_values:
             assert isinstance(list_, list)
 
-        return best_feature_name, best_xs, best_ys, best_feature_values, best_inf_gain
+        return best_feature_name, best_masks, best_feature_values, best_inf_gain
 
     def __best_categorical_split(
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_name: str,
-    ) -> tuple[float, list[pd.DataFrame], list[pd.Series], tuple]:
+    ) -> tuple[float, list[pd.Series], tuple]:
         """
         Разделяет входное множество по категориальному признаку наилучшим образом.
 
         Args:
             X: pd.DataFrame с точками данных.
             y: pd.Series с соответствующими метками.
+            parent_mask: булевая маска родительского узла.
             feature_name: признак, по которому нужно разделить входное множество.
 
         Returns:
-            Кортеж `(inf_gain, xs, ys, feature_values)`.
+            Кортеж `(inf_gain, masks, feature_values)`.
               inf_gain: прирост информативности при разделении.
-              xs: список DataFrame'ов с точками данных дочерних подмножеств.
-              ys: список Series с соответствующими метками дочерних подмножеств.
+              masks: булевые маски дочерних узлов.
               feature_values: значения признаков, соответствующие дочерним
                 подмножествам.
         """
         best_inf_gain = 0
-        best_xs = []
-        best_ys = []
+        best_child_masks = []
         best_feature_values = tuple()
 
-        available_feature_values = set(X[feature_name].tolist())
+        available_feature_values = set(X.loc[parent_mask, feature_name].tolist())
         if np.NaN in available_feature_values:
             available_feature_values.remove(np.NaN)
         if len(available_feature_values) <= 1:
-            return best_inf_gain, best_xs, best_ys, best_feature_values
+            return best_inf_gain, best_child_masks, best_feature_values
         available_feature_values = sorted(list(available_feature_values))
 
         assert len(available_feature_values) != 0
@@ -592,22 +601,23 @@ class MyDecisionTreeClassifier:
             partitions = list(filter(lambda x: len(x) <= self.__max_childs, partitions))
 
         for feature_values in partitions:
-            inf_gain, xs, ys = self.__categorical_split(X, y, feature_name, feature_values)
+            inf_gain, child_masks = self.__categorical_split(
+                X, y, parent_mask, feature_name, feature_values)
             if best_inf_gain < inf_gain:
                 best_inf_gain = inf_gain
-                best_xs = xs
-                best_ys = ys
+                best_child_masks = child_masks
                 best_feature_values = feature_values
 
-        return best_inf_gain, best_xs, best_ys, best_feature_values
+        return best_inf_gain, best_child_masks, best_feature_values
 
     def __categorical_split(
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_name: str,
         feature_values: tuple,
-    ) -> tuple[float, list[pd.DataFrame], list[pd.Series]]:
+    ) -> tuple[float, list[pd.Series]]:
         """
         Разделяет входное множество по категориальному признаку согласно заданным
         значениям.
@@ -615,151 +625,141 @@ class MyDecisionTreeClassifier:
         Args:
             X: pd.DataFrame с точками данных.
             y: pd.Series с соответствующими метками.
+            parent_mask: булевая маска родительского узла.
             feature_name: признак, по которому нужно разделить входное множество.
             feature_values: значения признаков, соответствующие дочерним подмножествам.
 
         Returns:
-            Кортеж `(inf_gain, xs, ys)`.
+            Кортеж `(inf_gain, masks)`.
               inf_gain: прирост информативности при разделении.
-              xs: список DataFrame'ов с точками данных дочерних подмножеств.
-              ys: список Series с соответствующими метками дочерних подмножеств.
+              masks: булевые маски дочерних узлов.
         """
-        na_mask = X[feature_name].isna()
+        mask_na = parent_mask & X[feature_name].isna()
 
-        xs = []
-        ys = []
+        child_masks = []
         for list_ in feature_values:
-            mask = X[feature_name].isin(list_)
-            x = X[mask | na_mask]
-            y = y[mask | na_mask]
-            if y.shape[0] < self.__min_samples_leaf:
-                return 0, [], []
-            else:
-                xs.append(x)
-                ys.append(y)
+            child_mask = parent_mask & (X[feature_name].isin(list_) | mask_na)
+            if child_mask.sum() < self.__min_samples_leaf:
+                return 0, []
+            child_masks.append(child_mask)
 
-        inf_gain = self.__information_gain(y, ys)
+        inf_gain = self.__information_gain(y, parent_mask, child_masks)
 
-        return inf_gain, xs, ys
+        return inf_gain, child_masks
 
     def __best_rank_split(
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_name: str,
-    ) -> tuple[float, list[pd.DataFrame], list[pd.Series], tuple]:
+    ) -> tuple[float, list[pd.Series], tuple]:
         """Разделяет входное множество по ранговому признаку наилучшим образом."""
         available_feature_values = self.__rank_feature_names[feature_name]
 
         best_inf_gain = 0
-        best_xs = []
-        best_ys = []
+        best_child_masks = []
         best_feature_values = tuple()
         for feature_values in rank_partition(available_feature_values):
-            inf_gain, xs, ys = self.__rank_split(X, y, feature_name, feature_values)
+            inf_gain, child_masks = self.__rank_split(
+                X, y, parent_mask, feature_name, feature_values)
             if best_inf_gain < inf_gain:
                 best_inf_gain = inf_gain
-                best_xs = xs
-                best_ys = ys
+                best_child_masks = child_masks
                 best_feature_values = feature_values
 
-        return best_inf_gain, best_xs, best_ys, best_feature_values
+        return best_inf_gain, best_child_masks, best_feature_values
 
     def __rank_split(
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_name: str,
         feature_values: tuple[list[str], list[str]],
-    ) -> tuple[float, list[pd.DataFrame], list[pd.Series]]:
+    ) -> tuple[float, list[pd.Series]]:
         """
         Разделяет входное множество по ранговому признаку согласно заданным значениям.
         """
         left_list_, right_list_ = feature_values
 
-        na_mask = X[feature_name].isna()
+        mask_na = parent_mask & X[feature_name].isna()
 
-        left_mask = X[feature_name].isin(left_list_)
-        right_mask = X[feature_name].isin(right_list_)
+        mask_left = parent_mask & X[feature_name].isin(left_list_)
+        mask_right = parent_mask & X[feature_name].isin(right_list_)
 
-        left_x = X[left_mask | na_mask]
-        left_y = y[left_mask | na_mask]
+        mask_left_na = mask_left | mask_na
+        mask_right_na = mask_right | mask_na
 
-        right_x = X[right_mask | na_mask]
-        right_y = y[right_mask | na_mask]
+        if mask_left_na.sum() < self.__min_samples_leaf or \
+                mask_right_na.sum() < self.__min_samples_leaf:
+            return 0, []
 
-        if left_y.shape[0] < self.__min_samples_leaf or \
-                right_y.shape[0] < self.__min_samples_leaf:
-            return 0, [], []
-        else:
-            xs = [left_x, right_x]
-            ys = [left_y, right_y]
+        child_masks = [mask_left_na, mask_right_na]
 
-        inf_gain = self.__information_gain(y, ys)
+        inf_gain = self.__information_gain(y, parent_mask, child_masks)
 
-        return inf_gain, xs, ys
+        return inf_gain, child_masks
 
     def __numerical_split(
         self,
         X: pd.DataFrame,
         y: pd.Series,
+        parent_mask: pd.Series,
         feature_name: str,
-    ) -> tuple[float, list[pd.DataFrame], list[pd.Series], tuple]:
+    ) -> tuple[float, list[pd.Series], tuple]:
         """
         Разделяет входное множество по численному признаку, выбирая наилучший порог.
 
         Args:
             X: pd.DataFrame с точками данных.
             y: pd.Series с соответствующими метками.
+            parent_mask: булевая маска родительского узла.
             feature_name: признак, по которому нужно разделить входное множество.
 
         Returns:
-            Кортеж `(inf_gain, xs, ys, feature_values)`.
+            Кортеж `(inf_gain, masks, feature_values)`.
               inf_gain: прирост информативности при разделении.
-              xs: список DataFrame'ов с точками данных дочерних подмножеств.
-              ys: список Series с соответствующими метками дочерних подмножеств.
+              masks: булевые маски дочерних узлов.
               feature_values: значения признаков, соответствующие дочерним
                 подмножествам.
         """
-        mask_na = X[feature_name].isna()
+        mask_na = parent_mask & X[feature_name].isna()
+        mask_notna = parent_mask & X[feature_name].notna()
 
-        points = sorted(X.loc[~mask_na, feature_name].tolist())
+        points = sorted(X.loc[mask_notna, feature_name].tolist())
         thresholds = [(points[i] + points[i+1]) / 2 for i in range(len(points) - 1)]
 
         best_inf_gain = 0
-        best_xs = []
-        best_ys = []
+        best_child_masks = []
         best_feature_values = tuple()
         for threshold in thresholds:
-            mask_less = X[feature_name] <= threshold
-            mask_more = X[feature_name] > threshold
+            mask_less = parent_mask & (X[feature_name] <= threshold)
+            mask_more = parent_mask & (X[feature_name] > threshold)
 
             mask_less_na = mask_less | mask_na
             mask_more_na = mask_more | mask_na
-
-            y_less_na = y[mask_less_na]
-            y_more_na = y[mask_more_na]
-
-            ys = [y_less_na, y_more_na]
 
             if mask_less_na.sum() < self.__min_samples_leaf or \
                     mask_more_na.sum() < self.__min_samples_leaf:
                 continue
 
-            inf_gain = self.__information_gain(y, ys)
+            child_masks = [mask_less_na, mask_more_na]
+
+            inf_gain = self.__information_gain(y, parent_mask, child_masks)
 
             if best_inf_gain < inf_gain:
                 best_inf_gain = inf_gain
-                best_xs = [X[mask_less_na], X[mask_more_na]]
-                best_ys = ys
-                best_feature_values = [f'<= {threshold}'], [f'> {threshold}']
+                best_child_masks = child_masks
+                best_feature_values = ([f'<= {threshold}'], [f'> {threshold}'])
 
-        return best_inf_gain, best_xs, best_ys, best_feature_values
+        return best_inf_gain, best_child_masks, best_feature_values
 
     def __information_gain(
         self,
         y: pd.Series,
-        ys: list[pd.Series],
+        parent_mask: pd.Series,
+        child_masks: list[pd.Series],
     ) -> float:
         """
         Считает прирост информативности.
@@ -775,20 +775,21 @@ class MyDecisionTreeClassifier:
         A_i - множество элементов A, на которых Q имеет значение i.
 
         Args:
-            y: Series с метками родительского множества.
-            ys: список Series с метками дочерних подмножеств.
+            y: pd.Series с метками родительского множества.
+            parent_mask: булевая маска родительского узла.
+            child_masks: булевые маски дочерних узлов.
 
         Returns:
             прирост информативности.
         """
-        A = y.shape[0]
+        A = parent_mask.sum()
 
         second_term = 0
-        for y_i in ys:
-            A_i = y_i.shape[0]
-            second_term += (A_i/A) * self.__impurity(y_i)
+        for child_mask in child_masks:
+            A_i = child_mask.sum()
+            second_term += (A_i / A) * self.__impurity(y, child_mask)
 
-        inf_gain = self.__impurity(y) - second_term
+        inf_gain = self.__impurity(y, parent_mask) - second_term
 
         assert isinstance(inf_gain, float)
 
